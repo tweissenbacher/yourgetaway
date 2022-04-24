@@ -1,3 +1,5 @@
+import datetime
+
 from db import db
 
 class AktionModel(db.Model):
@@ -53,6 +55,6 @@ class AktionModel(db.Model):
 
     @classmethod
     def check_data(cls, rabatt, startdatum, enddatum):
-        if rabatt > 0 and rabatt <= 100:
+        if (rabatt > 0 and rabatt <= 100) and startdatum < enddatum and startdatum >= str(datetime.datetime.now()):
             return True
         return False

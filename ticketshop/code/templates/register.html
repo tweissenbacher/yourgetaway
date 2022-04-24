@@ -1,13 +1,38 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
+<body class ="registrieren">
+
 <h1>Registrieren</h1>
 <form method = "POST">
-    <label>Email
+    <label>Email *
         <br>
-    <input type ="email" name ="email" />
+    <input type ="email" name ="email" required oninvalid="this.setCustomValidity('Es muss eine Email eingegeben werden.')"
+    oninput="this.setCustomValidity('')"/>
     </label>
     <p></p>
-    <label>Passwort
+    <label>Passwort *
         <br>
-    <input type ="password" name ="password" />
+    <input type ="password" name ="password" required oninvalid="this.setCustomValidity('Es muss ein Passwort eingegeben werden.')"
+    oninput="this.setCustomValidity('')"/>
+    </label>
+    <p></p>
+    <label>Vorname
+        <br>
+    <input type ="vorname" name ="vorname"/>
+    </label>
+    <p></p>
+    <label>Nachname
+        <br>
+    <input type ="nachname" name ="nachname"/>
+    </label>
+    <p></p>
+    <label>Geburtsdatum
+        <br>
+      <input type="datetime-local" id="geburtsdatum"  name="geburtsdatum" value="2022-04-23T00:01">
     </label>
     <p></p>
     <input type = "submit" value ="Registrieren"/>
@@ -15,4 +40,5 @@
 </form>
 <p>Bereits ein Account? <a href ="/"> Einloggen </a> </p>
 
-
+</body>
+ </html>

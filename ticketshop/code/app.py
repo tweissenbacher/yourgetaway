@@ -50,7 +50,10 @@ def login():
         user = authenticate(email, password)
         if user:
             session.update({"email": email})
-            return redirect ("/aktionen/neu")
+            user.check_if_admin()
+            if user.ist_admin:
+                return redirect ("/aktionen/neu")
+            return redirect("/tickets/neu")
     return render_template("login.html", email = session.get("email"))
 
 @app.route("/registrierung", methods =["GET", "POST"])
@@ -83,12 +86,13 @@ def aktionAnlegen():
         #startdatum = datetime.datetime.strptime(startdatum, '%Y-%m-%d %H:%M')
         enddatum = request.form.get("enddatum").replace("T", " ")
         #enddatum = datetime.datetime.strptime(enddatum, '%Y-%m-%d %H:%M')
-
+        if AktionModel.check_data(rabatt, startdatum, enddatum) is False:
+            return redirect("/falscheEingabe")
         if (von is None or nach is None):
-            if rabatt <= 100 and rabatt > 0:
-                aktion = AktionModel(rabatt, False, 0, startdatum, enddatum)
-                aktion.save_to_db()
-                return alleAktionen()
+
+            aktion = AktionModel(rabatt, False, 0, startdatum, enddatum)
+            aktion.save_to_db()
+            return alleAktionen()
         strecke = StreckeModel.findStreckeVonBis(von, nach)
         #check dataum start vor ende und start in Zukunft
         if rabatt <= 100 and rabatt > 0:
@@ -118,7 +122,10 @@ def aktionEntfernen(_id):
 @app.route("/alleAktionen")
 def alleAktionen():
     aktionen = AktionModel.find_all()
-    return render_template("alleAktionen.html", aktionen = aktionen, email=session.get("email"))
+    heute = str(datetime.datetime.now())
+    heute = heute.rsplit(":", 1)
+    heute = heute[0]
+    return render_template("alleAktionen.html", aktionen = aktionen, heute = heute, email=session.get("email"))
 
 
 @app.route("/profil")
@@ -129,6 +136,19 @@ def profilEditieren():
 def ausloggen():
     session.clear()
     return redirect ("/")
+
+
+@app.route("/falscheEingabe")
+def falscheEingabe():
+    return render_template("falscheEingabe.html", email=session.get("email"))
+
+#Tickets
+
+@app.route("/tickets/neu", methods =["GET", "POST"])
+def ticketAnlegen():
+    if session.get("email") is None:
+        return redirect ("/")
+    return render_template("ticketAnlegen.html", email=session.get("email"))
 
 if __name__ == '__main__':
     db.init_app(app)

@@ -8,6 +8,7 @@
 <span style="float:right">Ausloggen</span><br/>
 <!-- The sidebar -->
 <div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
   <a href="/aktionen/neu">Aktion anlegen</a>
   <a class="active" href="/alleAktionen">Aktionen</a>
   <a href="/profil">Profil</a>
@@ -24,6 +25,9 @@
         <td>Rabatt</td>
         <td>Startdatum</td>
         <td>Enddatum</td>
+        <td>Status</td>
+        <td>Editieren</td>
+        <td>Löschen</td>
     </tr>
       {% for aktion in aktionen %}
             <tr>
@@ -31,6 +35,15 @@
                 <td>{{ aktion['rabatt'] }}</td>
                 <td>{{ aktion['startdatum'] }}</td>
                 <td>{{ aktion['enddatum']}}</td>
+                <td>
+                {% if aktion['enddatum'] < heute %}
+                BEENDET
+                    {% else %}
+                    AKTIV
+                    {% endif %}
+                </td>
+                <td><button>Editieren</button></td>
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{aktion['id']}}"><button>Löschen</button></a></td>
             </tr>
     {% endfor %}
 </table>

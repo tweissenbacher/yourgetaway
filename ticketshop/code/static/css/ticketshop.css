@@ -2,20 +2,34 @@ body {
     background-color: #f1f1f1;
 }
 
+######body.login {
+  background-image: url('https://www.schengenvisainfo.com/news/wp-content/uploads/2022/01/Train.jpeg');
+  background-repeat: no-repeat;
+}
+
 h1 {
     color: #5f50c7;
 }
 
 h2 {
     color: #100857;
+    text-align: center;
 }
 
 label {
 
 }
 
+img.user-pic {
+    background: transparent;
+}
+
 span.admin-field {
     color: red;
+}
+
+div.container-user {
+    text-align: center;
 }
 
 
@@ -81,3 +95,52 @@ div.content {
     float: none;
   }
 }
+
+
+/* table */
+table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 800px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+
+
+tr {
+    background-color: white;
+    color: black;
+    text-align: center;
+}
+
+th,
+td {
+    padding: 12px 15px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+tbody tr:nth-of-type(even) {
+    background-color: #f0f0f3;
+}
+
+tbody tr:last-of-type {
+    border-bottom: 2px solid #f0f0f3;
+}
+
+tr:first-of-type{
+    background-color: #8c8c8d;
+}
+
+tbody tr.active-row {
+    font-weight: bold;
+    color: red;
+}
+
+
+
+

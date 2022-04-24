@@ -15,10 +15,12 @@
   <a href="/profil">Profil</a>
 </div>
 
-<div class="container" style="float:right">
+<div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
     {% if isAdmin %}
-    <span class = "admin-field">ADMIN</span>
-    <span>       </span>
+    <span class = "admin-field">ADMIN</span> <br>
     {% endif %}
     <a href="/ausloggen"><span >Ausloggen</span></a>
 </div>
@@ -29,7 +31,8 @@
 <form method = "POST">
     <label>Rabatt (in Prozent)
         <br>
-    <input type ="number" name ="rabatt" />
+    <input type ="number" name ="rabatt" required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
+    oninput="this.setCustomValidity('')"/>
     </label>
     <p></p>
     <label>Von
