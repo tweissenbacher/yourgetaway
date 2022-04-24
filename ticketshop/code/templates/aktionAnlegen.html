@@ -1,0 +1,61 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
+<body>
+
+
+<!-- The sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  <a class="active" href="/aktionen/neu">Aktion anlegen</a>
+  <a href="/alleAktionen">Aktionen</a>
+  <a href="/profil">Profil</a>
+</div>
+
+<div class="container" style="float:right">
+    {% if isAdmin %}
+    <span class = "admin-field">ADMIN</span>
+    <span>       </span>
+    {% endif %}
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+<!-- Page content -->
+<div class="content">
+<h1>Aktion anlegen</h1>
+<form method = "POST">
+    <label>Rabatt (in Prozent)
+        <br>
+    <input type ="number" name ="rabatt" />
+    </label>
+    <p></p>
+    <label>Von
+        <br>
+    <input type ="text" name ="von" />
+    </label>
+     <p></p>
+    <label>Nach
+        <br>
+    <input type ="text" name ="nach" />
+    </label>
+     <p></p>
+    <label>Startdatum
+        <br>
+      <input type="datetime-local" id="startdatum"  name="startdatum" value="2022-04-23T00:01">
+    </label>
+      <p></p>
+    <label>Enddatum
+        <br>
+      <input type="datetime-local" id="enddatum" name="enddatum" value="2022-04-23T00:01">
+    </label>
+      <p></p>
+    <input class ="button-aktionAnlegen" type = "submit" value ="Aktion anlegen"/>
+
+</form>
+</div>
+</body>
+ </html>
+

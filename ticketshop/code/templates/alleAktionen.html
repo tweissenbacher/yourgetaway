@@ -1,0 +1,77 @@
+  <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
+
+<span style="float:right">Ausloggen</span><br/>
+<!-- The sidebar -->
+<div class="sidebar">
+  <a href="/aktionen/neu">Aktion anlegen</a>
+  <a class="active" href="/alleAktionen">Aktionen</a>
+  <a href="/profil">Profil</a>
+</div>
+
+<!-- Page content -->
+<div class="content">
+<h1>Aktionen</h1>
+
+
+  <table>
+    <tr>
+        <td>ID</td>
+        <td>Rabatt</td>
+        <td>Startdatum</td>
+        <td>Enddatum</td>
+    </tr>
+      {% for aktion in aktionen %}
+            <tr>
+                <td>{{ aktion['id']}}</td>
+                <td>{{ aktion['rabatt'] }}</td>
+                <td>{{ aktion['startdatum'] }}</td>
+                <td>{{ aktion['enddatum']}}</td>
+            </tr>
+    {% endfor %}
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  {% for aktion in aktionen %}-->
+<!--  <ul>-->
+<!--    <li>-->
+<!--      <h3>Aktion {{ aktion['id'] }} </h3>-->
+<!--      <p>Id: {{ aktion['id'] }}</p>-->
+<!--      <p>Typ:-->
+<!--      {% if aktion['ist_strecken_rabatt'] %}-->
+<!--      Streckenaktion-->
+<!--        {% else %}-->
+<!--        Allgemeine Aktion-->
+<!--        {% endif %}-->
+<!--      </p>-->
+<!--      <p>Rabatt: {{ aktion['rabatt'] }} </p>-->
+<!--      <p>Startdatum: {{ aktion['startdatum'] }}<p/>-->
+<!--      <p>Enddatum: {{ aktion['enddatum'] }}</p>-->
+<!--&lt;!&ndash;<a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/1" rel="nofollow">Delete</a>&ndash;&gt;-->
+<!--<a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{aktion['id']}}"><button>Delete</button></a>-->
+
+<!--            <button>Editieren</button>-->
+
+<!--    </li>-->
+<!--  </ul>-->
+<!--  {% endfor %}-->
+</div> 
+
+  </html>
