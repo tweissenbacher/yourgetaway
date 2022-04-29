@@ -5,7 +5,27 @@
     <link rel="stylesheet" href="../static/css/ticketshop.css">
   </head>
 <body class ="registrieren">
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
 
+<!-- sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+    <p></p>
+    <div class ="register-pic-upload">
+           <img class = "add-user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+        <button>Bild uploaden</button>
+    </div>
+</div>
+
+
+<div class ="register-text">
 <h1>Registrieren</h1>
 <form method = "POST">
     <label>Email *
@@ -39,6 +59,6 @@
 
 </form>
 <p>Bereits ein Account? <a href ="/"> Einloggen </a> </p>
-
+</div>
 </body>
  </html>

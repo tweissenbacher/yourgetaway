@@ -4,9 +4,16 @@
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
   </head>
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
 
-<span style="float:right">Ausloggen</span><br/>
-<!-- The sidebar -->
+
+<!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
   <a href="/aktionen/neu">Aktion anlegen</a>
@@ -14,8 +21,21 @@
   <a href="/profil">Profil</a>
 </div>
 
+  <!-- user-info -->
+ <div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
+    {% if isAdmin %}
+    <span class = "admin-field">ADMIN</span> <br>
+    {% endif %}
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+
 <!-- Page content -->
 <div class="content">
+      <div class ="aktionen-content">
 <h1>Aktionen</h1>
 
 
@@ -25,6 +45,7 @@
         <td>Rabatt</td>
         <td>Startdatum</td>
         <td>Enddatum</td>
+        <td>Strecke</td>
         <td>Status</td>
         <td>Editieren</td>
         <td>Löschen</td>
@@ -35,56 +56,36 @@
                 <td>{{ aktion['rabatt'] }}</td>
                 <td>{{ aktion['startdatum'] }}</td>
                 <td>{{ aktion['enddatum']}}</td>
+                {% if aktion['strecken_id'] > 0 %}
+                    <td>{{ streckenDictionary[aktion['strecken_id']]['von'] }} ---
+                    {{ streckenDictionary[aktion['strecken_id']]['nach'] }}
+                    </td>
+                {% else %}
+                <td> - </td>
+                {% endif %}
                 <td>
                 {% if aktion['enddatum'] < heute %}
-                BEENDET
-                    {% else %}
-                    AKTIV
-                    {% endif %}
+                    <span class="status-beendet">BEENDET </span>
+                {% endif %}
+                {% if aktion['enddatum'] > heute and aktion['startdatum'] < heute  %}
+                    <span class="status-aktiv">AKTIV </span>
+                {% endif %}
+                {% if aktion['enddatum'] > heute and aktion['startdatum'] > heute  %}
+                    <span class="status-inaktiv">INAKTIV </span>
+                {% endif %}
+
                 </td>
-                <td><button>Editieren</button></td>
+                {% if aktion['enddatum'] > heute %}
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEditieren/{{aktion['id']}}"><button>Editieren</button></a></td>
                 <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{aktion['id']}}"><button>Löschen</button></a></td>
+                {% else %}
+                <td>-</td>
+                <td>-</td>
+                {% endif %}
             </tr>
     {% endfor %}
 </table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--  {% for aktion in aktionen %}-->
-<!--  <ul>-->
-<!--    <li>-->
-<!--      <h3>Aktion {{ aktion['id'] }} </h3>-->
-<!--      <p>Id: {{ aktion['id'] }}</p>-->
-<!--      <p>Typ:-->
-<!--      {% if aktion['ist_strecken_rabatt'] %}-->
-<!--      Streckenaktion-->
-<!--        {% else %}-->
-<!--        Allgemeine Aktion-->
-<!--        {% endif %}-->
-<!--      </p>-->
-<!--      <p>Rabatt: {{ aktion['rabatt'] }} </p>-->
-<!--      <p>Startdatum: {{ aktion['startdatum'] }}<p/>-->
-<!--      <p>Enddatum: {{ aktion['enddatum'] }}</p>-->
-<!--&lt;!&ndash;<a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/1" rel="nofollow">Delete</a>&ndash;&gt;-->
-<!--<a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{aktion['id']}}"><button>Delete</button></a>-->
-
-<!--            <button>Editieren</button>-->
-
-<!--    </li>-->
-<!--  </ul>-->
-<!--  {% endfor %}-->
+</div>
 </div> 
 
   </html>

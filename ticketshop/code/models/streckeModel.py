@@ -25,7 +25,17 @@ class StreckeModel(db.Model):
 # Strecken von Thomas holen und in Liste speichern
 # vorerst DummyDaten
         strecken = DummyStrecken.getDummyStrecken()
-        filteredStrecken = filter(lambda x: x >= (x['von'] == von and x['nach'] == nach) or (x['von'] == nach and x['nach'] == von), strecken)
-        if filteredStrecken:
+        filteredStrecken = \
+            list(filter(lambda x: (x['von'] == von and x['nach'] == nach) or (x['von'] == nach and x['nach'] == von), strecken))
+        if len(filteredStrecken) <= 0:
             return None
         return filteredStrecken[0]
+
+    @classmethod
+    def getStreckenDictionary(cls):
+        alleStrecken = DummyStrecken.getDummyStrecken()
+        dictionary = {}
+        for strecke in alleStrecken:
+            dictionary[strecke['id']] = strecke
+
+        return dictionary

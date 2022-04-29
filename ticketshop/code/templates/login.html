@@ -5,8 +5,14 @@
     <link rel="stylesheet" href="../static/css/ticketshop.css">
   </head>
 <body class ="login">
+
+<img class = "train-pic" src="https://i.ibb.co/p3bBnXs/train.jpg" alt="train" border="0">
+
+<div class = "content">
+<div class = "login-container">
+<div class = "login-text">
 <h1>Einloggen</h1>
-<form method = "POST">
+<form method = "POST" >
     <label>Email
        <br>
     <input type ="email" name ="email" />
@@ -21,6 +27,16 @@
 
 </form>
 <p>Noch kein Account? <a href ="/registrierung"> Registrieren </a> </p>
-</body>
+</div>
+ </div>
+</div>
 
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                 <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+</body>
  </html>

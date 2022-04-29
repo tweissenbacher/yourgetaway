@@ -7,7 +7,7 @@
 <body>
 
 
-<!-- The sidebar -->
+<!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
   <a class="active" href="/tickets/neu">Ticket kaufen</a>
@@ -15,11 +15,11 @@
   <a href="/profil">Profil</a>
 </div>
 
-<div class="container" style="float:right">
-    {% if isAdmin %}
-    <span class = "admin-field">ADMIN</span>
-    <span>       </span>
-    {% endif %}
+
+<div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
     <a href="/ausloggen"><span >Ausloggen</span></a>
 </div>
 

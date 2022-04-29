@@ -7,7 +7,8 @@
 <body>
 
 
-<!-- The sidebar -->
+
+<!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
   <a class="active" href="/aktionen/neu">Aktion anlegen</a>
@@ -27,38 +28,67 @@
 
 <!-- Page content -->
 <div class="content">
-<h1>Aktion anlegen</h1>
-<form method = "POST">
-    <label>Rabatt (in Prozent)
-        <br>
-    <input type ="number" name ="rabatt" required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
-    oninput="this.setCustomValidity('')"/>
-    </label>
-    <p></p>
-    <label>Von
-        <br>
-    <input type ="text" name ="von" />
-    </label>
-     <p></p>
-    <label>Nach
-        <br>
-    <input type ="text" name ="nach" />
-    </label>
-     <p></p>
-    <label>Startdatum
-        <br>
-      <input type="datetime-local" id="startdatum"  name="startdatum" value="2022-04-23T00:01">
-    </label>
-      <p></p>
-    <label>Enddatum
-        <br>
-      <input type="datetime-local" id="enddatum" name="enddatum" value="2022-04-23T00:01">
-    </label>
-      <p></p>
-    <input class ="button-aktionAnlegen" type = "submit" value ="Aktion anlegen"/>
+    <div class ="aktionen-content">
+    <h1>Aktion anlegen</h1>
+    <form method = "POST">
+        <label>Rabatt (in Prozent)
+            <br>
+            <input type ="number" name ="rabatt" required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
+            oninput="this.setCustomValidity('')"/>
+        </label>
+        <p></p>
+        <label>Von
+            <br>
+            <input type ="text" name ="von" />
+        </label>
+        <p></p>
+        <label>Nach
+            <br>
+            <input type ="text" name ="nach" />
+        </label>
+        <p></p>
 
-</form>
-</div>
+
+
+        <label>Strecke <br>
+            <select name="alle-trecken" id="alle-strecken">
+                {% for strecke in strecken %}
+                    <option value="strecke['id]">{{strecke['von']}}--{{strecke['nach']}}</option>
+                {% endfor %}
+            </select>
+
+        </label>
+        <p></p>
+
+
+
+
+        <label>Startdatum
+            <br>
+            <input type="datetime-local" id="startdatum"  name="startdatum" value="{{heute}}">
+        </label>
+        <p></p>
+        <label>Enddatum
+            <br>
+            <input type="datetime-local" id="enddatum" name="enddatum" value="2022-04-23T00:01">
+        </label>
+        <p></p>
+        <input class ="button-aktionAnlegen" type = "submit" value ="Aktion anlegen"/>
+
+        </form>
+        </div>
+
+
+    {% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
+
+    </div>
 </body>
  </html>
 

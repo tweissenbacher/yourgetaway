@@ -1,11 +1,71 @@
+ body, html {
+  height: 100%;
+}
+
 body {
     background-color: #f1f1f1;
 }
 
-######body.login {
-  background-image: url('https://www.schengenvisainfo.com/news/wp-content/uploads/2022/01/Train.jpeg');
-  background-repeat: no-repeat;
+p.flash-messages {
+    text-align: center;
+    color: #100857
+
 }
+
+img.train-pic {
+  max-width:100%;
+  height:auto;
+  display:block;
+  margin: auto;
+
+}
+
+ /* Registrierung */
+
+div.register-text {
+    padding-top: 50px;
+    margin-left: 400px;
+}
+
+img.add-user-pic {
+    width: 100%;
+    height: auto;
+
+}
+
+div.register-pic-upload{
+   text-align: center;
+   padding-top: 50px;
+
+}
+ /* Ende Registrierung */
+
+
+div.aktionen-content {
+    padding-top: 50px;
+    margin-left: 200px;
+}
+
+p {
+    padding-bottom: 1px;
+}
+
+
+span.status-aktiv{
+    color: green;
+    font-weight: bold;
+}
+
+span.status-inaktiv{
+    color: #f3d02f;
+    font-weight: bold;
+}
+
+span.status-beendet{
+    color: red;
+    font-weight: bold;
+}
+
 
 h1 {
     color: #5f50c7;
@@ -19,6 +79,37 @@ h2 {
 label {
 
 }
+
+ /* Login */
+
+div.login-container {
+    position: absolute;
+    margin:auto;
+    margin-top: 10 px;
+    position: relative;
+    width:500px;
+    height:300px;
+    background-color:#ffffff;
+    border:1px solid grey;
+
+}
+
+div.login-text{
+    margin:auto;
+    position: relative;
+    padding-left: 50px;
+}
+
+/* Login Ende */
+
+/* Profil */
+
+div.content-profil {
+    padding-top: 50px;
+    margin-left: 400px;
+}
+
+/* Profil Ende */
 
 img.user-pic {
     background: transparent;
@@ -43,7 +134,7 @@ input button-aktionAnlegen{
 .sidebar {
   margin: 0;
   padding: 0;
-  width: 200px;
+  width: 300px;
   background-color: #5f50c7;
   position: fixed;
   height: 100%;
@@ -95,7 +186,6 @@ div.content {
     float: none;
   }
 }
-
 
 /* table */
 table {

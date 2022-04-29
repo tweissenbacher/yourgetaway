@@ -1,4 +1,5 @@
 import datetime
+from flask import flash
 
 from db import db
 
@@ -55,6 +56,10 @@ class AktionModel(db.Model):
 
     @classmethod
     def check_data(cls, rabatt, startdatum, enddatum):
-        if (rabatt > 0 and rabatt <= 100) and startdatum < enddatum and startdatum >= str(datetime.datetime.now()):
-            return True
-        return False
+        if rabatt < 0 or rabatt >= 100:
+            flash("Ungültige Eingabe: Der Rabatt muss zwischen 1 und 100 Prozent betragen.")
+            return False;
+        if startdatum > enddatum or startdatum < str(datetime.datetime.now()):
+            flash("Ungültige Eingaben: Das Startdatum muss in der Zukunft und VOR dem Enddatum liegen.")
+            return False;
+        return True;

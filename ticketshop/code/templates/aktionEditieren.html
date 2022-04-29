@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
 <body>
 
+
+<!-- sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  <a  href="/aktionen/neu">Aktion anlegen</a>
+  <a class="active" href="/alleAktionen">Aktionen</a>
+  <a href="/profil">Profil</a>
+</div>
+
+<div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
+    {% if isAdmin %}
+    <span class = "admin-field">ADMIN</span> <br>
+    {% endif %}
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+<!-- Page content -->
+<div class="content">
+    <div class ="aktionen-content">
+<h1>Aktion editieren</h1>
+<form method = "POST">
+    <label>Rabatt (in Prozent)
+        <br>
+    <input type ="number" name ="rabatt" value="{{ aktion.rabatt }}"required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
+    oninput="this.setCustomValidity('')"/>
+    </label>
+    <p></p>
+    <label>Von
+        <br>
+    <input type ="text" name ="von" value = "{{ strecke['von'] }}"/>
+    </label>
+     <p></p>
+    <label>Nach
+        <br>
+    <input type ="text" name ="nach" value = "{{ strecke['nach'] }}"/>
+    </label>
+     <p></p>
+    <label>Startdatum
+        <br>
+    {% if not aktion_aktiv %}
+      <input type="datetime-local" id="startdatum"  name="startdatum" value = "{{ aktion.startdatum }}" >
+    {% else %}
+      <input type="datetime-local" id="startdatum-fix"  name="startdatum-fix" value = "{{ aktion.startdatum }}" disabled>
+    {% endif %}
+    </label>
+      <p></p>
+
+    <label>Enddatum
+        <br>
+      <input type="datetime-local" id="enddatum" name="enddatum" value = "{{ aktion.enddatum}}" >
+    </label>
+      <p></p>
+    <input class ="button-aktionAnlegen" type = "submit" value ="Aktion editieren"/>
+
+</form>
+        </div>
+</div>
 </body>
-</html>
+ </html>
+
