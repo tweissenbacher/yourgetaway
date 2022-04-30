@@ -6,7 +6,7 @@ class AbschnittModel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     von = db.Column(db.String(100))
     nach = db.Column(db.String(100))
-    #zeitdauer =
+    #zeitdauer = db.Column(db.Integer) # in Minuten
     entfernung = db.Column(db.Float)
 
     def __init__(self, von, nach, entfernung):
