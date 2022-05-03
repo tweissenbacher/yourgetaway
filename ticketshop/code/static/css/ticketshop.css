@@ -1,3 +1,6 @@
+ @import 'base/base.css';
+
+
  body, html {
   height: 100%;
 }
@@ -19,6 +22,15 @@ img.train-pic {
   margin: auto;
 
 }
+
+ /* Ticketverwaltung */
+
+div.content-ticket {
+    padding-top: 50px;
+    margin-left: 400px;
+}
+
+ /* Ende Ticketverwaltung */
 
  /* Registrierung */
 

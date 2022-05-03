@@ -24,11 +24,6 @@ class AktionModel(db.Model):
         self.startdatum = startdatum
         self.enddatum = enddatum
 
-    # def __init__(self, rabatt, ist_strecken_rabatt, startdatum, enddatum):
-    #     self.rabatt = rabatt
-    #     self.ist_strecken_rabatt = ist_strecken_rabatt
-    #     self.startdatum = startdatum
-    #     self.enddatum = enddatum
 
     def json(self):
         if self.ist_strecken_rabatt:

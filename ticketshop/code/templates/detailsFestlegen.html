@@ -1,0 +1,49 @@
+  <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../../static/css/ticketshop.css">
+  </head>
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
+<!-- sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  <a class="active" href="/tickets/neu">Ticket kaufen</a>
+  <a href="/tickets">Tickets</a>
+  <a href="/profil">Profil</a>
+</div>
+
+
+<div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+<!-- Page content -->
+<div class="content-ticket">
+<h1>Details zu Ihrer Fahrt</h1>
+<h3>Gewählte Fahrt:</h3>
+    <p>Von: {{ticket.von}}</p>
+    <p>Nach: {{ticket.nach}}</p>
+    <p>Datum: {{ticket.datum}}</p>
+    <p>Preis: {{ticket.preis}}</p>
+    <p>Rabatt: {{ticket.rabatt}}</p>
+
+    <form method = "POST">
+
+    <input type = "submit" value ="Zahlungspflichtig kaufen"/>
+
+</form>
+
+</div>
+
+ </html>

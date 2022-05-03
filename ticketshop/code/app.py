@@ -46,6 +46,11 @@ api.add_resource(AktionDelete, '/rest/aktion/entfernen/<int:_id>')
 
 #Ticketmanagement-Urls
 app.add_url_rule('/tickets/neu', view_func=ticketmanagement.ticket_anlegen, methods =["GET", "POST"])
+# app.add_url_rule('/tickets/neu/fahrt', view_func=ticketmanagement.fahrt_waehlen, methods =["GET", "POST"])
+app.add_url_rule('/tickets/details/<int:fahrtdurchfuehrung_id>', view_func=ticketmanagement.details_festlegen, methods =["GET", "POST"])
+app.add_url_rule('/tickets/fahrtSuchen', view_func=ticketmanagement.fahrt_suchen, methods =["GET", "POST"])
+app.add_url_rule('/tickets', view_func=ticketmanagement.alle_tickets, methods =["GET", "POST"])
+
 
 #Aktionsmanagement-Urls
 app.add_url_rule('/aktionen/neu', view_func=aktionsmanagement.aktionAnlegen, methods =["GET", "POST"])

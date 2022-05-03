@@ -1,0 +1,68 @@
+  <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
+
+<!-- sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  <a href="/tickets/neu">Ticket kaufen</a>
+  <a class="active" href="/tickets">Tickets</a>
+  <a href="/profil">Profil</a>
+</div>
+
+  <!-- user-info -->
+ <div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
+    {% if isAdmin %}
+    <span class = "admin-field">ADMIN</span> <br>
+    {% endif %}
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+
+<!-- Page content -->
+<div class="content">
+      <div class ="aktionen-content">
+<h1>Ihre Tickets</h1>
+
+
+  <table>
+    <tr>
+        <td>ID</td>
+        <td>Von</td>
+        <td>Nach</td>
+        <td>Datum</td>
+        <td>Preis</td>
+        <td>Status</td>
+        <td>Editieren</td>
+        <td>Stornieren</td>
+    </tr>
+      {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket['id']}}</td>
+                <td>{{ ticket['von'] }}</td>
+                <td>{{ ticket['nach'] }}</td>
+                <td>{{ ticket['datum'] }}</td>
+                <td>{{ ticket['preis'] }}</td>
+                <td> - </td>
+                <td><a data-confirm="Are you sure?" data-method="delete"><button>Editieren</button></a></td>
+                <td><a data-confirm="Are you sure?" data-method="delete"><button>Stornieren</button></a></td>
+            </tr>
+    {% endfor %}
+</table>
+</div>
+</div>
+  </html>

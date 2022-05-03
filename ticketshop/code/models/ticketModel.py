@@ -25,10 +25,9 @@ class TicketModel(db.Model):
 
     fahrtdurchfuehrung_id = db.Column(db.Integer)
 
-    # Warnungen -> in Hilfstabelle ausgegliedert
+    # Warnungen -> in Hilfstabelle ausgegliedert -> werden über ticket_id den Tickets zugeordnet
 
-    def __init__(self, id, von, nach, preis, datum, rabatt, sitzplatz_reserviert, user_id, fahrtdurchfuehrung_id):
-        self.id = id
+    def __init__(self, von, nach, preis, datum, rabatt, sitzplatz_reserviert, user_id, fahrtdurchfuehrung_id):
         self.von = von
         self.nach = nach
         self.preis = preis
@@ -77,6 +76,11 @@ class TicketModel(db.Model):
     @classmethod
     def find_all(cls):
         return cls.query.all();
+
+    @classmethod
+    def find_by_user(cls, email):
+        user_id = UserModel.find_by_email(email).id
+        return cls.query.filter_by(user_id=user_id)
 
     def ticket_aktiv (self):
         heute = str(datetime.datetime.now())

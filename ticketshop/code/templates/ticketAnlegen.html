@@ -11,7 +11,7 @@
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
   <a class="active" href="/tickets/neu">Ticket kaufen</a>
-  <a href="/tickets/neu">Tickets</a>
+  <a href="/tickets">Tickets</a>
   <a href="/profil">Profil</a>
 </div>
 
@@ -24,7 +24,7 @@
 </div>
 
 <!-- Page content -->
-<div class="content">
+<div class="content-ticket">
 <h1>Ticket kaufen</h1>
 <form method = "POST">
     <label>Von
@@ -37,14 +37,9 @@
     <input type ="text" name ="nach" />
     </label>
      <p></p>
-    <label>Startdatum
+    <label>Datum
         <br>
-      <input type="datetime-local" id="startdatum"  name="startdatum" value="2022-04-23T00:01">
-    </label>
-      <p></p>
-    <label>Ankunft
-        <br>
-      <input type="datetime-local" id="ankunft" name="ankunft" value="2022-04-23T00:01">
+      <input type="datetime-local" id="datum"  name="datum" value="2022-04-23T00:01">
     </label>
       <p></p>
     <input class ="button-ticketAnlegen" type = "submit" value ="Weiter"/>

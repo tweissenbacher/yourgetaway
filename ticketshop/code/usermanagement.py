@@ -8,6 +8,7 @@ from models.userModel import UserModel
 
 
 def login():
+    session.clear()
     if request.method == "POST":
         email =request.form.get("email")
         password= request.form.get("password")
