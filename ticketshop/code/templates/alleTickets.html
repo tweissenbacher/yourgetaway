@@ -41,7 +41,8 @@
 
   <table>
     <tr>
-        <td>ID</td>
+        <td>Ticket-ID</td>
+         <td>Zug</td>
         <td>Von</td>
         <td>Nach</td>
         <td>Datum</td>
@@ -52,12 +53,17 @@
     </tr>
       {% for ticket in tickets %}
             <tr>
-                <td>{{ ticket['id']}}</td>
+                <td>{{ ticket.id}}</td>
+                <td> - </td>
                 <td>{{ ticket['von'] }}</td>
                 <td>{{ ticket['nach'] }}</td>
                 <td>{{ ticket['datum'] }}</td>
                 <td>{{ ticket['preis'] }}</td>
-                <td> - </td>
+                {% if ticket.datum < heute %}
+                <td> <span class ="status-inaktiv">BEENDET</span> </td>
+                {% else %}
+                <td> <span class ="status-aktiv">AKTIV</span></td>
+                {% endif %}
                 <td><a data-confirm="Are you sure?" data-method="delete"><button>Editieren</button></a></td>
                 <td><a data-confirm="Are you sure?" data-method="delete"><button>Stornieren</button></a></td>
             </tr>

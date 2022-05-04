@@ -1,6 +1,6 @@
 from db import db
 
-from dummyDatenFactory import DummyStrecken
+from dummyDatenStrecken import DummyStrecken
 
 
 class StreckeModel(db.Model):

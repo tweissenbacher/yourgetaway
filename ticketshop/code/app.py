@@ -1,18 +1,15 @@
-import datetime
 
 from flask import Flask, session, render_template, request, redirect, flash
 from flask_restful import Api
 from flask_jwt import JWT
+from sqlalchemy import event
 
-from models.aktionModel import AktionModel
-from models.streckeModel import StreckeModel
 from models.adminModel import AdminModel
 from resources.aktionResource import Aktion, Aktionsverwaltung, Aktionen, AktionDelete
 from db import db
 from resources.userResource import UserRegister, User
 from security import authenticate
-from models.userModel import UserModel
-from dummyDatenFactory import DummyStrecken
+
 import ticketmanagement
 import aktionsmanagement
 import usermanagement
@@ -23,16 +20,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'valentina'
 api = Api(app)
-
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    if not AdminModel.find_admin('valentinahummenberger@gmx.at'):
-        admin = AdminModel('valentinahummenberger@gmx.at')
-        admin.save_to_db()
-    session.clear()
-
 
 #jwt = JWT(app, authenticate, identity)
 
@@ -46,7 +33,6 @@ api.add_resource(AktionDelete, '/rest/aktion/entfernen/<int:_id>')
 
 #Ticketmanagement-Urls
 app.add_url_rule('/tickets/neu', view_func=ticketmanagement.ticket_anlegen, methods =["GET", "POST"])
-# app.add_url_rule('/tickets/neu/fahrt', view_func=ticketmanagement.fahrt_waehlen, methods =["GET", "POST"])
 app.add_url_rule('/tickets/details/<int:fahrtdurchfuehrung_id>', view_func=ticketmanagement.details_festlegen, methods =["GET", "POST"])
 app.add_url_rule('/tickets/fahrtSuchen', view_func=ticketmanagement.fahrt_suchen, methods =["GET", "POST"])
 app.add_url_rule('/tickets', view_func=ticketmanagement.alle_tickets, methods =["GET", "POST"])
@@ -65,11 +51,16 @@ app.add_url_rule('/profil', view_func=usermanagement.profilEditieren, methods =[
 app.add_url_rule('/ausloggen', view_func=usermanagement.ausloggen)
 
 
-@app.route("/falscheEingabe")
-def falscheEingabe():
-    return render_template("falscheEingabe.html", email=session.get("email"))
+@app.before_first_request
+def create_tables():
+    db.create_all()
+    if not AdminModel.find_admin('valentinahummenberger@gmx.at'):
+        admin = AdminModel('valentinahummenberger@gmx.at')
+        admin.save_to_db()
+    session.clear()
 
 if __name__ == '__main__':
     db.init_app(app)
     app.run(port=5000, debug=True,  use_reloader=True)
+
 

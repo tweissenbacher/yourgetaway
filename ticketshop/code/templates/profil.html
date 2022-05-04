@@ -8,8 +8,13 @@
 <!-- The sidebar -->
 <div class="sidebar">
   <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  {% if isAdmin %}
   <a href="/aktionen/neu">Aktion anlegen</a>
   <a href="/alleAktionen">Aktionen</a>
+  {% else %}
+  <a href="/tickets/neu">Aktion anlegen</a>
+  <a href="/tickets">Aktionen</a>
+  {% endif %}
   <a class="active" href="/profil">Profil</a>
 </div>
 

@@ -35,8 +35,9 @@
     <p>Von: {{ticket.von}}</p>
     <p>Nach: {{ticket.nach}}</p>
     <p>Datum: {{ticket.datum}}</p>
-    <p>Preis: {{ticket.preis}}</p>
-    <p>Rabatt: {{ticket.rabatt}}</p>
+    <p>Preis: {{ticket.preis}} Euro</p>
+    <p>Rabatt: {{ticket.rabatt}} %</p>
+    <p> Preis gesamt: {{ticket.preis * (100 -ticket.rabatt) / 100}} Euro</p>
 
     <form method = "POST">
 

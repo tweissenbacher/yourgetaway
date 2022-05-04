@@ -32,13 +32,21 @@
 <div class="content-ticket">
 <h1>Fahrtdurchführung wählen</h1>
 <div class ="fahrtdurchfuehrungen">
-<ul>
-     {% for f in fahrtdurchfuehrungen %}
-    <li>Id: {{f['id']}} Von: {{f['fahrtstrecke']['von']}} Nach: {{f['fahrtstrecke']['nach']}} Datum: {{f['datum']}}
-      <a data-confirm="Are you sure?" data-method="delete" href="/tickets/details/{{f['id']}}"><button>Auswählen</button></a>
-    </li>
-    {% endfor %}
-</ul>
+
+
+ <table>
+    {% for f in fahrtdurchfuehrungen %}
+    <tr>
+
+
+        <td>Id: {{f['id']}} </td>
+        <td>Von: {{f['fahrtstrecke']['von']}} Nach: {{f['fahrtstrecke']['nach']}}</td>
+        <td>Datum: {{f['datum']}}</td>
+        <td><a data-confirm="Are you sure?" data-method="delete" href="/tickets/details/{{f['id']}}"><button>Auswählen</button></a></td>
+
+    </tr>
+     {% endfor %}
+</table>
 
 </div>
     <form method = "POST">

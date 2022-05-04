@@ -1,5 +1,5 @@
 from dummyDatenFahrtstrecken import DummyFahrtstrecken
-from dummyDatenFactory import DummyAbschnitte
+from dummyDatenAbschnitte import DummyAbschnitte
 
 
 class DummyFahrtdurchfuehrungen:
@@ -57,32 +57,9 @@ class DummyFahrtdurchfuehrungen:
 
     @classmethod
     def getDummyFahrtdurchfuehrungById(cls, _id):
-        abschnitte = DummyAbschnitte.getDummyAbschnitte()
-        if _id == 1:
-            return             \
-            {    "id": 1,
-                "datum": "2022-05-12 10:00",
-                "fahrtstrecke":
-                     {
-                        "id": 1,
-                        "strecken_id": 4,
-                        "von": "Wels",
-                        "nach": "Wien Hbf",
-                        "abschnitte": abschnitte
-                    }
+        fahrtdurchfuehrungen = cls.getDummyFahrtdurchfuehrungen()
+        for f in fahrtdurchfuehrungen:
+            if f['id'] == _id:
+                return f
+        return None
 
-            }
-
-        else:
-            return
-        {"id": 2,
-         "datum": "2022-05-12 11:00",
-         "fahrtstrecke":
-             {
-                 "id": 2,
-                 "strecken_id": 4,
-                 "von": "Wels",
-                 "nach": "Linz",
-                 "abschnitte": abschnitte[:1]
-             }
-         }

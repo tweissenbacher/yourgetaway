@@ -1,7 +1,7 @@
  @import 'base/base.css';
 
 
- body, html {
+body, html {
   height: 100%;
 }
 
@@ -94,6 +94,10 @@ label {
 
  /* Login */
 
+ div.content-login {
+  width = 100%;
+}
+
 div.login-container {
     position: absolute;
     margin:auto;
@@ -103,13 +107,18 @@ div.login-container {
     height:300px;
     background-color:#ffffff;
     border:1px solid grey;
-
 }
 
 div.login-text{
     margin:auto;
     position: relative;
     padding-left: 50px;
+}
+
+div.flash-login{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 /* Login Ende */

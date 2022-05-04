@@ -7,7 +7,7 @@ from flask_jwt import JWT
 from models.aktionModel import AktionModel
 from models.streckeModel import StreckeModel
 from models.userModel import UserModel
-from dummyDatenFactory import DummyStrecken
+from dummyDatenStrecken import DummyStrecken
 
 
 
@@ -30,9 +30,7 @@ def aktionAnlegen():
         von =request.form.get("von")
         nach= request.form.get("nach")
         startdatum = request.form.get("startdatum").replace("T", " ")
-        #startdatum = datetime.datetime.strptime(startdatum, '%Y-%m-%d %H:%M')
         enddatum = request.form.get("enddatum").replace("T", " ")
-        #enddatum = datetime.datetime.strptime(enddatum, '%Y-%m-%d %H:%M')
         if AktionModel.check_data(rabatt, startdatum, enddatum) is False:
             return render_template("aktionAnlegen.html", email=session.get("email"), isAdmin=isAdmin, heute=heute, strecken = strecken)
         if(von == "" and nach != "") or (von != "" and nach == ""):
@@ -74,7 +72,6 @@ def alleAktionen():
     return render_template("alleAktionen.html", aktionen = aktionen, heute = heute, email=session.get("email"),
                            streckenDictionary = streckenDictionary, isAdmin = isAdmin)
 
-
 def aktionEditieren(_id):
     if session.get("email") is None:
         return redirect ("/")
@@ -98,8 +95,7 @@ def aktionEditieren(_id):
         nach = request.form.get("nach")
         startdatum = request.form.get("startdatum").replace("T", " ")
         enddatum = request.form.get("enddatum").replace("T", " ")
-        if AktionModel.check_data(rabatt, startdatum, enddatum) is False:
-            flash("Ungültige Eingaben. Das Startdatum muss in der Zukunft und VOR dem Enddatum liegen. Der Rabatt muss zwischen 1 und 100 Prozent betragen.")
+        if not AktionModel.check_rabatt(rabatt):
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
                                strecke=strecke, aktion_aktiv=aktion_aktiv)
         if(von == "" and nach != "") or (von != "" and nach == ""):
@@ -115,6 +111,8 @@ def aktionEditieren(_id):
         aktion.rabatt = rabatt
         if strecke_neu:
             aktion.strecken_id = strecke_neu['id']
+        else:
+            aktion.strecken_id = 0
         if not aktion_aktiv and startdatum < heute:
             flash("Ungülige Eingabe. Das Startdatum muss in der Zukunft liegen.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
@@ -130,6 +128,4 @@ def aktionEditieren(_id):
         flash("Aktion erfolgreich editiert!")
         return redirect("/alleAktionen")
 
-    # return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-    #                        strecke=strecke)
     return render_template("aktionEditieren.html", email=session.get("email"), isAdmin = isAdmin, aktion=aktion, strecke = strecke, aktion_aktiv = aktion_aktiv)

@@ -1,4 +1,4 @@
-from dummyDatenFactory import DummyAbschnitte
+from dummyDatenAbschnitte import DummyAbschnitte
 
 
 class DummyFahrtstrecken:
@@ -26,8 +26,25 @@ class DummyFahrtstrecken:
                 "strecken_id": 4,
                 "von": "Wels",
                 "nach": "Linz",
-                "abschnitte": abschnitte[:1]
+                "abschnitte":
+                    [
+                        {
+                            "id": 1,
+                            "von": "Wels",
+                            "nach": "Linz",
+                            "zeitdauer": 20,
+                            "kosten": 5
+                        }
+                    ]
             }
         );
 
         return fahrtstrecken
+
+    @classmethod
+    def getDummyFahrtstreckeById(cls, _id):
+        fahrtstrecken = cls.getDummyFahrtstrecken()
+        for fahrtstrecke in fahrtstrecken:
+            if fahrtstrecke['id'] == _id:
+                return fahrtstrecke
+        return None
