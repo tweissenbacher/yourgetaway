@@ -1,5 +1,5 @@
 from db import db
-from dummyDatenFactory import DummyAbschnitte
+from dummyDatenAbschnitte import DummyAbschnitte
 
 class AbschnittModel(db.Model):
     __tablename__ = 'abschnitte'
@@ -16,9 +16,14 @@ class AbschnittModel(db.Model):
         self.zeitdauer = zeitdauer
         self.kosten = kosten
 
+    def json(self):
+        return { "id": self.id, "von": self.von, "nach": self.nach, "zeidauer": self.zeitdauer, "kosten": self.kosten}
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+
 
     @classmethod
     def findAbschnittVonNach(cls, von, nach):
@@ -30,3 +35,11 @@ class AbschnittModel(db.Model):
         if len(filteredAbschnitte) <= 0:
             return None
         return filteredAbschnitte[0]
+
+    @classmethod
+    def getAbschnitteDictionary(cls):
+        alleAbschnitte = DummyAbschnitte.getDummyAbschnitte()
+        dictionary = {}
+        for abschnitt in alleAbschnitte:
+            dictionary[abschnitt['id']] = abschnitt
+        return dictionary

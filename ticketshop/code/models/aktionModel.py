@@ -3,6 +3,11 @@ from flask import flash
 
 from db import db
 
+from dummyDatenAbschnitte import DummyAbschnitte
+
+from dummyDatenStrecken import DummyStrecken
+
+
 class AktionModel(db.Model):
     __tablename__ = 'aktionen'
 
@@ -20,17 +25,19 @@ class AktionModel(db.Model):
     # abchnitt_id = db.Column(db.Integer, db.ForeignKey('abschnitte.id'))
     # abschnitt = db.relationship('AbschnittModel')
 
-    def __init__(self, rabatt, ist_strecken_rabatt, strecken_id, startdatum, enddatum):
+    def __init__(self, rabatt, strecken_id, abschnitt_id, startdatum, enddatum):
         self.rabatt = rabatt
-        self.ist_strecken_rabatt = ist_strecken_rabatt
         self.strecken_id = strecken_id
+        self.abschnitt_id =abschnitt_id
         self.startdatum = startdatum
         self.enddatum = enddatum
 
 
     def json(self):
-        return {'id': self.id, 'rabatt': self.rabatt, 'ist_strecken_rabatt': self.ist_strecken_rabatt,
-                    'strecken_id': self.strecken_id, 'startdatum': self.startdatum, 'enddatum': self.enddatum}
+        abschnitt = DummyAbschnitte.getDummyAbschnittById(self.abschnitt_id)
+        strecke = DummyStrecken.getDummyStreckeById(self.strecken_id)
+        return {'id': self.id, 'rabatt': self.rabatt, 'strecke': strecke, 'abschnitt': abschnitt,
+                'startdatum': self.startdatum, 'enddatum': self.enddatum}
 
     def save_to_db(self):
         db.session.add(self)
@@ -50,7 +57,7 @@ class AktionModel(db.Model):
 
     @classmethod # retourniert allgemeine Aktionen und solche, die sich auf die angegebene Strecke beziehen
     def find_by_strecke(cls, strecken_id):
-        return cls.query.filter_by(strecken_id = strecken_id or strecken_id is None)
+        return cls.query.filter_by(strecken_id = strecken_id or not strecken_id)
 
     @classmethod
     def check_data(cls, rabatt, startdatum, enddatum):

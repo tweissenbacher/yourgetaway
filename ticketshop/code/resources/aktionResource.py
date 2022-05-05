@@ -6,7 +6,6 @@ from models.aktionModel import AktionModel
 class Aktion(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('rabatt', type =float, required = True, help="Es muss ein Rabatt eingegeben werden.")
-    parser.add_argument('ist_strecken_rabatt', type=bool, required=True, help="Es muss angegeben werden, ob es sich um einen Streckenrabatt handelt.")
     parser.add_argument('strecken_id', type=int, required=False)
 
 
@@ -49,15 +48,13 @@ class Aktionsverwaltung(Resource):
     parser.add_argument('rabatt', type =float, required = True, help="Es muss ein Rabatt eingegeben werden.")
     parser.add_argument('ist_strecken_rabatt', type=bool, required=True, help="Es muss angegeben werden, ob es sich um einen Streckenrabatt handelt.")
     parser.add_argument('strecken_id', type=int, required=True)
+    parser.add_argument('abschnitt_id', type=int, required=True)
     parser.add_argument('startdatum', type=str, required=True)
     parser.add_argument('enddatum', type=str, required=True)
 
     def post(self):
         data = Aktionsverwaltung.parser.parse_args()
-        if data['strecken_id'] <= 0:
-            aktion = AktionModel(data['rabatt'], False, data['strecken_id'], data['startdatum'], data['enddatum'])
-        else:
-            aktion = AktionModel(data['rabatt'], True, data['strecken_id'], data['startdatum'], data['enddatum'])
+        aktion = AktionModel(data['rabatt'], data['strecken_id'], data['abschnitt_id'], data['startdatum'], data['enddatum'])
 
         try:
             aktion.save_to_db()

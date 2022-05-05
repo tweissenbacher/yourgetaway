@@ -46,6 +46,7 @@
         <td>Startdatum</td>
         <td>Enddatum</td>
         <td>Strecke</td>
+        <td>Abschnitt</td>
         <td>Status</td>
         <td>Editieren</td>
         <td>Löschen</td>
@@ -59,6 +60,13 @@
                 {% if aktion['strecken_id'] > 0 %}
                     <td>{{ streckenDictionary[aktion['strecken_id']]['von'] }} ---
                     {{ streckenDictionary[aktion['strecken_id']]['nach'] }}
+                    </td>
+                {% else %}
+                <td> - </td>
+                {% endif %}
+                {% if aktion['abschnitt_id'] > 0 %}
+                    <td>{{ abschnittDictionary[aktion['abschnitt_id']]['von']}} ---
+                    {{ abschnittDictionary[aktion['abschnitt_id']]['nach']}}
                     </td>
                 {% else %}
                 <td> - </td>

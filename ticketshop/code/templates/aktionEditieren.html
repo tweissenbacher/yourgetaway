@@ -38,12 +38,21 @@
     <p></p>
     <label>Von
         <br>
+        {% if strecke %}
     <input type ="text" name ="von" value = "{{ strecke['von'] }}"/>
+        {% else %}
+        <input type ="text" name ="von" value = "{{ abschnitt['von'] }}"/>
+        {% endif %}
     </label>
      <p></p>
+
     <label>Nach
         <br>
+    {% if strecke %}
     <input type ="text" name ="nach" value = "{{ strecke['nach'] }}"/>
+                {% else %}
+        <input type ="text" name ="nach" value = "{{ abschnitt['nach'] }}"/>
+        {% endif %}
     </label>
      <p></p>
     <label>Startdatum
@@ -66,7 +75,7 @@
 </form>
         </div>
 
-        {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
          {% if messages %}
                {% for message in messages %}
                     <p class ="flash-messages">{{ message }}</p>

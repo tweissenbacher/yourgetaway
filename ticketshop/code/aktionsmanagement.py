@@ -8,7 +8,7 @@ from models.aktionModel import AktionModel
 from models.streckeModel import StreckeModel
 from models.userModel import UserModel
 from dummyDatenStrecken import DummyStrecken
-
+from models.abschnittModel import AbschnittModel
 
 
 def aktionAnlegen():
@@ -39,16 +39,20 @@ def aktionAnlegen():
 
         # Allgemeine Aktion
         if (von == "" and nach == ""):
-            aktion = AktionModel(rabatt, False, 0, startdatum, enddatum)
+            aktion = AktionModel(rabatt, 0, 0, startdatum, enddatum)
             aktion.save_to_db()
             return alleAktionen()
-        # Streckenaktion
+        # Streckenaktion bzw. Abschnittsaktion
         strecke = StreckeModel.findStreckeVonBis(von, nach)
-        if strecke:
-            aktion = AktionModel(rabatt, True, strecke['id'], startdatum, enddatum)
+        abschnitt = AbschnittModel.findAbschnittVonNach(von, nach)
+        if strecke or abschnitt:
+            if strecke:
+                aktion = AktionModel(rabatt, strecke['id'], 0, startdatum, enddatum)
+            else:
+                aktion = AktionModel(rabatt, 0, abschnitt['id'], startdatum, enddatum)
             aktion.save_to_db()
             return alleAktionen()
-        flash("Ungülige Eingabe. Die angegeben Strecke existiert nicht.")
+        flash("Ungülige Eingabe. Es existiert keine Strecke bzw. kein Abschnitt für die gegebenen Parameter.")
     return render_template("aktionAnlegen.html", email=session.get("email"), isAdmin = isAdmin, heute = heute, strecken = strecken)
 
 def aktionEntfernen(_id):
@@ -66,11 +70,10 @@ def alleAktionen():
         return redirect("/")
     aktionen = AktionModel.find_all()
     streckenDictionary = StreckeModel.getStreckenDictionary()
-    heute = str(datetime.datetime.now())
-    heute = heute.rsplit(":", 1)
-    heute = heute[0]
+    abschnittDictionary = AbschnittModel.getAbschnitteDictionary()
+    heute = (str(datetime.datetime.now())).rsplit(":", 1)[0]
     return render_template("alleAktionen.html", aktionen = aktionen, heute = heute, email=session.get("email"),
-                           streckenDictionary = streckenDictionary, isAdmin = isAdmin)
+                           streckenDictionary = streckenDictionary, abschnittDictionary =abschnittDictionary, isAdmin = isAdmin)
 
 def aktionEditieren(_id):
     if session.get("email") is None:
@@ -83,10 +86,19 @@ def aktionEditieren(_id):
     aktion = AktionModel.find_by_id(_id)
     if aktion is None:
         return redirect("/falscheEingabe")
-    strecke = StreckeModel.getStreckenDictionary()[aktion.strecken_id]
-    heute = str(datetime.datetime.now())
-    heute = heute.rsplit(":", 1)
-    heute = heute[0]
+
+    #Abschnitt und Strecke holen
+    if aktion.strecken_id > 0:
+        strecke = StreckeModel.getStreckenDictionary()[aktion.strecken_id]
+    else:
+        strecke = None
+    if aktion.abschnitt_id > 0:
+        abschnitt = AbschnittModel.getAbschnitteDictionary()[aktion.abschnitt_id]
+    else:
+        abschnitt = None
+
+
+    heute = (str(datetime.datetime.now())).rsplit(":", 1)[0]
     aktion_aktiv = aktion.startdatum < heute
 
     if request.method == "POST":
@@ -97,30 +109,35 @@ def aktionEditieren(_id):
         enddatum = request.form.get("enddatum").replace("T", " ")
         if not AktionModel.check_rabatt(rabatt):
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-                               strecke=strecke, aktion_aktiv=aktion_aktiv)
+                                   strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         if(von == "" and nach != "") or (von != "" and nach == ""):
             flash("Ungültige Eingabe. Wenn ein Streckenrabatt angelegt werden soll, muss 'von' und 'nach' befüllt werden.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-                               strecke=strecke, aktion_aktiv=aktion_aktiv)
+                                   strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         strecke_neu = StreckeModel.findStreckeVonBis(von, nach)
+        abschnitt_neu = AbschnittModel.findAbschnittVonNach(von, nach)
         if von != "" and nach != "" and not strecke_neu:
             flash("Ungülige Eingabe. Die angegeben Strecke existiert nicht.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-                               strecke=strecke, aktion_aktiv=aktion_aktiv)
+                                   strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         aktion.ist_strecken_rabatt = not (von == "" and nach == "")
         aktion.rabatt = rabatt
         if strecke_neu:
             aktion.strecken_id = strecke_neu['id']
         else:
             aktion.strecken_id = 0
+        if abschnitt_neu and not strecke_neu:
+            aktion.abschnitt_id = abschnitt_neu['id']
+        else:
+            aktion.abschnitt_id = 0
         if not aktion_aktiv and startdatum < heute:
             flash("Ungülige Eingabe. Das Startdatum muss in der Zukunft liegen.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-                               strecke=strecke, aktion_aktiv=aktion_aktiv)
+                                   strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         if startdatum > enddatum:
             flash("Das Startdatum darf nicht nach dem Enddatum sein.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
-                               strecke=strecke, aktion_aktiv=aktion_aktiv)
+                                   strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         aktion.startdatum = startdatum
         aktion.enddatum = enddatum
 
@@ -128,4 +145,4 @@ def aktionEditieren(_id):
         flash("Aktion erfolgreich editiert!")
         return redirect("/alleAktionen")
 
-    return render_template("aktionEditieren.html", email=session.get("email"), isAdmin = isAdmin, aktion=aktion, strecke = strecke, aktion_aktiv = aktion_aktiv)
+    return render_template("aktionEditieren.html", email=session.get("email"), isAdmin = isAdmin, aktion=aktion, strecke = strecke, abschnitt = abschnitt, aktion_aktiv = aktion_aktiv)
