@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Home{% endblock %}
+{% block content %}
+<h1 class="py-1">Fahrplan-Informationssystem</h1>
+{% if not current_user.is_authenticated %}
+<p>Bitte einloggen um fortzufahren.</p>
+{% endif %}
+<h2 class="py-1">Fahrtstrecken</h2>
+<ul class="list-group list-group-flush" id="notes">
+    {% for line in lines %}
+    <li class="list-group-item">
+        {{ line.description }} - {{ line.note }} - {{ line.price/100 }}0€
+        {% for section in line.sections %}
+        <p>--- section {{ section.id }} -- from {{ section.start }} -- to {{ section.end }} -- {{ section.duration }} min</p>
+        {% endfor %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
