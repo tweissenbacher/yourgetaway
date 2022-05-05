@@ -73,7 +73,7 @@ class Aktionseditierung(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('rabatt', type=float, required=True, help="Es muss ein Rabatt eingegeben werden.")
     parser.add_argument('strecken_id', type=int, required=True)
-    # parser.add_argument('abschnitt_id', type=int, required=True)
+    parser.add_argument('abschnitt_id', type=int, required=True)
     parser.add_argument('startdatum', type=str, required=True)
     parser.add_argument('enddatum', type=str, required=True)
 
