@@ -12,6 +12,12 @@ class DummyFahrtdurchfuehrungen:
 
         fahrtdurchfuehrungen.append(
             {    "id": 1,
+                 "zug":
+                     { "id": 1,
+                       "name": "IC2352",
+                       "passagieranzahl": 200
+
+                },
                 "datum": "2022-05-12 10:00",
                 "fahrtstrecke":
                      {
@@ -26,6 +32,12 @@ class DummyFahrtdurchfuehrungen:
 
         fahrtdurchfuehrungen.append(
             {"id": 2,
+             "zug":
+                 {"id": 2,
+                  "name": "REX1312",
+                  "passagieranzahl": 300
+
+                  },
              "datum": "2022-05-12 11:00",
              "fahrtstrecke":
                  {

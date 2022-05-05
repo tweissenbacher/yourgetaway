@@ -116,11 +116,11 @@ def aktionEditieren(_id):
                                    strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
         strecke_neu = StreckeModel.findStreckeVonBis(von, nach)
         abschnitt_neu = AbschnittModel.findAbschnittVonNach(von, nach)
-        if von != "" and nach != "" and not strecke_neu:
+        if von != "" and nach != "" and not strecke_neu and not abschnitt_neu:
             flash("Ungülige Eingabe. Die angegeben Strecke existiert nicht.")
             return render_template("aktionEditieren.html", email=session.get("email"), isAdmin=isAdmin, aktion=aktion,
                                    strecke=strecke, abschnitt=abschnitt, aktion_aktiv=aktion_aktiv)
-        aktion.ist_strecken_rabatt = not (von == "" and nach == "")
+
         aktion.rabatt = rabatt
         if strecke_neu:
             aktion.strecken_id = strecke_neu['id']

@@ -40,6 +40,7 @@
 
 
         <td>Id: {{f['id']}} </td>
+         <td>Zug: {{f['zug']['name']}} </td>
         <td>Von: {{f['fahrtstrecke']['von']}} Nach: {{f['fahrtstrecke']['nach']}}</td>
         <td>Datum: {{f['datum']}}</td>
         <td><a data-confirm="Are you sure?" data-method="delete" href="/tickets/details/{{f['id']}}"><button>Auswählen</button></a></td>

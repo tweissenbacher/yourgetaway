@@ -7,6 +7,8 @@ from models.ticketWarnungModel import TicketWarnungModel
 
 from models.userModel import UserModel
 
+from dummyDatenFahrtdurchfuehrungen import DummyFahrtdurchfuehrungen
+
 
 class TicketModel(db.Model):
     __tablename__ = 'tickets'
@@ -86,7 +88,8 @@ class TicketModel(db.Model):
         heute = str(datetime.datetime.now())
         return self.datum < heute
 
-
+    def get_fahrtdurchfuehrung(self):
+        return DummyFahrtdurchfuehrungen.getDummyFahrtdurchfuehrungById(self.fahrtdurchfuehrung_id)
 
 
 

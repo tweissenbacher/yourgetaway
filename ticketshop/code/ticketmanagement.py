@@ -111,7 +111,8 @@ def alle_tickets():
     heute = (str(datetime.datetime.now())).rsplit(":", 1)[0]
     tickets = TicketModel.find_by_user(session.get("email"))
 
-    return render_template("alleTickets.html", email=session.get("email"), ist_admin=ist_admin, tickets=tickets, heute = heute)
+    return render_template("alleTickets.html", email=session.get("email"), ist_admin=ist_admin, tickets=tickets,
+                           heute = heute, get_fahrtdurchfuehrung = get_fahrtdurchfuehrung_of_ticket)
 
 
 
@@ -163,3 +164,6 @@ def clear_ticket_session_data ():
     session['von'] = ''
     session['datum'] = ''
     session['fahrtdurchfuehrungen'] = ''
+
+def get_fahrtdurchfuehrung_of_ticket(ticket):
+    return TicketModel.get_fahrtdurchfuehrung(ticket)

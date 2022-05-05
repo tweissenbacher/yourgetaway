@@ -54,18 +54,20 @@
       {% for ticket in tickets %}
             <tr>
                 <td>{{ ticket.id}}</td>
-                <td> - </td>
+                <td>{{ get_fahrtdurchfuehrung(ticket)['zug']['name'] }}</td>
                 <td>{{ ticket['von'] }}</td>
                 <td>{{ ticket['nach'] }}</td>
                 <td>{{ ticket['datum'] }}</td>
                 <td>{{ ticket['preis'] }}</td>
                 {% if ticket.datum < heute %}
                 <td> <span class ="status-inaktiv">BEENDET</span> </td>
+                <td>-</td>
+                <td>-</td>
                 {% else %}
                 <td> <span class ="status-aktiv">AKTIV</span></td>
-                {% endif %}
                 <td><a data-confirm="Are you sure?" data-method="delete"><button>Editieren</button></a></td>
                 <td><a data-confirm="Are you sure?" data-method="delete"><button>Stornieren</button></a></td>
+                {% endif %}
             </tr>
     {% endfor %}
 </table>

@@ -5,7 +5,7 @@ from flask_jwt import JWT
 from sqlalchemy import event
 
 from models.adminModel import AdminModel
-from resources.aktionResource import Aktion, Aktionsverwaltung, Aktionen, AktionDelete
+from resources.aktionResource import Aktion, Aktionsverwaltung, Aktionen, AktionDelete, Aktionseditierung
 from db import db
 from resources.userResource import UserRegister, User
 from security import authenticate
@@ -26,6 +26,7 @@ api = Api(app)
 #Ressourcen
 api.add_resource(Aktion, '/rest/aktion/<int:_id>')
 api.add_resource(Aktionsverwaltung, '/rest/aktionserstellung')
+api.add_resource(Aktionseditierung, '/rest/aktionserstellung/<int:_id>')
 api.add_resource(UserRegister, '/rest/register')
 api.add_resource(User, '/rest/user/<string:email>')
 api.add_resource(Aktionen, '/rest/aktionen/')

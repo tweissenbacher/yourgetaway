@@ -46,7 +46,6 @@ class Aktionen(Resource):
 class Aktionsverwaltung(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('rabatt', type =float, required = True, help="Es muss ein Rabatt eingegeben werden.")
-    parser.add_argument('ist_strecken_rabatt', type=bool, required=True, help="Es muss angegeben werden, ob es sich um einen Streckenrabatt handelt.")
     parser.add_argument('strecken_id', type=int, required=True)
     parser.add_argument('abschnitt_id', type=int, required=True)
     parser.add_argument('startdatum', type=str, required=True)
@@ -56,27 +55,48 @@ class Aktionsverwaltung(Resource):
         data = Aktionsverwaltung.parser.parse_args()
         aktion = AktionModel(data['rabatt'], data['strecken_id'], data['abschnitt_id'], data['startdatum'], data['enddatum'])
 
+        if aktion.rabatt <= 0 or aktion.rabatt >= 100:
+            return {"message": "Der Rabatt muss größer als 0 und kleiner als 100 sein."}, 400
+        if aktion.strecken_id > 0 and aktion.abschnitt_id > 0:
+            return {"message": "Eine Aktion kann sich nicht auf eine Strecke und auf einen Abschnitt gleichzeitig beziehen."}, 400
+        if aktion.startdatum > aktion.enddatum:
+            return {"message": "Das Startdatum darf nicht nach dem Enddatum liegen."}, 400
+        # Check, ob Strecke bzw. Abschnitt existiert, ergänzen
+
         try:
             aktion.save_to_db()
             return aktion.json(), 201
         except:
             return {"message": "Es ist leider ein Fehler bei der Aktionserstellung aufgetreten."}, 500
 
+class Aktionseditierung(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('rabatt', type=float, required=True, help="Es muss ein Rabatt eingegeben werden.")
+    parser.add_argument('strecken_id', type=int, required=True)
+    # parser.add_argument('abschnitt_id', type=int, required=True)
+    parser.add_argument('startdatum', type=str, required=True)
+    parser.add_argument('enddatum', type=str, required=True)
 
-    # def put(self, _id):
-    #     data = Aktion.parser.parse_args()
-    #     aktion = AktionModel.find_by_id(_id)
-    #
-    #     if aktion:
-    #         aktion.rabatt = data['rabatt']
-    #         aktion.strecken_id = data ['strecken_id']
-    #         aktion.startdatum = data['startdatum']
-    #         aktion.enddatum = data['enddatum']
-    #         if data['strecken_id'] <= 0:
-    #             aktion.ist_strecken_rabatt = False
-    #         else:
-    #             aktion.ist_strecken_rabatt = True
-    #
-    #         aktion.save_to_db()
-    #         return aktion.json()
-    #     return {"message": "Es existiert keine Aktion mit dieser Id."}, 400
+    def put(self, _id):
+        data = Aktion.parser.parse_args()
+        aktion = AktionModel.find_by_id(_id)
+        if aktion:
+            aktion.rabatt = data['rabatt']
+            aktion.strecken_id = data['strecken_id']
+            aktion.abschnitt_id = data['abschnitt_id']
+            aktion.startdatum = data['startdatum']
+            aktion.enddatum = data['enddatum']
+            if aktion.rabatt <= 0 or aktion.rabatt >= 100:
+                return {"message": "Der Rabatt muss größer als 0 und kleiner als 100 sein."}, 400
+            if aktion.strecken_id > 0 and aktion.abschnitt_id > 0:
+                return {"message": "Eine Aktion kann sich nicht auf eine Strecke und auf einen Abschnitt gleichzeitig beziehen."}, 400
+            if aktion.startdatum > aktion.enddatum:
+                return {"message": "Das Startdatum darf nicht nach dem Enddatum liegen."}, 400
+            # Check, ob Strecke bzw. Abschnitt existiert, ergänzen
+
+            try:
+                aktion.save_to_db()
+                return aktion.json()
+            except:
+                return {"message": "Es ist leider ein Fehler bei der Aktionserstellung aufgetreten."}, 500
+        return {"message": "Es existiert keine Strecke mit dieser Id."}, 400
