@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Personal{% endblock %}
+{% block content %}
+<h1>Personal</h1>
+{% if user.admin == 1 %}
+<table class="table">
+    <thead>
+        <tr>
+            <!-- <th scope="col">&#x1F511;</th> -->
+            <th scope="col">&#x2666;</th>
+            <th scope="col">#</th>
+            <th scope="col">Vorname</th>
+            <th scope="col">Nachname</th>
+            <th scope="col">Email</th>
+            <th scope="col">Geburtsdatum</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            {% if u.admin == 1 %}
+            <!-- <td><span><i class="fa-solid fa-key"></i></span></td> -->
+            <td>&#x1F511;</td>
+            <!-- <td>&#x1F510;</td> -->
+            {% else %}
+            <td></td>
+            {% endif %}
+            <th scope="row"  data-id="{{ u.id }}">{{ u.id }}</th>
+            <td data-id="{{ u.id }}">{{ u.first_name }}</td>
+            <td data-id="{{ u.id }}">{{ u.last_name }}</td>
+            <td data-id="{{ u.id }}">{{ u.email }}</td>
+            <td data-id="{{ u.id }}">{{ u.birthday }}</td>
+            <td>
+                <a href="{{ u.id }}" id="btn-edit" class="btn btn-sm btn-outline-secondary" aria-label="Edit">
+                    <span aria-hidden="true">&#x1f589;</span>
+                </a>
+            </td>
+            <td>
+                <a href="{{ u.id }}/delete" id="btn-delete" class="btn btn-sm btn-outline-danger" aria-label="Delete">
+                    <span aria-hidden="true">&#x2A09;</span>
+                    <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="create" class="btn btn-outline-primary">Weiteren Personalaccount hinzufügen</a>
+{% else %}
+<p>
+    Keine Berechtigung
+</p>
+{% endif %}
+{% endblock %}
