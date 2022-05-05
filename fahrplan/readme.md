@@ -10,3 +10,16 @@ mkdir .venv
 pipenv shell
 flask run
 ```
+
+## demo user
+
+#### Admin
+Ferdinand.Gruenwies@yg.at -
+password
+
+Helene.Auer@yg.at -
+password
+
+#### Personal
+Heinz.Feiermeier@yg.at -
+password
