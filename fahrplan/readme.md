@@ -8,6 +8,7 @@ fahrplan app
 pip install pipenv
 mkdir .venv
 pipenv shell
+pipenv install
 flask run
 ```
 
