@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Sections{% endblock %}
+{% block content %}
+<dif class="container">
+    <h1 class="py-5">Sections</h1>
+    <u1 class="list-group list-group-flush" id="section-list">
+        {% for sec in all_sections %}
+            <li id="{{ sec.id }}" class="entry list-group-item">
+                <li>
+                    <span class="field-name":>SEC_ID:</span>
+                    <span class="field-value">{{ sec.id }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_start:</span>
+                    <span class="field-value">{{ sec.start }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_end:</span>
+                    <span class="field-value">{{ sec.end }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_track:</span>
+                    <span class="field-value">{{ sec.track }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_fee:</span>
+                    <span class="field-value">{{ sec.fee }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_time:</span>
+                    <span class="field-value">{{ sec.time }}</span>
+                </li>
+            </li>
+        {% endfor %}
+    </u1>
+</dif>
+{% endblock %}

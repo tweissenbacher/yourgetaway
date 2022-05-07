@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Trainstations{% endblock %}
+{% block content %}
+<dif>
+    <h1 class="py-5">Routes</h1>
+    <u1 class="list-group list-group-flush" id="route-list">
+        {% for rou in all_routes %}
+            <li id="{{ rou.id }}" class="entry list-group-item">
+                <li>
+                    <span class="field-name":>ROU_ID:</span>
+                    <span class="field-value">{{ rou.id }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>ROU_name:</span>
+                    <span class="field-value">{{ rou.name }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>ROU_start:</span>
+                    <span class="field-value">{{ rou.start }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>ROU_end:</span>
+                    <span class="field-value">{{ rou.end }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>ROU_ROU_SEC:</span>
+                    <span class="field-value">{{ rou.route_sections }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>ROU_warning:</span>
+                    <span class="field-value">{{ rou.warnings }}</span>
+                </li>
+            </li>
+        {% endfor %}
+    </u1>
+</dif>
+{% endblock %}
