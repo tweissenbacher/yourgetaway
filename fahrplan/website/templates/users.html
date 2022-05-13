@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Personal{% endblock %}
+{% block title %}Fahrplan-IS - Personal{% endblock %}
 {% block content %}
 <h1>Personal</h1>
 {% if user.admin == 1 %}
@@ -27,18 +27,25 @@
             {% else %}
             <td></td>
             {% endif %}
-            <th scope="row"  data-id="{{ u.id }}">{{ u.id }}</th>
+            <th scope="row"
+                data-id="{{ u.id }}">{{ u.id }}</th>
             <td data-id="{{ u.id }}">{{ u.first_name }}</td>
             <td data-id="{{ u.id }}">{{ u.last_name }}</td>
             <td data-id="{{ u.id }}">{{ u.email }}</td>
             <td data-id="{{ u.id }}">{{ u.birthday }}</td>
             <td>
-                <a href="{{ u.id }}" id="btn-edit" class="btn btn-sm btn-outline-secondary" aria-label="Edit">
+                <a href="{{ u.id }}"
+                   id="btn-edit"
+                   class="btn btn-sm btn-outline-secondary"
+                   aria-label="Edit">
                     <span aria-hidden="true">&#x1f589;</span>
                 </a>
             </td>
             <td>
-                <a href="{{ u.id }}/delete" id="btn-delete" class="btn btn-sm btn-outline-danger" aria-label="Delete">
+                <a href="{{ u.id }}/delete"
+                   id="btn-delete"
+                   class="btn btn-sm btn-outline-danger"
+                   aria-label="Delete">
                     <span aria-hidden="true">&#x2A09;</span>
                     <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
                 </a>
@@ -47,7 +54,8 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="create" class="btn btn-outline-primary">Weiteren Personalaccount hinzufügen</a>
+<a href="create"
+   class="btn btn-outline-primary">Weiteren Personalaccount hinzufügen</a>
 {% else %}
 <p>
     Keine Berechtigung

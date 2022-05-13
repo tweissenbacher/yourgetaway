@@ -35,13 +35,13 @@ def create_app():
     setup_database(app)
     ma.init_app(app)
 
-    from .api import api  # , api_test
+    from .api import api, api_test
     from .auth import auth, login_manager
     from .views import views
 
     login_manager.init_app(app)
 
-    # app.register_blueprint(api_test, url_prefix="/api-test")
+    app.register_blueprint(api_test, url_prefix="/api-test")
     app.register_blueprint(api, url_prefix="/")
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
@@ -62,5 +62,3 @@ def setup_database(app):
         pass
     db.engine.execute("PRAGMA foreign_keys = ON")
     print("SQLite Foreign Keys ON")
-
-

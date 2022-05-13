@@ -13,6 +13,28 @@ class User(db.Model, UserMixin):
     birthday = db.Column(db.Date, default=func.now())
     admin = db.Column(db.Integer, default=0)
 
+    def update(self, email, first_name, last_name, admin, password1=None):
+        self.email = email
+        self.first_name = first_name
+        self.last_name = last_name
+        # self.birthday=birthday
+        if admin == "on":
+            self.admin = 1
+        else:
+            self.admin = 0
+        if password1 is not None:
+            self.password = password1
+
+    # def update(self, email, first_name, last_name, admin):
+    #     self.email=email
+    #     self.first_name=first_name
+    #     self.last_name=last_name
+    #     # self.birthday=birthday
+    #     if admin == "on":
+    #         self.admin=1
+    #     else:
+    #         self.admin=0
+
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
