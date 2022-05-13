@@ -1,102 +1,117 @@
 {% extends "base.html" %}
-{% block title %}Personal{% endblock %}
+{% block title %}Fahrplan-IS - Personal{% endblock %}
 {% block content %}
 {% if user == None %}
+<!-- TODO if user not authenticated -->
 <p>404</p>
-    {% elif not user %}
-        <form method="post">
-            <br />
-            <h3>Personal anlegen</h3>
-            <br />
-            <div class="form-group">
-                <label for="email">E-Mail-Adresse</label>
-                <input type="email"
-                       class="form-control"
-                       id="email"
-                       name="email"
-                       placeholder="Email Addresse"/>
-                <label for="firstName">Vorname</label>
-                <input type="text"
-                       class="form-control"
-                       id="firstName"
-                       name="firstName"
-                       placeholder="Vorname"/>
-                <label for="lastName">Nachname</label>
-                <input type="text"
-                       class="form-control"
-                       id="lastName"
-                       name="lastName"
-                       placeholder="Nachname"/>
-                <label for="password1">Passwort</label>
-                <input type="password"
-                       class="form-control"
-                       id="password1"
-                       name="password1"
-                       placeholder="Passwort"/>
-                <label for="password2">Passwort wiederholen</label>
-                <input type="password"
-                       class="form-control"
-                       id="password2"
-                       name="password2"
-                       placeholder="Passwort wiederholen"/>
-                <label for="admin">Admin</label>
-                <input type="checkbox"
-                       class="form-check-input"
-                       id="admin"
-                       name="Admin"
-                       placeholder="Admin"/>
-                <br />
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
-    {% else %}
-        <form method="post">
-            <br />
-            <h3>Personal bearbeiten</h3>
-            <br />
-            <div class="form-group">
-                <label for="email">E-Mail-Addresse</label>
-                <input type="email"
-                       class="form-control"
-                       id="email"
-                       name="email"
-                       placeholder=""
-                       value="{{ user.email }}"/>
-                <label for="firstName">Vorname</label>
-                <input type="text"
-                       class="form-control"
-                       id="firstName"
-                       name="firstName"
-                       placeholder=""
-                       value="{{ user.first_name }}"/>
-                <label for="lastName">Nachname</label>
-                <input type="text"
-                       class="form-control"
-                       id="lastName"
-                       name="lastName"
-                       placeholder=""
-                       value="{{ user.last_name }}"/>
-                <label for="password1">Neues Passwort</label>
-                <input type="password"
-                       class="form-control"
-                       id="password1"
-                       name="Neues Passwort"
-                       placeholder="Neues Passwort"/>
-                <label for="password2">Neues Passwort wiederholen</label>
-                <input type="password"
-                       class="form-control"
-                       id="password2"
-                       name="Neues Passwort wiederholen"
-                       placeholder="Neues Passwort wiederholen"/>
-                <label for="admin">Admin</label>
-                <input type="checkbox"
-                       class="form-check-input"
-                       id="admin"
-                       name="Admin"
-                       placeholder="Admin"/>
-                <br />
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
-    {% endif %}
+{% elif not user %}
+<form method="post">
+    <br />
+    <h3>Personal anlegen</h3>
+    <br />
+    <div class="form-group">
+        <label for="email">E-Mail-Adresse</label>
+        <input type="email"
+               class="form-control"
+               id="email"
+               name="email"
+               placeholder="Email Addresse" />
+        <label for="firstName">Vorname</label>
+        <input type="text"
+               class="form-control"
+               id="firstName"
+               name="firstName"
+               placeholder="Vorname" />
+        <label for="lastName">Nachname</label>
+        <input type="text"
+               class="form-control"
+               id="lastName"
+               name="lastName"
+               placeholder="Nachname" />
+        <label for="password1">Passwort</label>
+        <input type="password"
+               class="form-control"
+               id="password1"
+               name="password1"
+               placeholder="Passwort" />
+        <label for="password2">Passwort wiederholen</label>
+        <input type="password"
+               class="form-control"
+               id="password2"
+               name="password2"
+               placeholder="Passwort wiederholen" />
+        <label for="admin">Admin</label>
+        <input type="checkbox"
+               class="form-check-input"
+               id="admin"
+               name="admin"
+               placeholder="Admin" />
+        <br />
+        <button type="submit"
+                class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% else %}
+<form method="post">
+    <br />
+    <h3>Personal bearbeiten</h3>
+    <br />
+    <div class="form-group">
+        <label for="email">E-Mail-Addresse</label>
+        <input type="email"
+               class="form-control"
+               id="email"
+               name="email"
+               placeholder=""
+               value="{{ user.email }}" />
+        <label for="firstName">Vorname</label>
+        <input type="text"
+               class="form-control"
+               id="firstName"
+               name="firstName"
+               placeholder=""
+               value="{{ user.first_name }}" />
+        <label for="lastName">Nachname</label>
+        <input type="text"
+               class="form-control"
+               id="lastName"
+               name="lastName"
+               placeholder=""
+               value="{{ user.last_name }}" />
+        <label for="password1">Neues Passwort</label>
+        <input type="password"
+               class="form-control"
+               id="password1"
+               name="password1"
+               placeholder="Neues Passwort" />
+        <label for="password2">Neues Passwort wiederholen</label>
+        <input type="password"
+               class="form-control"
+               id="password2"
+               name="password2"
+               placeholder="Neues Passwort wiederholen" />
+        {% if current_user.admin == 1 %}
+        <label for="admin">Admin</label>
+        <input type="checkbox"
+               class="form-check-input"
+               id="admin"
+               name="admin"
+               placeholder="Admin"
+               {% if user.admin == 1 %}checked{% endif %} />
+        {% endif %}
+        <br />
+        {% if current_user.admin == 0 %}
+        <label for="oldPW">Derzeitiges Passwort bestätigen</label>
+        <input type="password"
+               class="form-control"
+               id="oldPW"
+               name="oldPW"
+               placeholder="Derzeitiges Passwort bestätigen" />
+        <br />
+        {% endif %}
+        <button type="submit"
+                class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endif %}
 {% endblock %}

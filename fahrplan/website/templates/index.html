@@ -6,14 +6,36 @@
 <p>Bitte einloggen um fortzufahren.</p>
 {% endif %}
 <h2 class="py-1">Fahrtstrecken</h2>
-<ul class="list-group list-group-flush" id="notes">
+
+<table class="table">
     {% for line in lines %}
-    <li class="list-group-item">
-        {{ line.description }} - {{ line.note }} - {{ line.price/100 }}0€
+    <thead>
+        <tr>
+            <td colspan="4">
+                <p></p>
+                <h4>{{ line.description }}</h4>
+                <p>Gesamtpreis: {{ line.price/100 }}0€</p>
+                <span>Abschnitte:</span>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">von</th>
+            <th scope="col">nach</th>
+            <th scope="col">Dauer (min)</th>
+        </tr>
         {% for section in line.sections %}
-        <p>--- section {{ section.id }} -- from {{ section.start }} -- to {{ section.end }} -- {{ section.duration }} min</p>
+        <tr>
+            <td>{{ section.id }}</td>
+            <td>{{ section.start }}</td>
+            <td>{{ section.end }}</td>
+            <td>{{ section.duration }}</td>
+        </tr>
         {% endfor %}
-    </li>
-    {% endfor %}
-</ul>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

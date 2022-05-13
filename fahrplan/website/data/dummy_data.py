@@ -21,7 +21,7 @@ def insert_users():
     )
     db.session.add(new_user)
     new_user = User(
-        email="Ferdinand.Grünwies@yg.at",
+        email="Ferdinand.Gruenwies@yg.at",
         first_name="Ferdinand",
         last_name="Grünwies",
         password=generate_password_hash("password", method="sha256"),

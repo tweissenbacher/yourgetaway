@@ -1,12 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Fahrpläne{% endblock %}
+{% block title %}Fahrplan-IS - Fahrpläne{% endblock %}
 {% block content %}
-    <h1 class="py-5">Fahrpläne</h1>
-    <ul class="list-group list-group-flush" id="lines-list">
-        {% for line in lines %}
-            <li id="{{ line.id }}" class="entry list-group-item">
-                {{ line.description }}
-            </li>
-        {% endfor %}
-    </ul>
+<h1 class="py-5">Fahrpläne</h1>
+<ul class="list-group list-group-flush"
+    id="lines-list">
+    {% for line in lines %}
+    <li id="{{ line.id }}"
+        class="entry list-group-item">
+        {{ line.description }}
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}

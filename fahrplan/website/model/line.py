@@ -8,15 +8,22 @@ from .. import db, ma
 
 class Section(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    start = db.Column(db.String(100))
-    end = db.Column(db.String(100))
+    from_station_id = db.Column(db.Integer())
+    to_station_id = db.Column(db.Integer())
     duration = db.Column(db.Integer())
     line_id = db.Column(db.Integer(), db.ForeignKey("line.id"))
+
+    def __init__(self, id, from_station, to_station, duration):
+        self.id = id
+        self.from_station = from_station
+        self.to_station = to_station
+        self.duration = duration
 
 
 class SectionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Section
+        ordered = True
 
 
 section_schema = SectionSchema()
@@ -30,8 +37,8 @@ class Line(db.Model):
     # note = db.Column(db.String(10000))
     # date = db.Column(db.DateTime(timezone=True), default=func.now())
     sections = db.relationship(
-        "Section"
-    )  # , backref=db.backref("line"))#, lazy="subquery")
+        "Section", backref=db.backref("linep"), lazy="dynamic"
+    )  # ??
 
 
 class LineSchema(ma.SQLAlchemyAutoSchema):
