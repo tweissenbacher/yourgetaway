@@ -32,10 +32,15 @@ class DummyStrecken:
                         "zeitdauer": 20,
                         "kosten": 5
                     }
-                ]
+                ],
+            "warnings":
+                    [
+                        {
+                            "id": 3,
+                            "text": "30 Minuten Verspätung"
+                        }
+                    ]
             });
-
-
         strecken.append(
             {
             "id": 2,
@@ -64,15 +69,23 @@ class DummyStrecken:
                         "zeitdauer": 20,
                         "kosten": 5
                     }
-                ]
+                ],
+            "warnings":
+                    []
             });
-
         strecken.append(
             {
             "id": 3,
             "von": "Salzburg",
             "nach": "Linz",
-            "abschnitte": []
+            "abschnitte": [],
+            "warnings":
+                    [
+                        {
+                            "id": 2,
+                            "text": "20 Minuten Verspätung"
+                        }
+                    ]
             });
         strecken.append(
             {
@@ -81,8 +94,6 @@ class DummyStrecken:
             "nach": "Wien Hbf",
             "abschnitte":
                 [
-
-                    [
                         {
                             "id": 1,
                             "von": "Wels",
@@ -111,9 +122,14 @@ class DummyStrecken:
                             "zeitdauer": 20,
                             "kosten": 5
                         }
-                    ]
+                ],
+            "warnings":
+                [
+                    {
+                        "id": 1,
+                        "text": "10 Minuten Verspätung"
+                    }
                 ]
-
             });
 
         return strecken;
@@ -122,7 +138,7 @@ class DummyStrecken:
     def getDummyStreckeById(cls, _id):
         strecken = cls.getDummyStrecken()
         for strecke in strecken:
-            if strecke['id'] == _id:
+            if strecke['id'] == int(_id):
                 return strecke
         return None
 

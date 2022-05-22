@@ -1,5 +1,6 @@
 import datetime
 from flask import flash
+from sqlalchemy import desc
 
 from db import db
 
@@ -55,9 +56,21 @@ class AktionModel(db.Model):
     def find_all(cls):
         return cls.query.all();
 
-    @classmethod # retourniert allgemeine Aktionen und solche, die sich auf die angegebene Strecke beziehen
-    def find_by_strecke(cls, strecken_id):
-        return cls.query.filter_by(strecken_id = strecken_id or not strecken_id)
+    @classmethod # retourniert Aktionen, die sich auf die angegebene Strecke beziehen
+    def find_by_strecke(cls, strecken_id, date):
+        return cls.query.filter_by(strecken_id = strecken_id).filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
+            .order_by(desc(AktionModel.rabatt)).first()
+
+    @classmethod # retourniert Aktionen, die sich auf den angegeben Abschnitt beziehen
+    def find_by_abschnitt(cls, abschnitt_id, date):
+        return cls.query.filter_by(abschnitt_id = abschnitt_id).filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
+            .order_by(desc(AktionModel.rabatt)).first()
+
+    @classmethod # retourniert allgemeine Aktionen
+    def find_by_date(cls, date):
+        return cls.query.filter(AktionModel.abschnitt_id <= 0).filter(AktionModel.strecken_id <= 0)\
+            .filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
+            .order_by(desc(AktionModel.rabatt)).first()
 
     @classmethod
     def check_data(cls, rabatt, startdatum, enddatum):
