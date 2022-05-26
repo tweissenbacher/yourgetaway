@@ -2,8 +2,8 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import db
-from .model import User
+from .. import db
+from ..model import User
 
 
 login_manager = LoginManager()
@@ -50,7 +50,7 @@ def logout():
         logout_user()
         flash("Abgemeldet!", category="success")
     return redirect(url_for("auth.login"))
-
+# TODO: redirect to index page, message
     # return render_template("home.html", isLogoutSuccessful=True, text="Erfolgreich abgemeldet")
 
 

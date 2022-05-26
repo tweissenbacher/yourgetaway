@@ -3,6 +3,9 @@ FLASK_APP=fahrplan
 FLASK_ENV=development
 FLASK_RUN_PORT=5000
 
+STRECKEN_API_BASE_URL="https://reqbin.com/echo/get/json"
+
+
 # https://prettyprinted.com/tutorials/automatically_load_environment_variables_in_flask
 # FLASK_ENV - Controls the environment.
 # FLASK_DEBUG - Enables debug mode.
