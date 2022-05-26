@@ -34,14 +34,14 @@ def api_index():
     )
 
 
-@api.route("/api/lines/", methods=["GET"])
-def api_lines_all():
+@api.route("/api/lines/<int:id>", methods=["GET"])
+def api_lines_all(id):
     lines = Line.query.all()
     res = lines_schema.dump(lines)
     return jsonify({"lines": res})
 
 
-@api.route("/api/lines/<int:line_id>", methods=["GET"])
+@api.route("/api/lines/<int:line_id>/", methods=["GET"])
 def api_lines_id(line_id):
     line = Line.query.get(line_id)
     res = line_schema.dump(line)

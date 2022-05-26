@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Fahrplan-IS - Fahrpläne{% endblock %}
 {% block content %}
-<h1 class="py-5">Fahrpläne</h1>
+<h1 class="py-5">Fahrtstrecken</h1>
 
 
 {% if user.admin == 1 %}
@@ -24,14 +24,14 @@
     <tbody>
         {% for line in lines %}
         <!-- if line.sections - workaround fur unvollstandige daten -->
-        {% if line.sections %}
+        {#% if line.sections %#}
         <tr>
             <th scope="row"
                 data-id="{{ line.id }}">{{ line.id }}</th>
-            <td data-id="{{ line.id }}">{{ line.description }}</td>
-            <td data-id="{{ line.id }}">{{ line.route_name }}</td>
-            <td data-id="{{ line.id }}">{{ line.sections | first | attr('from_station_name') }}</td>
-            <td data-id="{{ line.id }}">{{ line.sections | last | attr('to_station_name') }}</td>
+            <td data-id="{{ line.id }}">{{ line.descr }}</td>
+            <td data-id="{{ line.id }}">{{ line.route.name }}</td>
+            <td data-id="{{ line.id }}">{{ (line.sections | first).section.from_station_name }}</td>
+            <td data-id="{{ line.id }}">{{ (line.sections | last).section.to_station_name }}</td>
             <td data-id="{{ line.id }}"> // </td>
             <td data-id="{{ line.id }}">
                 <a href="./{{ line.id }}">> Durchführungen</a>
@@ -54,7 +54,7 @@
                 </a>
             </td>
         </tr>
-        {% endif %}
+        {#% endif %#}
         {% endfor %}
     </tbody>
 </table>
@@ -64,12 +64,13 @@
 </p>
 {% endif %}
 
+{% if False %}
 <br>
 <h2>Fahrtstrecken (groupby Strecke)</h2>
 <hr>
-{% for route_name, lines in lines | groupby('route_name')%}
-<h3 class="border-bottom">{{ route_name }} 
-    <a href="create/{{ route_name }}"
+{% for route, line in lines | groupby('route.name') %}
+<h3 class="border-bottom">{{ route.name }} 
+    <a href="create/{{ route.name }}"
        class=" btn-sm  my-sm-2"> + Neue Fahrtstrecke hinzufügen</a>
 </h3>
 <ul class="list-group list-group-flush"
@@ -82,5 +83,7 @@
     </li>
     {% endfor %}
 </ul>
+
 {% endfor %}
+{% endif %}
 {% endblock %}

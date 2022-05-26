@@ -1,8 +1,9 @@
+from datetime import datetime
 import json
 
 from flask import Blueprint, Response, jsonify, make_response, redirect, request
 from flask_login import current_user, login_required
-from sqlalchemy import select
+from sqlalchemy import Time, select
 from website.model import (
     Line,
     line_schema,
@@ -10,6 +11,8 @@ from website.model import (
     Section,
     section_schema,
     sections_schema,
+    Trip,
+    trip_schema,
     User,
     user_schema,
     users_schema,
@@ -41,6 +44,37 @@ def test_api_lines():
     res = lines_schema.dump(lines)
     # return jsonify({"lines": res})
     return jsonify(res)
+
+
+@api_test.route("/lines/<int:id>/", methods=["GET"])
+def test_api_line_by_id(id):
+    line = Line.query.get(id)
+    print(line)
+    res = line_schema.dump(line)
+    return jsonify(res)
+
+
+@api_test.route("/lines/<int:id>/trips/create/", methods=["GET"])
+def test_api_create_trip(id):
+    trip = Trip(
+        note="Trip 0",
+        departure=datetime.utcnow().time(),
+        train_id=0,
+        price=1250,
+        recurrence_id=0,
+        line_id=id,
+    )
+    db.session.add(trip)
+    db.session.commit()
+    res = trip_schema.dump(trip)
+    print(res)
+    return jsonify(res)
+
+
+####
+####
+####
+####
 
 
 @api_test.route("/<int:n>", methods=["GET"])

@@ -36,18 +36,25 @@ def create_app():
     ma.init_app(app)
 
     from .api import api, api_test
-    from .auth import auth, login_manager
-    from .views import views
+    
+    # from .views import auth, login_manager
+    from .views import auth, login_manager, index, lines, users
+    # from .views import views
+    # from views import Line
 
     login_manager.init_app(app)
 
     app.register_blueprint(api_test, url_prefix="/api-test")
     app.register_blueprint(api, url_prefix="/")
-    app.register_blueprint(views, url_prefix="/")
+    
     app.register_blueprint(auth, url_prefix="/")
+    app.register_blueprint(index, url_prefix="/")
+    app.register_blueprint(lines, url_prefix="/")
+    app.register_blueprint(users, url_prefix="/")
 
     # from .data import dummy_data
     # dummy_data.insert_users()
+    # dummy_data.insert_routes()
 
     return app
 

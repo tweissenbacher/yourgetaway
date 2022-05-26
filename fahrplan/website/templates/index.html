@@ -11,12 +11,13 @@
     {% for line in lines %}
     <thead>
         <tr>
-            <td colspan="4" style="padding-top: 2em;">
-                <h4>{{ line.description }}</h4>
+            <td colspan="4"
+                style="padding-top: 2em;">
+                <h4>{{ line.descr }} auf {{ line.route.name }}</h4>
                 <span>Gesamtpreis: {{ "{:,.2f}".format(line.price/100) | replace('.',',') }} €</span>
-                <p>Fahrtdauer: {{ line.sections | sum(attribute='duration') }} min</p>
+                <p>Fahrtdauer: {{ (line.sections | last).arrival }} min</p>
+                <p>Information: {{ line.note if line.note }}</p>
                 <h5>Abschnitte:</h5>
-                
             </td>
         </tr>
     </thead>
@@ -27,14 +28,20 @@
             <th scope="col">nach</th>
             <th scope="col">Dauer (min)</th>
         </tr>
-        {% for section in line.sections %}
+        {% for line_section in line.sections %}
         <tr>
-            <td>{{ section.id }}</td>
-            <td>{{ section.start }}</td>
-            <td>{{ section.end }}</td>
-            <td>{{ section.duration }}</td>
+            <td>{{ line_section.section.id }}</td>
+            <td>{{ line_section.section.from_station_name }}</td>
+            <td>{{ line_section.section.to_station_name }}</td>
+            <td>{{ line_section.section.duration }} min</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td colspan="3">{{ line.note if line.note if not None }}</td>
+            <td>
+                {{ (line.sections | last).arrival }} min Fahrdauer
+            </td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
