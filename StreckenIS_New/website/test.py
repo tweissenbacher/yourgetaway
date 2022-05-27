@@ -9,7 +9,8 @@ data = [
 ]
 
 section_data = [
-    {"start": "Wien Hbf", "end": "Graz Hbf", "track": "normal", "fee": 10, "time": 100},
+    {"start": "Wien Hbf", "end": "Graz Hbf", "track": "normal", "fee": 10, "time": 100,
+     "warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"},
     {"start": "Wien Hbf", "end": "Linz Hbf", "track": "normal", "fee": 15, "time": 150},
     {"start": "Linz Hbf", "end": "Sbg Hbf", "track": "normal", "fee": 8, "time": 80},
     {"start": "Wien Hbf", "end": "St. Pölten Hbf", "track": "normal", "fee": 6, "time": 60},
@@ -17,13 +18,13 @@ section_data = [
 ]
 
 route_data = [
-    {"name": "Weststrecke", "start": "Wien Hbf", "end": "Sbg Hbf",
-     "route_sections": "[Wien Hbf - St. Pölten Hbf], [St.Pölten Hbf - Linz Hbf], [Linz Hbf - Sbg Hbf]",
-     "warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"},
+    {"name": "Weststrecke", "start": "Wien Hbf", "end": "Sbg Hbf"}
 
-    {"name": "Weststrecke_return", "start": "Sbg Hbf", "end": "Wien Hbf",
-     "route_sections": "[Sbg Hbf - Linz Hbf], [Linz Hbf - St. Pölten Hbf], [St. Pölten Hbf - Wien Hbf]",
-     "warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"}
+]
+
+warning_data = [
+    {"warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022",
+     "warnings": "Maintenance work on sections [...] between March 2022 and June 2022"}
 ]
 
 # ------Trainstation_testing-----#
@@ -58,12 +59,12 @@ response = requests.get(BASE + "section/2")
 print(response.json())
 
 # ------Route_testing-----#
-for k in range(len(route_data)):
-    response = requests.put(BASE + "route/" + str(k), route_data[k])
-    print(response.json())
-input()
-response = requests.patch(BASE + "route/1", {"warnings": "NEW Warnings to Route ID 1"})
-print(response.json())
-input()
-response = requests.get(BASE + "route/1")
-print(response.json())
+#for k in range(len(route_data)):
+#    response = requests.put(BASE + "route/" + str(k), route_data[k])
+#    print(response.json())
+#input()
+#response = requests.patch(BASE + "route/0", {"warnings": "NEW Warnings to Route ID 0"})
+#print(response.json())
+#input()
+#response = requests.get(BASE + "route/0")
+#print(response.json())

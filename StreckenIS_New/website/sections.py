@@ -84,8 +84,8 @@ class Section(Resource):
         result = SectionModel.query.filter_by(id=sections_id).first()
         if result:
             abort(409, message="Id taken...")
-        sections = SectionModel(id=sections_id, start=args['start'], end=args['end'], track=args['track'],
+        sec = SectionModel(id=sections_id, start=args['start'], end=args['end'], track=args['track'],
                                 fee=args['fee'], time=args['time'])
-        db.session.add(sections)
+        db.session.add(sec)
         db.session.commit()
-        return sections, 201
+        return sec, 201

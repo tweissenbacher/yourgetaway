@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from sqlalchemy import event
 from flask_restful import Api
 
 db = SQLAlchemy()
@@ -13,7 +14,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'tomdke'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # event.listen(db.engine, 'connect', lambda c, _: c.execute('pragma foreign_keys=on'))
     db.init_app(app)
+
+
 
     from .views import views
     from .auth import auth
@@ -21,7 +26,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import User, Note, TrainstationModel, SectionModel, RouteModel
+    from .models import User, Note, TrainstationModel, SectionModel, RouteModel, sections
 
 
     create_database(app)

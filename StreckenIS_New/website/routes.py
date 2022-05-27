@@ -5,40 +5,39 @@ from flask_sqlalchemy import SQLAlchemy
 from . import db
 from website.models import RouteModel
 
-
 route = {
     "0": {"name": "Weststrecke", "start": "Wien Hbf", "end": "Sbg Hbf",
-          "route_sections": "[Wien Hbf - St. Pölten Hbf], [St.Pölten Hbf - Linz Hbf], [Linz Hbf - Sbg Hbf]",
-          "warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"},
+          "route_sections": ["[Wien Hbf - St. Pölten Hbf]"],
+          "v_max": 220},
     "1": {"name": "Weststrecke_return", "start": "Sbg Hbf", "end": "Wien Hbf",
           "route_sections": "[Sbg Hbf - Linz Hbf], [Linz Hbf - St. Pölten Hbf], [St. Pölten Hbf - Wien Hbf]",
-          "warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"},
+          "v_max": 220},
 }
-
 
 route_put_args = reqparse.RequestParser()
 route_put_args.add_argument("name", type=str, help="Name of the Route", required=True)
 route_put_args.add_argument("start", type=str, help="Name of the Start", required=True)
 route_put_args.add_argument("end", type=str, help="Name of the End", required=True)
-route_put_args.add_argument("route_sections", type=str, help="Name of all sections on the route", required=True)
-route_put_args.add_argument("warnings", type=str, help="Warnings", required=True)
+route_put_args.add_argument("route_sections", type=list, help="Name of all sections on the route",
+                            location='json', action='append')
+route_put_args.add_argument("v_max", type=int, help="V_Max", required=True)
 
 route_update_args = reqparse.RequestParser()
 route_update_args.add_argument("name", type=str, help="update_Name of the Route")
 route_update_args.add_argument("start", type=str, help="update_Name of the Start")
 route_update_args.add_argument("end", type=str, help="update_Name of the End")
-route_update_args.add_argument("route_sections", type=str, help="update_Name of all sections on the route")
-route_update_args.add_argument("warnings", type=str, help="update_Warnings")
+route_update_args.add_argument("route_sections", type=list, help="update_Name of all sections on the route",
+                               location='json', action='append')
+route_update_args.add_argument("v_max", type=int, help="update_V_Max")
 
 route_resource_fields = {
     'id': fields.Integer,
     'name': fields.String,
     'start': fields.String,
     'end': fields.String,
-    'route_sections': fields.String,
-    'warnings': fields.String
+    'route_sections': fields.List,
+    'v_max': fields.Integer
 }
-
 
 
 class Routes(Resource):
@@ -46,6 +45,7 @@ class Routes(Resource):
     def get(self):
         all_routes = RouteModel.query.all()
         return all_routes
+
 
 class Route(Resource):
     @marshal_with(route_resource_fields)  # to define how to serialize it
@@ -70,8 +70,8 @@ class Route(Resource):
             result.end = args['end']
         if args['route_sections']:
             result.route_sections = args['route_sections']
-        if args['warnings']:
-            result.warnings = args['warnings']
+        if args['v_max']:
+            result.warnings = args['v_max']
 
         db.session.commit()
 
@@ -84,8 +84,8 @@ class Route(Resource):
         result = RouteModel.query.filter_by(id=route_id).first()
         if result:
             abort(409, message="Id taken...")
-        route = RouteModel(id=route_id, name=args['name'], start=args['start'], end=args['end'],
-                           route_sections=args['route_sections'], warnings=args['warnings'])
-        db.session.add(route)
+        rou = RouteModel(id=route_id, name=args['name'], start=args['start'], end=args['end'],
+                         route_sections=args['route_sections'], v_max=args['v_max'])
+        db.session.add(rou)
         db.session.commit()
-        return route, 201
+        return rou, 201
