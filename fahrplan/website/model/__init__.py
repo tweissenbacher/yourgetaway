@@ -1,6 +1,5 @@
 from .line import *
 from .user import *
-# from .abschnitte import *
 
 # __all__ = ["abschnitt", "fahrtstrecke", "user"]
 
