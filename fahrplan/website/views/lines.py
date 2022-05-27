@@ -34,11 +34,24 @@ def lines_update(id):
     line = Line.query.get(id)
     return render_template("line_detail.html", user=current_user, line=line, update=True)
 
+@lines.route("/lines/<int:id>/delete/", methods=["GET", "POST"])
+@login_required
+def lines_delete(id):
+    # TODO
+    line = Line.query.get(id)
+    if line:
+        db.session.delete(line)
+        db.session.commit()
+        flash("Fahrtstrecke entfernt!", category="success")
+        return redirect(url_for("lines.lines_view"))
+
+    return render_template("line_detail.html", user=current_user, line=line, update=True)
+
 
 @lines.route("/lines/create/", methods=["GET", "POST"])
-@lines.route("/lines/<int:line_id>/update", methods=["GET", "POST"])
+# @lines.route("/lines/<int:line_id>/update", methods=["GET", "POST"])
 @login_required
-def lines_create(line_id):
+def lines_create():
     if request.method == "POST":
         route_id = request.form.get("route_id", default=None, type=int)
         descr = request.form.get("descr", default=None, type=str)
@@ -97,42 +110,4 @@ def lines_create(line_id):
 def lines_trips(id):
     line = Line.query.get(id)
     return render_template("trips.html", user=current_user, line=line)
-
-
-
-
-# @lines.route("/lines/create/<int:route_id>", methods=["GET", "POST"])
-# @login_required
-# def lines_update(route_id=None):
-#     if request.method == "POST":
-#         pass
-
-#     route = Route.query.get(route_id)
-#     if route:
-#         return render_template("lines_c.html", current_user=current_user, route_id=route_id)
-#     else:
-#         # base = os.environ.get("STRECKEN_API_BASE_URL")
-#         # url = f"{base}/page/2"
-#         # res = requests.get(url)
-#         # # data = res.json()
-#         # data = json.loads(res.content)
-#         # routes = data['items']
-
-#         routes = {1:Route(0,"Westbahn"), 2:Route(2,"Pyhrnbahn")}
-#     return render_template("lines_c.html", user=current_user, routes=routes)
-
-
-# @lines.route("/lines/create/<route_name>", methods=["GET", "POST"])
-# @login_required
-# def lines_create():
-#     if request.method == "POST":
-#         pass
-#     base = os.environ.get("STRECKEN_API_BASE_URL")
-#     url = f"{base}/page/2"
-#     res = requests.get(url)
-#     # data = res.json()
-#     data = json.loads(res.content)
-#     routes = data['items']
-#     # return data
-#     return render_template("lines_c.html", user=current_user, routes=routes)
 
