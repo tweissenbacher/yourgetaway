@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+    <h1 class="py-5">Users</h1>
+    <u1 class="list-group list-group-flush" id="users-list">
+        {% for u in all_users %}
+            <li class="list-group-item">
+
+                <li>
+                    <span class="field-name">User_ID:</span>
+                    <span class="field-value">{{ u.id }}</span>
+                    <button type="button" class="close" onClick="">
+                        <span aria-hidden="true">edit</span>
+                    </button>
+                </li>
+                <li>
+                    <span class="field-name">User_email:</span>
+                    <span class="field-value">{{ u.email }}</span>
+                    <button type="button" class="close" onClick="deleteUser{{ u.id }})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </li>
+                <li>
+                    <span class="field-name">User_first_name:</span>
+                    <span class="field-value">{{ u.first_name }}</span>
+                </li>
+                <li>
+                    <span class="field-name">User_Password:</span>
+                    <span class="field-value">{{ u.password}}</span>
+                </li>
+            </li>
+        {% endfor %}
+    </u1>
+<br />
+<form method="POST">
+  <h3 align="center">Add a new User</h3>
+  <br />
+  <div class="form-group">
+    <label for="u_email">User Email</label>
+    <input
+      type="email"
+      class="form-control"
+      id="u_email"
+      name="u_email"
+      placeholder="Enter the Email for the new User"
+    />
+  </div>
+  <div class="form-group">
+    <label for="u_first_name">User First Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="u_first_name"
+      name="u_first_name"
+      placeholder="Enter the first name for the new User"
+    />
+  </div>
+  <div class="form-group">
+    <label for="u_password">User Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="u_password"
+      name="u_password"
+      placeholder="Enter the password for the new User"
+    />
+  </div>
+  <br />
+  <button type="add" class="btn btn-primary">Add new User</button>
+</form>
+{% endblock %}

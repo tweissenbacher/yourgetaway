@@ -9,17 +9,19 @@
                 <li>
                     <span class="field-name">TS_ID:</span>
                     <span class="field-value">{{ ts.id }}</span>
+                    <button type="button" class="close" onClick="">
+                        <span aria-hidden="true">edit</span>
+                    </button>
                 </li>
                 <li>
-                    <span class="field-name">TS_NAME:</span>
+                    <span class="field-name">TS_NAME:   </span>
                     <span class="field-value">{{ ts.name }}</span>
                     <button type="button" class="close" onClick="deleteTrainstation({{ ts.id }})">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </li>
-
                 <li>
-                    <span class="field-name">TS_Address</span>
+                    <span class="field-name">TS_Address:</span>
                     <span class="field-value">{{ ts.address }}</span>
                 </li>
 

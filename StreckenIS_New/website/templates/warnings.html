@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Warnings{% endblock %}
+{% block content %}
+<dif>
+    <h1 class="py-5">Warnings</h1>
+    <u1 class="list-group list-group-flush" id="warning-list">
+        {% for war in all_warnings %}
+            <li id="{{ war.id }}" class="entry list-group-item">
+                <li>
+                    <button type="button" class="close" onClick="">
+                        <span aria-hidden="true">edit</span>
+                    </button>
+                    <span class="field-name":>WAR_ID:</span>
+                    <span class="field-value">{{ war.id }}</span>
+                </li>
+                <li>
+                    <button type="button" class="close" onClick="deleteWarning({{ war.id }})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span class="field-name":>Warning:</span>
+                    <span class="field-value">{{ war.warnings }}</span>
+                </li>
+            </li>
+        {% endfor %}
+    </u1>
+</dif>
+<br />
+<form method="POST">
+  <h3 align="center">Add a new Warning</h3>
+  <br />
+  <div class="form-group">
+    <label for="war_warnings">Warning</label>
+    <input
+      type="text"
+      class="form-control"
+      id="war_warnings"
+      name="war_warnings"
+      placeholder="Enter the Warning"
+    />
+  </div>
+  <br />
+  <button type="add" class="btn btn-primary">Add new Warning</button>
+</form>
+{% endblock %}

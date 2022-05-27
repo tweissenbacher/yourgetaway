@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Trainstations{% endblock %}
+{% block title %}Routes{% endblock %}
 {% block content %}
 <dif>
     <h1 class="py-5">Routes</h1>
@@ -11,27 +11,82 @@
                     <span class="field-value">{{ rou.id }}</span>
                 </li>
                 <li>
+                    <button type="button" class="close" onClick="">
+                        <span aria-hidden="true">edit</span>
+                    </button>
                     <span class="field-name":>ROU_name:</span>
                     <span class="field-value">{{ rou.name }}</span>
                 </li>
                 <li>
                     <span class="field-name":>ROU_start:</span>
                     <span class="field-value">{{ rou.start }}</span>
+                    <button type="button" class="close" onClick="deleteRoute({{ rou.id }})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </li>
                 <li>
                     <span class="field-name":>ROU_end:</span>
                     <span class="field-value">{{ rou.end }}</span>
                 </li>
+                {% for s in all_sections %}
                 <li>
-                    <span class="field-name":>ROU_ROU_SEC:</span>
-                    <span class="field-value">{{ rou.route_sections }}</span>
+                    <span class="field-name":>ROU_sections</span>
+                    <span class="field-value">{{ s.id }} {{ s.start }} {{ s.end }}</span>
                 </li>
+                {% endfor %}
                 <li>
-                    <span class="field-name":>ROU_warning:</span>
-                    <span class="field-value">{{ rou.warnings }}</span>
+                    <span class="field-name":>ROU_v_max:</span>
+                    <span class="field-value">{{ rou.v_max }}</span>
                 </li>
             </li>
         {% endfor %}
     </u1>
 </dif>
+<br />
+<form method="POST">
+  <h3 align="center">Add a new Sections_route</h3>
+  <br />
+  <div class="form-group">
+    <label for="rou_name">Route Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="rou_name"
+      name="rou_name"
+      placeholder="Enter the Name for the route"
+    />
+  </div>
+  <div class="form-group">
+    <label for="rou_start">Route start</label>
+    <input
+      type="text"
+      class="form-control"
+      id="rou_start"
+      name="rou_start"
+      placeholder="Enter the start for the route"
+    />
+  </div>
+  <div class="form-group">
+    <label for="rou_end">Route end</label>
+    <input
+      type="text"
+      class="form-control"
+      id="rou_end"
+      name="rou_end"
+      placeholder="Enter the end for the route"
+    />
+  </div>
+  <div class="form-group">
+    <label for="rou_v_max">Route v_max</label>
+    <input
+      type="number"
+      class="form-control"
+      id="rou_v_max"
+      name="rou_v_max"
+      placeholder="Enter the v_max for the route (in km/h)"
+    />
+  </div>
+  <br />
+  <button type="add" class="btn btn-primary">Add new route</button>
+</form>
 {% endblock %}

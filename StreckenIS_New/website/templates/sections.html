@@ -11,12 +11,18 @@
                     <span class="field-value">{{ sec.id }}</span>
                 </li>
                 <li>
+                    <button type="button" class="close" onClick="">
+                        <span aria-hidden="true">edit</span>
+                    </button>
                     <span class="field-name":>SEC_start:</span>
                     <span class="field-value">{{ sec.start }}</span>
                 </li>
                 <li>
                     <span class="field-name":>SEC_end:</span>
                     <span class="field-value">{{ sec.end }}</span>
+                    <button type="button" class="close" onClick="deleteSection({{ sec.id }})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </li>
                 <li>
                     <span class="field-name":>SEC_track:</span>
@@ -34,4 +40,61 @@
         {% endfor %}
     </u1>
 </dif>
+<br />
+<form method="POST">
+  <h3 align="center">Add a new section</h3>
+  <br />
+  <div class="form-group">
+    <label for="sec_start">section start</label>
+    <input
+      type="text"
+      class="form-control"
+      id="sec_start"
+      name="sec_start"
+      placeholder="Enter the start for the section"
+    />
+  </div>
+  <div class="form-group">
+    <label for="sec_end">section end</label>
+    <input
+      type="text"
+      class="form-control"
+      id="sec_end"
+      name="sec_end"
+      placeholder="Enter the end for the section"
+    />
+  </div>
+  <div class="form-group">
+    <label for="sec_track">section track (normal or special)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="sec_track"
+      name="sec_track"
+      placeholder="Enter the tracktype for the section: <normal> or <special>"
+    />
+  </div>
+  <div class="form-group">
+    <label for="sec_fee">section fee (EUR)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="sec_fee"
+      name="sec_fee"
+      placeholder="Enter the fee for the section in EUR"
+    />
+  </div>
+  <div class="form-group">
+    <label for="sec_time">section time (in min.)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="sec_time"
+      name="sec_time"
+      placeholder="Enter the traveltime for the section in min."
+    />
+  </div>
+  <br />
+  <button type="add" class="btn btn-primary">Add new section</button>
+</form>
 {% endblock %}
