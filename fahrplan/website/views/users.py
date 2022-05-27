@@ -1,40 +1,28 @@
-from flask import Blueprint, flash, render_template, request, redirect, url_for
+import json
+import os
+from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import select
 from werkzeug.security import generate_password_hash, check_password_hash
-
-from . import db
-from .model import Section, Line, User
+import requests
+from .. import db
+from ..model import Section, Line, User
 
 # from random import randrange
 # from lorem_text import lorem
 
 
-views = Blueprint("views", __name__)
+users = Blueprint("users", __name__)
 
 
-@views.route("/", methods=["GET"])
-def index():
-    lines = Line.query.all()
-    return render_template("index.html", user=current_user, lines=lines)
-
-
-# TODO: fahrplan/<strecken_id> ????
-@views.route("/fahrplan/", methods=["GET", "POST"])
+@users.route("/users/", methods=["GET"])
 @login_required
-def fahrplan():
-    text = "irgendwas"
-    return render_template("fahrplan.html", user=current_user, text=text)
-
-
-@views.route("/users/", methods=["GET"])
-@login_required
-def users():
+def users_view():
     all_users = User.query.all()
     return render_template("users.html", user=current_user, users=all_users)
 
 
-@views.route("/users/<int:user_id>/delete", methods=["GET"])
+@users.route("/users/<int:user_id>/delete", methods=["GET"])
 @login_required
 def users_delete(user_id):
     user = User.query.get(user_id)
@@ -42,10 +30,10 @@ def users_delete(user_id):
         db.session.delete(user)
         db.session.commit()
         flash("Benutzer entfernt!", category="success")
-        return redirect(url_for("views.users"))
+        return redirect(url_for("users.users"))
 
 
-@views.route("/users/<int:user_id>", methods=["GET", "POST"])
+@users.route("/users/<int:user_id>", methods=["GET", "POST"])
 @login_required
 def users_update(user_id):
     if request.method == "POST":
@@ -80,7 +68,7 @@ def users_update(user_id):
             user.update(email, first_name, last_name, admin)
             db.session.commit()
             flash("Benutzer bearbeitet!", category="success")
-            # return redirect(url_for("views.users"))
+            # return redirect(url_for("users.users"))
             return redirect(request.referrer)
 
         elif password1 != password2:
@@ -98,14 +86,14 @@ def users_update(user_id):
             )
             db.session.commit()
             flash("Benutzer bearbeitet!", category="success")
-            # return redirect(url_for("views.users"))
+            # return redirect(url_for("users.users"))
             return redirect(request.referrer)
     user = User.query.get(user_id)
     print(user)
     return render_template("users_c_u.html", current_user=current_user, user=user)
 
 
-@views.route("/users/create", methods=["GET", "POST"])
+@users.route("/users/create", methods=["GET", "POST"])
 @login_required
 def users_create():
     if request.method == "POST":
@@ -140,6 +128,6 @@ def users_create():
             db.session.commit()
             flash("Benutzer angelegt!", category="success")
         return redirect(request.referrer)
-        # return redirect(url_for("views.users"))
+        # return redirect(url_for("users.users"))
     # user = User.query.get(user_id)
     return render_template("users_c_u.html", current_user=current_user, user=False)
