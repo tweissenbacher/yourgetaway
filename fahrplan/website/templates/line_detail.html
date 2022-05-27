@@ -101,6 +101,7 @@
                 </tr>
             </thead>
             <tbody>
+
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">von</th>
@@ -108,6 +109,7 @@
                     <th scope="col">Dauer (min)</th>
                     <th scope="col">Kumuliert (min)</th>
                 </tr>
+                {% if line.sections %}
                 {% for line_section in line.sections %}
                 <tr>
                     <td>{{ line_section.section.id }}</td>
@@ -118,10 +120,12 @@
                 </tr>
                 {% endfor %}
                 <tr>
-                    <td colspan="3">{{ line.note if line.note if not None }}</td>
-                    <td>
-                        {{ (line.sections | last).arrival }} min Fahrdauer
-                    </td>
+                    {% else %}
+                    <tr>
+                        <td colspan="11">Keine Durchführungen</td>
+                    </tr>
+                    {% endif %}
+    
                 </tr>
             </tbody>
         </table>
@@ -172,7 +176,7 @@
                 {% for trip in line.trips %}
                 <tr>
                     <td>
-                        <a href="{{ line.id }}"
+                        <a href="{{ trip.id }}"
                            id="btn-edit"
                            class="btn btn-sm btn-outline-secondary"
                            aria-label="Edit">
@@ -180,7 +184,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{ line.id }}/delete"
+                        <a href="{{ trip.id }}/delete"
                            id="btn-delete"
                            class="btn btn-sm btn-outline-danger"
                            aria-label="Delete">
