@@ -82,7 +82,7 @@ def lines_create():
             db.session.add(line)
             db.session.commit()
             flash("Fahrtstrecke angelegt!", category="success")
-            return redirect(url_for("lines.lines_view"))
+            return redirect(url_for("lines.lines_detail", id=line.id))
         
         routes = Route.query.all()
         return render_template(
