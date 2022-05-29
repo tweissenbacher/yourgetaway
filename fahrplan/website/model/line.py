@@ -28,7 +28,7 @@ class Section(db.Model):
         self.duration = duration
 
     def __repr__(self) -> str:
-        return f"Section {self.id}: {self.from_station} to {self.to_station}"
+        return f"Section {self.id}: {self.from_station_name} to {self.to_station_name}"
 
 
 class SectionSchema(ma.SQLAlchemyAutoSchema):
@@ -73,8 +73,9 @@ routes_schema = RouteSchema(many=True)
 
 # *
 # * Durchführungintervall
+    # ?? stundenintervall?? time_start, time_end, interval (h)
 class Recurrence(db.Model):
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True)  # ? PK: keine ID stattdessen kombi aus daten (redundanz reduzieren)
     date_start = Column(Date())
     date_end = Column(Date())
     mon = Column(Integer())
@@ -84,6 +85,17 @@ class Recurrence(db.Model):
     fri = Column(Integer())
     sat = Column(Integer())
     sun = Column(Integer())
+
+    def __init__(self, date_start, date_end, mon, tue, wed, thu, fri, sat, sun):
+        self.date_start = date_start
+        self.date_end = date_end
+        self.mon = mon
+        self.tue = tue
+        self.wed = wed
+        self.thu = thu
+        self.fri = fri
+        self.sat = sat
+        self.sun = sun
 
 
 class RecurrenceSchema(ma.SQLAlchemyAutoSchema):
@@ -144,13 +156,13 @@ recurrence_schema = RecurrenceSchema(many=False)
 class Trip(db.Model):
     id = Column(Integer(), primary_key=True)
     note = Column(String(100))
-    departure = Column(Time())
+    departure = Column(Time())  # ? auslagern in recurence? stundenintervall?
     train_id = Column(Integer())
     # train_name =
     price = Column(Integer())
     recurrence_id = Column(Integer(), ForeignKey("recurrence.id"))
-    # recurrence_date_start = Column(Date(), ForeignKey("recurrence.date_start"))  #? for trips order_by date_start ?
     recurrence = relationship("Recurrence", uselist=False)
+    # recurrence_date_start = Column(Date(), ForeignKey("recurrence.date_start"))  #? for trips order_by date_start ?
     line_id = Column(Integer(), ForeignKey("line.id"))
 
 
