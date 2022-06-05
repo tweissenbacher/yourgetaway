@@ -8,12 +8,30 @@ from models.userModel import UserModel
 class SessionHelper:
 
     @classmethod
-    def admin_check(cls, session):
-        if session.get("email") is None:
-            return redirect ("/")
-
-        user = UserModel.find_by_email(session.get("email"))
+    def normal_user_check(cls, email):
+        user = SessionHelper.user_check(email)
+        if user is None:
+            return None
         user.check_if_admin()
-        is_admin= user.is_admin
-        if not is_admin:
-            return redirect("/")
+        is_admin = user.is_admin
+        if is_admin:
+            return None
+        return user
+
+    @classmethod
+    def admin_check(cls, email):
+        user = SessionHelper.user_check(email)
+        if user is None:
+            return None
+        user.check_if_admin()
+        is_admin = user.is_admin
+        if is_admin:
+            return user
+        return None
+
+    @classmethod
+    def user_check(cls, email):
+        if email is None:
+            return None
+        user = UserModel.find_by_email(email)
+        return user

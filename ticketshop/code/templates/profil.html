@@ -8,12 +8,12 @@
 <!-- The sidebar -->
 <div class="sidebar">
   <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  {% if isAdmin %}
+  {% if is_admin %}
   <a href="/aktionen/neu">Aktion anlegen</a>
   <a href="/alleAktionen">Aktionen</a>
   {% else %}
-  <a href="/tickets/neu">Aktion anlegen</a>
-  <a href="/tickets">Aktionen</a>
+  <a href="/tickets/neu">Tickets kaufen</a>
+  <a href="/tickets">Tickets</a>
   {% endif %}
   <a class="active" href="/profil">Profil</a>
 </div>
@@ -23,7 +23,7 @@
      <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
           alt="user picture" style="width:70px;height:70x;">  <br>
     <span>{{ email }}</span> <br>
-    {% if isAdmin %}
+    {% if is_admin %}
     <span class = "admin-field">ADMIN</span> <br>
     {% endif %}
     <a href="/ausloggen"><span >Ausloggen</span></a>
@@ -52,17 +52,17 @@
     <p></p>
     <label>Vorname
         <br>
-    <input type ="vorname" value="{{ user.vorname }}" name ="vorname"/>
+    <input type ="firstname" value="{{ user.firstname }}" name ="firstname"/>
     </label>
     <p></p>
     <label>Nachname
         <br>
-    <input type ="nachname" value="{{ user.nachname}}"name ="nachname"/>
+    <input type ="lastname" value="{{ user.lastname}}"name ="lastname"/>
     </label>
     <p></p>
     <label>Geburtsdatum
         <br>
-      <input type="datetime-local" id="geburtsdatum"  name="geburtsdatum" value="{{ user.geburtsdatum }}">
+      <input type="datetime-local" id="birthday"  name="birthday" value="{{ user.birthday }}">
     </label>
     <p></p>
     <input type = "submit" value ="Profil editieren"/>
@@ -76,8 +76,6 @@
      {% endfor %}
   {% endif %}
 {% endwith %}
-
-
 
 </div>
 </html>

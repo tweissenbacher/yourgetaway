@@ -1,6 +1,8 @@
 from db import db
 
 from models.adminModel import AdminModel
+from werkzeug.security import generate_password_hash
+
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -8,24 +10,26 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email= db.Column(db.String(100))
     password = db.Column(db.String(100))
-    vorname = db.Column(db.String(100))
-    nachname = db.Column(db.String(100))
+    firstname = db.Column(db.String(100))
+    lastname = db.Column(db.String(100))
     image_url = db.Column(db.String(100))
-    geburtsdatum = db.Column(db.String(50))
-    ist_admin = db.Column(db.Boolean)
+    birthday = db.Column(db.String(50))
+    is_admin = db.Column(db.Boolean)
+    tickets = db.relationship("TicketModel")
 
-    def __init__(self, email, password, vorname, nachname, image_url, geburtsdatum):
+    def __init__(self, email, password, firstname, lastname, image_url, birthday):
         self.email = email
-        self.password = password
-        self.vorname = vorname
-        self.nachname = nachname
+        hashed_password = generate_password_hash(password)
+        self.password = hashed_password
+        self.firstname = firstname
+        self.lastname = lastname
         self.image_url = image_url
-        self.geburtsdatum = geburtsdatum
+        self.birthday = birthday
         self.check_if_admin();
 
     def json(self):
         return {"email": self.email, "password": self.password,
-                "vorname": self.vorname, "nachname": self.nachname, "geburtsdatum": self.geburtsdatum, "ist_admin": self.ist_admin}
+                "firstname": self.firstname, "lastname": self.lastname, "birthday": self.birthday, "is_admin": self.is_admin}
 
     def save_to_db(self):
         db.session.add(self)
@@ -36,12 +40,11 @@ class UserModel(db.Model):
         db.session.commit()
 
     def check_if_admin(self):
-        # self.ist_admin = AdminModel.find_admin(self.email)
         user = AdminModel.find_admin(self.email)
         if user:
-            self.ist_admin = True
+            self.is_admin = True
         else:
-            self.ist_admin = False
+            self.is_admin = False
 
     @classmethod
     def find_by_email(cls, email):

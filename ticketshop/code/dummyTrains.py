@@ -35,6 +35,14 @@ class DummyTrains:
             }
 
         );
+        trains.append(
+            {
+                'id': 5,
+                'name': 'Spezialexpress',
+                'capacity': 2
+            }
+
+        );
         return trains
 
     @classmethod

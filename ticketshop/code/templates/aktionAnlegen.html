@@ -20,9 +20,7 @@
      <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
           alt="user picture" style="width:70px;height:70x;">  <br>
     <span>{{ email }}</span> <br>
-    {% if isAdmin %}
     <span class = "admin-field">ADMIN</span> <br>
-    {% endif %}
     <a href="/ausloggen"><span >Ausloggen</span></a>
 </div>
 
@@ -33,41 +31,28 @@
     <form method = "POST">
         <label>Rabatt (in Prozent)
             <br>
-            <input type ="number" name ="rabatt" required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
+            <input type ="number" name ="discount" required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
             oninput="this.setCustomValidity('')"/>
         </label>
         <p></p>
-        <label>Von
-            <br>
-            <input type ="text" name ="von" />
+        <label>Strecke <br>
+            <select name="route_picker" id="route_picker">
+                <option value="" selected>Strecke wählen</option>
+                {% for r in get_routes() %}
+                    <option value="{{r.id}}">{{r.from_}}  ---  {{r.to}}</option>
+                {% endfor %}
+            </select>
         </label>
         <p></p>
-        <label>Nach
-            <br>
-            <input type ="text" name ="nach" />
-        </label>
-        <p></p>
-
-
-<!--Alternative Darstellung via Dropdown-->
-<!--        <label>Strecke <br>-->
-<!--            <select name="alle-trecken" id="alle-strecken">-->
-<!--                {% for strecke in strecken %}-->
-<!--                    <option value="strecke['id]">{{strecke['von']}}&#45;&#45;{{strecke['nach']}}</option>-->
-<!--                {% endfor %}-->
-<!--            </select>-->
-
-<!--        </label>-->
-<!--        <p></p>-->
 
         <label>Startdatum
             <br>
-            <input type="datetime-local" id="startdatum"  name="startdatum" value="{{heute}}">
+            <input type="datetime-local" id="start_date"  name="start_date" value="{{today()}}">
         </label>
         <p></p>
         <label>Enddatum
             <br>
-            <input type="datetime-local" id="enddatum" name="enddatum" value="{{heute}}">
+            <input type="datetime-local" id="end_date" name="end_date" value="{{today()}}">
         </label>
         <p></p>
         <input class ="button-aktionAnlegen" type = "submit" value ="Aktion anlegen"/>

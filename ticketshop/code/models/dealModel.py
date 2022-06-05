@@ -4,41 +4,29 @@ from sqlalchemy import desc
 
 from db import db
 
-from dummyDatenAbschnitte import DummyAbschnitte
-
-from dummyDatenStrecken import DummyStrecken
+from allEndpoints import SectionEndpoint, RouteEndpoint
 
 
-class AktionModel(db.Model):
-    __tablename__ = 'aktionen'
+class DealModel(db.Model):
+    __tablename__ = 'deals'
 
     id = db.Column(db.Integer, primary_key = True)
-    rabatt = db.Column(db.Float(precision=2))
-    ist_strecken_rabatt = db.Column(db.Boolean, default = False)
-    startdatum = db.Column(db.String(100))
-    enddatum = db.Column(db.String(100))
+    discount = db.Column(db.Float(precision=2))
+    start_date = db.Column(db.String(100))
+    end_date = db.Column(db.String(100))
 
-    strecken_id = db.Column(db.Integer)
-    # strecken_id = db.Column(db.Integer, db.ForeignKey('strecken.id'))
-    # strecke = db.relationship('StreckeModel')
+    route_id = db.Column(db.Integer)
 
-    abschnitt_id = db.Column(db.Integer)
-    # abchnitt_id = db.Column(db.Integer, db.ForeignKey('abschnitte.id'))
-    # abschnitt = db.relationship('AbschnittModel')
-
-    def __init__(self, rabatt, strecken_id, abschnitt_id, startdatum, enddatum):
-        self.rabatt = rabatt
-        self.strecken_id = strecken_id
-        self.abschnitt_id =abschnitt_id
-        self.startdatum = startdatum
-        self.enddatum = enddatum
-
+    def __init__(self, discount, route_id, start_date, end_date):
+        self.discount = discount
+        self.route_id = route_id
+        self.start_date = start_date
+        self.end_date = end_date
 
     def json(self):
-        abschnitt = DummyAbschnitte.getDummyAbschnittById(self.abschnitt_id)
-        strecke = DummyStrecken.getDummyStreckeById(self.strecken_id)
-        return {'id': self.id, 'rabatt': self.rabatt, 'strecke': strecke, 'abschnitt': abschnitt,
-                'startdatum': self.startdatum, 'enddatum': self.enddatum}
+        route = RouteEndpoint.find_by_id(self.route_id)
+        return {'id': self.id, 'discount': self.discount, 'route': route,
+                'start_date': self.start_date, 'end_date': self.end_date}
 
     def save_to_db(self):
         db.session.add(self)
@@ -57,33 +45,29 @@ class AktionModel(db.Model):
         return cls.query.all();
 
     @classmethod # retourniert Aktionen, die sich auf die angegebene Strecke beziehen
-    def find_by_strecke(cls, strecken_id, date):
-        return cls.query.filter_by(strecken_id = strecken_id).filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
-            .order_by(desc(AktionModel.rabatt)).first()
-
-    @classmethod # retourniert Aktionen, die sich auf den angegeben Abschnitt beziehen
-    def find_by_abschnitt(cls, abschnitt_id, date):
-        return cls.query.filter_by(abschnitt_id = abschnitt_id).filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
-            .order_by(desc(AktionModel.rabatt)).first()
+    def find_by_route_and_date(cls, route_id, date):
+        return cls.query.filter_by(route_id = route_id).filter(DealModel.start_date <= date).filter(DealModel.end_date >= date)\
+            .order_by(desc(DealModel.discount)).first()
 
     @classmethod # retourniert allgemeine Aktionen
-    def find_by_date(cls, date):
-        return cls.query.filter(AktionModel.abschnitt_id <= 0).filter(AktionModel.strecken_id <= 0)\
-            .filter(AktionModel.startdatum <= date).filter(AktionModel.enddatum >= date)\
-            .order_by(desc(AktionModel.rabatt)).first()
+    def find_general_deals_by_date(cls, date):
+        return cls.query.filter(DealModel.route_id <= 0)\
+        .filter(DealModel.start_date <= date)\
+        .filter(DealModel.end_date >= date)\
+        .order_by(desc(DealModel.discount)).first()
 
     @classmethod
-    def check_data(cls, rabatt, startdatum, enddatum):
-        if not cls.check_rabatt(rabatt):
+    def check_data(cls, discount, start_date, end_date):
+        if not cls.discount_valid(discount):
             return False
-        if startdatum > enddatum or startdatum < str(datetime.datetime.now()):
+        if start_date > end_date or start_date < str(datetime.datetime.now()):
             flash("Ungültige Eingaben: Das Startdatum muss in der Zukunft und VOR dem Enddatum liegen.")
-            return False;
-        return True;
+            return False
+        return True
 
     @classmethod
-    def check_rabatt(cls, rabatt):
-        if rabatt < 0 or rabatt >= 100:
+    def discount_valid(cls, discount):
+        if discount < 0 or discount >= 100:
             flash("Ungültige Eingabe: Der Rabatt muss zwischen 1 und 100 Prozent betragen.")
             return False
         return True

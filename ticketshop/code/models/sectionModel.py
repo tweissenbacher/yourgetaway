@@ -1,45 +1,51 @@
-from db import db
-from dummyDatenAbschnitte import DummyAbschnitte
+from allEndpoints import SectionEndpoint
 
-class AbschnittModel(db.Model):
-    __tablename__ = 'abschnitte'
+from models.warningModel import WarningModel
 
-    id = db.Column(db.Integer, primary_key = True)
-    von = db.Column(db.String(100))
-    nach = db.Column(db.String(100))
-    zeitdauer = db.Column(db.Integer) # in Minuten
-    kosten = db.Column(db.Float)
 
-    def __init__(self, von, nach, zeitdauer, kosten):
-        self.von = von
-        self.nach = nach
-        self.zeitdauer = zeitdauer
-        self.kosten = kosten
+class SectionModel:
 
-    def json(self):
-        return { "id": self.id, "von": self.von, "nach": self.nach, "zeidauer": self.zeitdauer, "kosten": self.kosten}
+    def __init__(self, id, from_, to, time, costs, warnings):
+        self.id = id
+        self.from_ = from_
+        self.to = to
+        self.time = time
+        self.costs = costs
+        self.warnings = warnings
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+    @classmethod
+    def json_to_object(cls, json_section):
+        id_ = int(json_section['id'])
+        from_ = json_section['start']
+        to = json_section['end']
+        time = json_section['time']
+        costs = json_section['fee']
+        warnings = []
+        for warning in json_section['warnings']:
+            warnings.append(WarningModel.json_to_object(warning))
+        return SectionModel(id_, from_, to, time, costs, warnings)
 
+    @classmethod
+    def json_to_object_fahrplansystem(cls, json_section):
+        return None
 
 
     @classmethod
-    def findAbschnittVonNach(cls, von, nach):
-        # Alle Abschnitte von Thomas holen, entsprechend filtern und in Liste speichern
-        # vorerst DummyDaten
-
-        abschnitte = DummyAbschnitte.getDummyAbschnitte()
-        filteredAbschnitte = list(filter(lambda x: (x['von'] == von and x['nach'] == nach) or (x['von'] == nach and x['nach'] == von), abschnitte))
-        if len(filteredAbschnitte) <= 0:
+    def find_section_from_to(cls, from_, to):
+        sections = SectionEndpoint.find_all()
+        sections = [cls.json_to_object(s) for s in sections]
+        filtered_sections = list(filter(lambda x: (x.from_ == from_ and x.to == to) or (x.from_ == to and x.to == from_), sections))
+        if len(filtered_sections) <= 0:
             return None
-        return filteredAbschnitte[0]
+        return filtered_sections[0]
 
     @classmethod
-    def getAbschnitteDictionary(cls):
-        alleAbschnitte = DummyAbschnitte.getDummyAbschnitte()
+    def get_section_dictionary(cls):
+        all_sections = SectionEndpoint.find_all()
+        all_sections = [cls.json_to_object(s) for s in all_sections]
         dictionary = {}
-        for abschnitt in alleAbschnitte:
-            dictionary[abschnitt['id']] = abschnitt
+        for section in all_sections:
+            dictionary[section.id] = section
         return dictionary
+
+

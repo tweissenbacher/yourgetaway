@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+  <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticketshop</title>
+    <link rel="stylesheet" href="../static/css/ticketshop.css">
+  </head>
 
-</body>
-</html>
+<!-- sidebar -->
+<div class="sidebar">
+    <h2>YOUR GETAWAY <br> Ticketshop</h2>
+  <a href="/tickets/neu">Ticket kaufen</a>
+  <a class="active" href="/tickets">Tickets</a>
+  <a href="/profil">Profil</a>
+</div>
+
+  <!-- user-info -->
+ <div class="container-user" style="float:right">
+     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+          alt="user picture" style="width:70px;height:70x;">  <br>
+    <span>{{ email }}</span> <br>
+    {% if isAdmin %}
+    <span class = "admin-field">ADMIN</span> <br>
+    {% endif %}
+    <a href="/ausloggen"><span >Ausloggen</span></a>
+</div>
+
+
+<!-- Page content -->
+<div class="content">
+      <div class ="aktionen-content">
+<h1>Fahrtablauf</h1>
+
+
+  <table>
+    <tr>
+        <td>Zeit</td>
+        <td>Bahnhof</td>
+        <td>Verfügbare Sitzplätze</td>
+
+    </tr>
+      {% for section in ticket.sections %}
+            {% if loop.index0 == 0 %}
+            <tr>
+                <td>{{ section.start_date}}</td>
+                <td>{{ section.from_}}</td>
+                <td>{{ section.capacity}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>{{ section.end_date}}</td>
+                <td>{{ section.to}}</td>
+                <td>{{ section.capacity}}</td>
+            </tr>
+    {% endfor %}
+</table>
+
+</div>
+          <form method = "POST">
+        <input type = "submit" value ="Zurück"/>
+    </form>
+
+ {% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
+</div>
+  </html>

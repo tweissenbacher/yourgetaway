@@ -1,41 +1,42 @@
-from db import db
+from models.sectionModel import SectionModel
 
-from dummyDatenStrecken import DummyStrecken
+from allEndpoints import RouteEndpoint
 
+class RouteModel:
 
-class StreckeModel(db.Model):
-    __tablename__ = 'strecken'
-
-    id = db.Column(db.Integer, primary_key=True)
-    von = db.Column(db.String(50))
-    nach = db.Column(db.String(50))
-
-    def __init__(self, id, von, nach):
+    def __init__(self, id, from_, to, sections):
         self.id = id
-        self.von = von
-        self.nach = nach
-
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+        self.from_ = from_
+        self.to = to
+        self.sections = sections
 
     @classmethod
-    def findStreckeVonBis(cls, von, nach):
-# Strecken von Thomas holen und in Liste speichern
-# vorerst DummyDaten
-        strecken = DummyStrecken.getDummyStrecken()
-        filteredStrecken = \
-            list(filter(lambda x: (x['von'] == von and x['nach'] == nach) or (x['von'] == nach and x['nach'] == von), strecken))
-        if len(filteredStrecken) <= 0:
+    def json_to_object(cls, json_route):
+        id_ = int(json_route['id'])
+        from_ = json_route['von']
+        to = json_route['nach']
+        sections = []
+        for section in json_route['sections']:
+            sections.append(SectionModel.json_to_object(section))
+
+        return RouteModel(id_, from_, to, sections)
+
+    @classmethod
+    def find_route_from_to(cls, from_, to):
+        routes = RouteEndpoint.find_all()
+        routes = [cls.json_to_object(r) for r in routes]
+        filtered_routes = \
+            list(filter(lambda x: (x.from_ == from_ and x.to == to) or (x.from_ == to and x.to == from_), routes))
+        if len(filtered_routes ) <= 0:
             return None
-        return filteredStrecken[0]
+        return filtered_routes[0]
 
     @classmethod
-    def getStreckenDictionary(cls):
-        alleStrecken = DummyStrecken.getDummyStrecken()
+    def get_route_dictionary(cls):
+        all_routes = RouteEndpoint.find_all()
+        all_routes = [cls.json_to_object(r) for r in all_routes]
         dictionary = {}
-        for strecke in alleStrecken:
-            dictionary[strecke['id']] = strecke
+        for route in all_routes:
+            dictionary[route.id] = route
 
         return dictionary

@@ -115,16 +115,16 @@ class DummyFahrtstrecken:
                         ]
                     },
                     {
-                        "note": "Sonderfahrt nur Montag, 2.Mai",
+                        "note": "Sonderfahrt nur Montag, 2.Juni",
                         "departure": "08:43:00",
-                        "train_id": 1,
-                        "train": "REX3912",
+                        "train_id": 5,
+                        "train": "Spezialexpress",
                         "price": "12.40",
                         "recurrence": {
-                            "date_start": "2022-05-02",
-                            "date_end": "2022-05-02",
+                            "date_start": "2022-06-02",
+                            "date_end": "2022-06-02",
                             "weekdays": [
-                                "Monday"
+                                "Thursday"
                             ]
                         },
                         "personell": [
@@ -180,10 +180,18 @@ class DummyFahrtstrecken:
                     [
                         {
                             "id": 1,
-                            "von": "Wels",
-                            "nach": "Linz",
-                            "zeitdauer": 20,
-                            "kosten": 5
+                            "start": "Wels",
+                            "end": "Linz",
+                            "time": 20,
+                            "fee": 5,
+                            "warnings": [
+                                {
+                                    "id": 1,
+                                    "route_id": 0,
+                                    "section_id": 1,
+                                    "text": "Es kann zu Verzögerungen kommen."
+                                }
+                            ]
                         }
                     ],
                 "trips": [

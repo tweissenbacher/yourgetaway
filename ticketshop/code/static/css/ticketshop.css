@@ -30,6 +30,11 @@ div.content-ticket {
     margin-left: 400px;
 }
 
+.tickets {
+    margin-left: 120px;
+}
+
+
  /* Ende Ticketverwaltung */
 
  /* Registrierung */
@@ -86,10 +91,6 @@ h1 {
 h2 {
     color: #100857;
     text-align: center;
-}
-
-label {
-
 }
 
  /* Login */
@@ -211,13 +212,14 @@ div.content {
 /* table */
 table {
     border-collapse: collapse;
-    margin: 25px 0;
+    position: absolute;
+    margin:auto;
+    /*margin: 25px 0; */
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 800px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
-
 
 
 tr {
@@ -228,6 +230,7 @@ tr {
 
 th,
 td {
+    max-width: 250px;
     padding: 12px 15px;
 }
 

@@ -4,14 +4,6 @@
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
   </head>
-{% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
-
 
 <!-- sidebar -->
 <div class="sidebar">
@@ -26,9 +18,7 @@
      <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
           alt="user picture" style="width:70px;height:70x;">  <br>
     <span>{{ email }}</span> <br>
-    {% if isAdmin %}
     <span class = "admin-field">ADMIN</span> <br>
-    {% endif %}
     <a href="/ausloggen"><span >Ausloggen</span></a>
 </div>
 
@@ -46,46 +36,38 @@
         <td>Startdatum</td>
         <td>Enddatum</td>
         <td>Strecke</td>
-        <td>Abschnitt</td>
         <td>Status</td>
         <td>Editieren</td>
         <td>Löschen</td>
     </tr>
-      {% for aktion in aktionen %}
+      {% for deal in deals %}
             <tr>
-                <td>{{ aktion['id']}}</td>
-                <td>{{ aktion['rabatt'] }}</td>
-                <td>{{ aktion['startdatum'] }}</td>
-                <td>{{ aktion['enddatum']}}</td>
-                {% if aktion['strecken_id'] > 0 %}
-                    <td>{{ streckenDictionary[aktion['strecken_id']]['von'] }} ---
-                    {{ streckenDictionary[aktion['strecken_id']]['nach'] }}
-                    </td>
-                {% else %}
-                <td> - </td>
-                {% endif %}
-                {% if aktion['abschnitt_id'] > 0 %}
-                    <td>{{ abschnittDictionary[aktion['abschnitt_id']]['von']}} ---
-                    {{ abschnittDictionary[aktion['abschnitt_id']]['nach']}}
+                <td>{{ deal.id}}</td>
+                <td>{{ deal.discount }}</td>
+                <td>{{ deal.start_date}}</td>
+                <td>{{ deal.end_date}}</td>
+                {% if deal.route_id > 0 %}
+                    <td>{{ route_dictionary[deal.route_id].from_}} ---
+                    {{ route_dictionary[deal.route_id].to }}
                     </td>
                 {% else %}
                 <td> - </td>
                 {% endif %}
                 <td>
-                {% if aktion['enddatum'] < heute %}
+                {% if deal.end_date < today() %}
                     <span class="status-beendet">BEENDET </span>
                 {% endif %}
-                {% if aktion['enddatum'] > heute and aktion['startdatum'] < heute  %}
+                {% if deal.end_date > today() and deal.start_date < today() %}
                     <span class="status-aktiv">AKTIV </span>
                 {% endif %}
-                {% if aktion['enddatum'] > heute and aktion['startdatum'] > heute  %}
+                {% if deal.end_date > today() and deal.start_date > today()  %}
                     <span class="status-inaktiv">INAKTIV </span>
                 {% endif %}
 
                 </td>
-                {% if aktion['enddatum'] > heute %}
-                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEditieren/{{aktion['id']}}"><button>Editieren</button></a></td>
-                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{aktion['id']}}"><button>Löschen</button></a></td>
+                {% if deal.end_date > today() %}
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEditieren/{{deal.id}}"><button>Editieren</button></a></td>
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{deal.id}}"><button>Löschen</button></a></td>
                 {% else %}
                 <td>-</td>
                 <td>-</td>
@@ -94,6 +76,15 @@
     {% endfor %}
 </table>
 </div>
+ {% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
+
 </div> 
 
   </html>

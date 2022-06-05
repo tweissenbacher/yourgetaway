@@ -4,13 +4,6 @@
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../../static/css/ticketshop.css">
   </head>
-{% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
 
 <!-- sidebar -->
 <div class="sidebar">
@@ -32,19 +25,32 @@
 <div class="content-ticket">
 <h1>Details zu Ihrer Fahrt</h1>
 <h3>Gewählte Fahrt:</h3>
-    <p>Von: {{ticket.von}}</p>
-    <p>Nach: {{ticket.nach}}</p>
-    <p>Datum: {{ticket.datum}}</p>
-    <p>Preis: {{ticket.preis}} Euro</p>
-    <p>Rabatt: {{ticket.rabatt}} %</p>
-    <p> Preis gesamt: {{ticket.preis * (100 -ticket.rabatt) / 100}} Euro</p>
+    <p>Von: {{ticket.from_}}</p>
+    <p>Nach: {{ticket.to}}</p>
+    <p>Abfahrt: {{ticket.date}}</p>
+    <p>Ankunft: {{ get_time(ticket.line_id, ticket.line_date, ticket.to) }}</p>
+    <p>Preis: {{ticket.price}} Euro</p>
+    <p>Rabatt: {{ticket.discount}} %</p>
+    <p> <b>Preis gesamt:</b> {{ticket.price * (100 -ticket.discount) / 100}} Euro</p>
+
 
     <form method = "POST">
-
+    <div>
+      <input type="checkbox" id="seat_reservation" name="seat_reservation">
+      <label for="seat_reservation">Sitzplatz reservieren</label>
+    </div>
+    <p></p>
     <input type = "submit" value ="Zahlungspflichtig kaufen"/>
 
 </form>
 
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
 </div>
 
  </html>

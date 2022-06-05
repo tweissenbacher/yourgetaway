@@ -29,22 +29,31 @@
 <form method = "POST">
     <label>Von
         <br>
-    <input type ="text" name ="von" />
+    <input type ="text" name ="from_"/>
     </label>
      <p></p>
     <label>Nach
         <br>
-    <input type ="text" name ="nach" />
+    <input type ="text" name ="to" />
     </label>
      <p></p>
     <label>Datum
         <br>
-      <input type="datetime-local" id="datum"  name="datum" value="2022-04-23T00:01">
+      <input type="datetime-local" id="date"  name="date" value="{{today}}">
     </label>
       <p></p>
     <input class ="button-ticketAnlegen" type = "submit" value ="Weiter"/>
 
 </form>
+
+        {% with messages = get_flashed_messages() %}
+         {% if messages %}
+               {% for message in messages %}
+                    <p class ="flash-messages">{{ message }}</p>
+               {% endfor %}
+         {% endif %}
+      {% endwith %}
+
 </div>
 </body>
  </html>
