@@ -1,12 +1,13 @@
+import datetime
 import json
 import os
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 
-from website.model.line import LineSection
+from website.model.line import LineSection, Trip
 from .. import db
 from ..model import Section, Line, User, Route
 
@@ -82,7 +83,7 @@ def lines_create():
             db.session.add(line)
             db.session.commit()
             flash("Fahrtstrecke angelegt!", category="success")
-            return redirect(url_for("lines.lines_view"))
+            return redirect(url_for("lines.lines_detail", id=line.id))
         
         routes = Route.query.all()
         return render_template(
@@ -111,3 +112,41 @@ def lines_trips(id):
     line = Line.query.get(id)
     return render_template("trips.html", user=current_user, line=line)
 
+
+# /lines/7/?trips=intervals
+# /lines/7/?trips=resolved&recurrence_id=2&items=20&page=1
+@lines.route("/lines/<int:line_id>/resolved/", methods=["GET", "POST"])
+@login_required
+def lines_trips_resolved(line_id):
+    
+    # t_dep = request.args.get("t_dep", type=str, default='')
+    # t_dep = time.fromisoformat(t_dep)
+    sortby = request.args.get('sortby', default='date')
+    page = request.args.get("page", type=int, default=1)
+    items = request.args.get("items", type=int, default=10)
+    i = (page - 1) * items
+
+    line =  Line.query.get(line_id)
+    trips = Trip.query.filter(
+        and_(
+            Trip.line_id == line_id,
+            # Trip.departure >= t_dep,
+        )
+    ).slice(i, i + items)
+    
+    resolved = []
+    for trip in trips:
+        start_date = trip.recurrence.date_start
+        end_date   = trip.recurrence.date_end
+        current_date = start_date
+        i = 0
+        # Iterating over all dates from start date until end date including end date ("inclusive")
+        while (current_date <= end_date):
+            # Calling the function that you need, with the appropriate day-month-year combination
+            # Outputting to path that is build based on current day-month-year combination
+            resolved.append({'rec_id':trip.recurrence.id, 'date':current_date, 'departure': trip.departure})
+            # Advancing current date by one day
+            current_date += datetime.timedelta(days=1)
+            
+    resolved = sorted(resolved, key=lambda d: d["date"])
+    return render_template("trips.html", user=current_user, line=line, trips=trips, resolved=resolved, sortby=sortby)

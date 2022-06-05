@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Fahrplan bearbeiten{% endblock %}
+{% block content %}
+
+{% if user == None %}
+<!-- TODO if user not authenticated -->
+<p>404</p>
+{% elif current_user.admin == 1 %}
+
+<br />
+<br />
+
+<form method="post">
+
+    {% if not update %}
+
+    <a href="update"
+       class="btn btn-outline-primary">Fahrtstrecke bearbeiten</a>
+
+    {% else %}
+
+    <p>line.id: {{ line.id if line != undefined or None }}</p>
+    <p>line.route.name: {{line.route.name}}</p>
+
+    <div class="form-group">
+        <label for="route_id">Wähle Strecke</label>
+        <select name="route_id"
+                class="form-select"
+                id="route_id"
+                disabled>
+            <option value="{{ line.route.id }}">{{ line.route.name }}</option>
+        </select>
+
+        <label for="descr">Beschreibung</label>
+        <input type="text"
+               class="form-control"
+               id="descr"
+               name="descr"
+               value="{{ line.descr if line.descr }}"
+               placeholder="Beschreibung" />
+
+        <label for="price">Gesamtpreis</label>
+        <input type="text"
+               class="form-control"
+               id="price"
+               name="price"
+               value="{{ line.price if line.price }}"
+               placeholder="cent" />
+
+        {% if line.sections is not undefined or None %}
+        <label for="first_section">Startbahnhof</label>
+        <select name="first_section"
+                class="form-select"
+                id="first_section">
+            {% for section in line.route.sections %}
+            <option value="{{ section.id }}"
+                    {{ 'selected' if (line.sections|first).section.id == section.id }}>
+                {{ section.from_station_name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        {% if line.sections != undefined or None %}
+        <label for="last_section">Endbahnhof</label>
+        <select name="last_section"
+                class="form-select"
+                id="last_section">
+            {% for section in line.route.sections %}
+            <option value="{{ section.id }}"
+                    {{ 'selected' if (line.sections|last).section.id == section.id }}>
+                {{ section.to_station_name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+
+        <br />
+        <!-- <a href="?{{ route_id if route_id }}"
+           class="btn btn-outline-primary">Weiter</a> -->
+
+        <button type="submit"
+                class="btn btn-primary">Weiter</button>
+        {% endif %}
+        <!-- endif not update -->
+
+        {% if line is not undefined or None %}
+        {% if line.route is not undefined or None %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <td colspan="5"
+                        style="padding-top: 2em;">
+                        <h2>{{ line.descr }} </h2>
+                        <h5>auf {{ line.route.name }}</h5>
+                        <span>Gesamtpreis: {{ "{:,.2f}".format(line.price/100) | replace('.',',') }} €</span>
+                        <p>Fahrtdauer: {{ (line.sections | last).arrival }} min</p>
+                        <p>Information: {{ line.note if line.note }}</p>
+                        <br><br>
+                        <h5>Abschnitte:</h5>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">von</th>
+                    <th scope="col">nach</th>
+                    <th scope="col">Dauer (min)</th>
+                    <th scope="col">Kumuliert (min)</th>
+                </tr>
+                {% if line.sections %}
+                {% for line_section in line.sections %}
+                <tr>
+                    <td>{{ line_section.section.id }}</td>
+                    <td>{{ line_section.section.from_station_name }}</td>
+                    <td>{{ line_section.section.to_station_name }}</td>
+                    <td>{{ line_section.section.duration }} min</td>
+                    <td>{{ line_section.arrival }} min</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    {% else %}
+                <tr>
+                    <td colspan="11">Keine Durchführungen</td>
+                </tr>
+                {% endif %}
+
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        {% if update %}
+        <label for="confirm">Alles richtig? </label>
+        <input type="checkbox"
+               class="form-check-input"
+               id="confirm"
+               name="confirm"
+               placeholder="confirm" />
+        <br><br>
+        <button type="submit"
+                class="btn btn-primary">Speichern</button>
+
+        {% endif %}
+        {% endif %}
+        {% endif %}
+
+
+        {% if sortby == 'time' %}
+        <!-- if sortby departure time -->
+        <div>
+
+            {% if trips %}
+            {% for trip in trips %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td colspan="11"
+                            style="padding-top: 2em;">
+                            <h5>Durchführung:</h5>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="col">L</th>
+                        <th scope="col">B</th>
+                        <th scope="col">von</th>
+                        <th scope="col">bis</th>
+                        <th scope="col">Mo</th>
+                        <th scope="col">Di</th>
+                        <th scope="col">Mi</th>
+                        <th scope="col">Do</th>
+                        <th scope="col">Fr</th>
+                        <th scope="col">Sa</th>
+                        <th scope="col">So</th>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <a href="{{ trip.id }}"
+                               id="btn-edit"
+                               class="btn btn-sm btn-outline-secondary"
+                               aria-label="Edit">
+                                <span aria-hidden="true">&#x1f589;</span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ trip.id }}/delete"
+                               id="btn-delete"
+                               class="btn btn-sm btn-outline-danger"
+                               aria-label="Delete">
+                                <span aria-hidden="true">&#x2A09;</span>
+                                <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
+                            </a>
+                        </td>
+                        <td>{{ trip.recurrence.date_start }}</td>
+                        <td>{{ trip.recurrence.date_end }}</td>
+                        <td>{{ trip.departure if trip.recurrence.mon }}</td>
+                        <td>{{ trip.departure if trip.recurrence.tue }}</td>
+                        <td>{{ trip.departure if trip.recurrence.wed }}</td>
+                        <td>{{ trip.departure if trip.recurrence.thu }}</td>
+                        <td>{{ trip.departure if trip.recurrence.fri }}</td>
+                        <td>{{ trip.departure if trip.recurrence.sat }}</td>
+                        <td>{{ trip.departure if trip.recurrence.sun }}</td>
+                    </tr>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td colspan="7"
+                                    style="padding-top: 0em;">
+                                    <h6>Einzeldurchführungen:</h6>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="col">L</th>
+                                <th scope="col">B</th>
+                                <th scope="col">Datum</th>
+                                <th scope="col">ab</th>
+                                <th scope="col">an</th>
+                                <th scope="col">Zug</th>
+                                <th scope="col">Personal</th>
+                            </tr>
+                            {% for r in resolved %}
+                            {% if r.rec_id == trip.recurrence.id %}
+                            <tr>
+                                <td>
+
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    {{r.rec_id}}
+                                </td>
+                                <td>
+                                    {{r.date}}
+                                </td>
+                                <td>
+                                    {{r.departure}}
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="11">Keine Durchführungen</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+        </div>
+        <!-- endif sorted departure time -->
+        {% endif %}
+
+        {% if sortby == 'date' %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <td colspan="7"
+                        style="padding-top: 0em;">
+                        <h6>Einzeldurchführungen:</h6>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="col">L</th>
+                    <th scope="col">B</th>
+                    <th scope="col">Datum</th>
+                    <th scope="col">ab</th>
+                    <th scope="col">an</th>
+                    <th scope="col">Zug</th>
+                    <th scope="col">Personal</th>
+                </tr>
+                {% for r in resolved %}
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        {{r.rec_id}}
+                    </td>
+                    <td>
+                        {{r.date}}
+                    </td>
+                    <td>
+                        {{r.departure}}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% else %}
+                <tr>
+                    <td colspan="11">Keine Durchführungen</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+
+
+
+    </div>
+</form>
+
+{% endif %}
+{% endblock %}

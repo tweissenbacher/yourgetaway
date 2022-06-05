@@ -1,9 +1,17 @@
-from datetime import datetime
+from datetime import date, datetime, time
 import json
 
-from flask import Blueprint, Response, jsonify, make_response, redirect, request
+from flask import (
+    Blueprint,
+    Response,
+    jsonify,
+    make_response,
+    redirect,
+    request,
+    session,
+)
 from flask_login import current_user, login_required
-from sqlalchemy import Time, select
+from sqlalchemy import Time, and_, select
 from website.model import (
     Line,
     line_schema,
@@ -13,10 +21,12 @@ from website.model import (
     sections_schema,
     Trip,
     trip_schema,
+    trips_schema,
     User,
     user_schema,
     users_schema,
 )
+from website.model.line import Recurrence
 
 from .. import db
 
@@ -24,6 +34,14 @@ api_test = Blueprint("api_test", __name__)
 
 
 # https://docs.sqlalchemy.org/en/14/orm/session_basics.html#querying-2-0-style
+
+
+@api_test.route("/test/", methods=["GET"])
+@api_test.route("/test/<another>", methods=["GET"])
+def test_api_multiple(another):
+    if another:
+        return jsonify(another)
+    return jsonify(res)
 
 
 @api_test.route("/lines/", methods=["GET"])
@@ -54,19 +72,69 @@ def test_api_line_by_id(id):
     return jsonify(res)
 
 
-@api_test.route("/lines/<int:id>/trips/create/", methods=["GET"])
-def test_api_create_trip(id):
+# api-test/lines/7/trips/create?note=notiz&price=1360&t_dep=12:00&dt_start=2022-04-02&dt_end=2022-08-02&
+@api_test.route("/lines/<int:line_id>/trips/create/", methods=["GET"])
+def test_api_create_trip(line_id):
+    note = request.args.get("note", type=str)
+    price = request.args.get("price", type=int)
+
+    t_dep = request.args.get("t_dep", type=str)
+    dt_start = request.args.get("dt_start", type=str)
+    dt_end = request.args.get("dt_end", type=str)
+
+    dt_start = date.fromisoformat(dt_start)
+    dt_end = date.fromisoformat(dt_end)
+    t_dep = time.fromisoformat(t_dep)
+
+    rec = Recurrence(dt_start, dt_end, 1, 1, 1, 1, 1, 0, 0)
+
     trip = Trip(
-        note="Trip 0",
-        departure=datetime.utcnow().time(),
+        note=note,
+        departure=t_dep,
         train_id=0,
-        price=1250,
-        recurrence_id=0,
-        line_id=id,
+        price=price,
+        recurrence=rec,
+        line_id=line_id,
     )
     db.session.add(trip)
     db.session.commit()
     res = trip_schema.dump(trip)
+    print(res)
+    return jsonify(res)
+
+
+# api-test/lines/7/trips/?note=notiz&price=1360&t_dep=12:00&dt_start=2022-04-02&dt_end=2022-08-02&items=10&page=1
+@api_test.route("/lines/<int:line_id>/trips/", methods=["GET"])
+def test_api_trips_filtered(line_id):
+    # note = request.args.get("note", type=str)
+    # price = request.args.get("price", type=int)
+
+    t_dep = request.args.get("t_dep", type=str)
+    dt_start = request.args.get("dt_start", type=str)  # , default=datetime.now())
+
+    t_dep = time.fromisoformat(t_dep)
+    dt_start = date.fromisoformat(dt_start)
+
+    page = request.args.get("page", type=int, default=1)
+    items = request.args.get("items", type=int, default=10)
+
+    i = (page - 1) * items
+
+    trips = Trip.query.filter(
+        and_(
+            Trip.line_id == line_id,
+            Trip.departure >= t_dep,
+            Trip.recurrence.has(Recurrence.date_start <= dt_start),
+            Trip.recurrence.has(Recurrence.date_end >= dt_start),
+        )
+    ).slice(i, i + items)
+
+    # filters = {'t_dep':t_dep, 'dt_start':dt_start}
+    # query = session.query(Trip)
+    # for filt, val in filters.iteritems():
+    #     query = query.filter(getattr(Trip, attr))
+
+    res = trips_schema.dump(trips)
     print(res)
     return jsonify(res)
 

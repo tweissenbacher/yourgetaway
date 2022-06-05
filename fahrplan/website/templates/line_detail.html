@@ -19,17 +19,16 @@
 
     {% else %}
 
-    <p>sel_route.id: {{ sel_route.id if sel_route != undefined or None }}</p>
-    <div class="form-group">
+    <p>line.id: {{ line.id if line != undefined or None }}</p>
+    <p>line.route.name: {{line.route.name}}</p>
 
+    <div class="form-group">
         <label for="route_id">Wähle Strecke</label>
         <select name="route_id"
                 class="form-select"
-                id="route_id">
-            {% for route in routes %}
-            <option value="{{ route.id }}"
-                    {{ 'selected' if sel_route and sel_route.id == route.id }}>{{ route.name }}</option>
-            {% endfor %}
+                id="route_id"
+                disabled>
+                <option value="{{ line.route.id }}">{{ line.route.name }}</option>
         </select>
 
         <label for="descr">Beschreibung</label>
@@ -37,7 +36,7 @@
                class="form-control"
                id="descr"
                name="descr"
-               value="{{ descr if descr }}"
+               value="{{ line.descr if line.descr }}"
                placeholder="Beschreibung" />
 
         <label for="price">Gesamtpreis</label>
@@ -45,30 +44,30 @@
                class="form-control"
                id="price"
                name="price"
-               value="{{ price if price }}"
+               value="{{ line.price if line.price }}"
                placeholder="cent" />
 
-        {% if sel_route is not undefined or None %}
+        {% if line.sections is not undefined or None %}
         <label for="first_section">Startbahnhof</label>
         <select name="first_section"
                 class="form-select"
                 id="first_section">
-            {% for section in sel_route.sections %}
+            {% for section in line.route.sections %}
             <option value="{{ section.id }}"
-                    {{ 'selected' if first_section == section.id }}>
+                    {{ 'selected' if (line.sections|first).section.id == section.id }}>
                 {{ section.from_station_name }}</option>
             {% endfor %}
         </select>
         {% endif %}
 
-        {% if last_section != undefined or None %}
+        {% if line.sections != undefined or None %}
         <label for="last_section">Endbahnhof</label>
         <select name="last_section"
                 class="form-select"
                 id="last_section">
-            {% for section in sel_route.sections %}
+            {% for section in line.route.sections %}
             <option value="{{ section.id }}"
-                    {{ 'selected' if last_section == section.id }}>
+                    {{ 'selected' if (line.sections|last).section.id == section.id }}>
                 {{ section.to_station_name }}</option>
             {% endfor %}
         </select>
@@ -82,6 +81,7 @@
         <button type="submit"
                 class="btn btn-primary">Weiter</button>
         {% endif %}
+        <!-- endif not update -->
 
         {% if line is not undefined or None %}
         {% if line.route is not undefined or None %}
@@ -121,11 +121,11 @@
                 {% endfor %}
                 <tr>
                     {% else %}
-                    <tr>
-                        <td colspan="11">Keine Durchführungen</td>
-                    </tr>
-                    {% endif %}
-    
+                <tr>
+                    <td colspan="11">Keine Durchführungen</td>
+                </tr>
+                {% endif %}
+
                 </tr>
             </tbody>
         </table>
@@ -171,7 +171,7 @@
                     <th scope="col">Sa</th>
                     <th scope="col">So</th>
                 </tr>
-                
+
                 {% if line.trips %}
                 {% for trip in line.trips %}
                 <tr>

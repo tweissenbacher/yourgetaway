@@ -1,8 +1,9 @@
+from datetime import date, time
 import json
 
 from flask import Blueprint, Response, jsonify, make_response, redirect, request
 from flask_login import current_user, login_required
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from website.model import (
     User,
     user_schema,
@@ -10,6 +11,9 @@ from website.model import (
     Line,
     line_schema,
     lines_schema,
+    Recurrence,
+    Trip,
+    trips_schema,
 )
 
 from .. import db
@@ -34,8 +38,9 @@ def api_index():
     )
 
 
-@api.route("/api/lines/<int:id>", methods=["GET"])
-def api_lines_all(id):
+
+@api.route("/api/lines/", methods=["GET"])
+def api_lines_all():
     lines = Line.query.all()
     res = lines_schema.dump(lines)
     return jsonify({"lines": res})
