@@ -32,7 +32,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash("Angemeldet", category="success")
                 login_user(user)  # remember=True)
-                return redirect(url_for("views.index"))
+                return redirect(url_for("index.index_view"))
             else:
                 flash("Passwort falsch", category="error")
         else:

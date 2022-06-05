@@ -3,7 +3,7 @@ from marshmallow_sqlalchemy.fields import Nested
 from marshmallow import fields
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Date, Time
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, object_session
 from sqlalchemy.sql import func
 
 from .. import db, ma
@@ -73,9 +73,10 @@ routes_schema = RouteSchema(many=True)
 
 # *
 # * Durchführungintervall
-    # ?? stundenintervall?? time_start, time_end, interval (h)
+# ?? stundenintervall?? time_start, time_end, interval (h)
 class Recurrence(db.Model):
-    id = Column(Integer(), primary_key=True)  # ? PK: keine ID stattdessen kombi aus daten (redundanz reduzieren)
+    # ? PK: keine ID stattdessen kombi aus daten (redundanz reduzieren)
+    id = Column(Integer(), primary_key=True)
     date_start = Column(Date())
     date_end = Column(Date())
     mon = Column(Integer())
@@ -160,10 +161,17 @@ class Trip(db.Model):
     train_id = Column(Integer())
     # train_name =
     price = Column(Integer())
+    
     recurrence_id = Column(Integer(), ForeignKey("recurrence.id"))
     recurrence = relationship("Recurrence", uselist=False)
+    
     # recurrence_date_start = Column(Date(), ForeignKey("recurrence.date_start"))  #? for trips order_by date_start ?
+    # recurrence_date_start =
     line_id = Column(Integer(), ForeignKey("line.id"))
+
+    # @property  # https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#building-query-enabled-properties
+    # def recurrence_date_start(self):
+    #     return object_session(self).query(Recurrence).with_parent(self).first()
 
 
 class TripSchema(ma.SQLAlchemyAutoSchema):
@@ -237,7 +245,7 @@ class Line(db.Model):
         "Trip",
         backref=backref("line_parent", lazy="joined"),
         lazy="joined",
-        # order_by="Trip.recurrence.date_start",  # ? how?
+        # order_by="Trip.recurrence_date_start",  # ? how?
     )
     # https://docs.sqlalchemy.org/en/14/orm/backref.html
     # https://www.reddit.com/r/flask/comments/97p7gc/help_jinja_template_error_with_sqlalchemy/
