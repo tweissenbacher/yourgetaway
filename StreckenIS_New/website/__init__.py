@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from os import path
 from flask_login import LoginManager
 from sqlalchemy import event
@@ -7,6 +8,7 @@ from flask_restful import Api
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
+ma = Marshmallow()
 
 
 def create_app():
@@ -17,8 +19,7 @@ def create_app():
 
     # event.listen(db.engine, 'connect', lambda c, _: c.execute('pragma foreign_keys=on'))
     db.init_app(app)
-
-
+    ma.init_app(app)
 
     from .views import views
     from .auth import auth
@@ -27,7 +28,6 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
 
     from .models import User, Note, TrainstationModel, SectionModel, RouteModel, sections
-
 
     create_database(app)
 

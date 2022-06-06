@@ -1,21 +1,26 @@
-from . import db
+from marshmallow_sqlalchemy.fields import Nested
+from marshmallow import fields
+
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+
+from . import db, ma
+
 
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(10000))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    notes = db.relationship('Note')
+    last_name = db.Column(db.String(150))
+    birthday = db.Column(db.Date, default=func.now())
+    admin = db.Column(db.Boolean, default=False)
 
 
 class TrainstationModel(db.Model):
@@ -26,17 +31,27 @@ class TrainstationModel(db.Model):
     def __repr__(self):
         return f"Trainstations(name {self.name}, address {self.address})"
 
+class TrainstationSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrainstationModel
+        ordered = True
+        fields = (
+            "id",
+            "name",
+            "address"
+        )
 
-sections = db.Table('sections',
-                    db.Column('section_model_id', db.Integer, db.ForeignKey('section_model.id'), primary_key=True),
-                    db.Column('route_model_id', db.Integer, db.ForeignKey('route_model.id'), primary_key=True)
-                    )
+
+trainstation_schema = TrainstationSchema()
+trainstations_schema = TrainstationSchema(many=True)
 
 
 class SectionModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    start = db.Column(db.String(100), nullable=False)
-    end = db.Column(db.String(100), nullable=False)
+    start = db.relationship('TrainstationModel', foreign_keys='SectionModel.start_id')
+    start_id = db.Column(db.Integer, db.ForeignKey('trainstation_model.id'))
+    end = db.relationship('TrainstationModel', foreign_keys='SectionModel.end_id')
+    end_id = db.Column(db.Integer, db.ForeignKey('trainstation_model.id'))
     track = db.Column(db.String(100), nullable=False)
     fee = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)
@@ -44,12 +59,40 @@ class SectionModel(db.Model):
     def __repr__(self):
         return f"Sections(start {self.start}, end {self.end}, track {self.track}, fee {self.fee}, time {self.time}"
 
+class SectionSchema(ma.SQLAlchemyAutoSchema):
+    start = Nested(TrainstationSchema, many=True)
+    end = Nested(TrainstationSchema, many=True)
+    class Meta:
+        model = SectionModel
+        ordered = True
+        fields = (
+            "id",
+            "start",
+            "start_id",
+            "end",
+            "end_id",
+            "track",
+            "fee",
+            "time"
+        )
+
+
+section_schema = SectionSchema()
+sections_schema = SectionSchema(many=True)
+
+sections = db.Table('sections',
+                    db.Column('section_model_id', db.Integer, db.ForeignKey('section_model.id'), primary_key=True),
+                    db.Column('route_model_id', db.Integer, db.ForeignKey('route_model.id'), primary_key=True)
+                    )
+
 
 class RouteModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    start = db.Column(db.String(100), nullable=False)
-    end = db.Column(db.String(100), nullable=False)
+    start = db.relationship('TrainstationModel', foreign_keys='RouteModel.start_id')
+    start_id = db.Column(db.Integer, db.ForeignKey('trainstation_model.id'))
+    end = db.relationship('TrainstationModel', foreign_keys='RouteModel.end_id')
+    end_id = db.Column(db.Integer, db.ForeignKey('trainstation_model.id'))
     route_sections = db.relationship('SectionModel', secondary=sections, lazy='dynamic',
                                      backref=db.backref('routes', lazy=True))
     v_max = db.Column(db.Integer, nullable=False)
@@ -61,19 +104,55 @@ class RouteModel(db.Model):
                 "end": self.end,
                 "route_sections": self.route_sections,
                 "v_max": self.v_max
-                # "route_sections": [{"id": s.id, "start": s.start, "end": s.end}
-                # for s in self.route_sections] if self.route_sections else None,
                 }
 
-        # f"Routes(name {self.name}, start {self.start}, end {self.end}" \
-        # f", route_sections {self.route_sections}, warnings {self.warnings}) "
+class RouteSchema(ma.SQLAlchemyAutoSchema):
+    start = Nested(TrainstationSchema, many=True)
+    end = Nested(TrainstationSchema, many=True)
+    route_sections = Nested(SectionSchema, many=True)
+    class Meta:
+        model = RouteModel
+        ordered = True
+        fields = (
+            "id",
+            "name",
+            "start",
+            "start_id",
+            "end",
+            "end_id",
+            "route_sections",
+            "v_max"
+        )
 
+
+route_schema = RouteSchema()
+routes_schema = RouteSchema(many=True)
 
 class WarningModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     warnings = db.Column(db.String(1000), nullable=False)
+    sections = db.relationship('SectionModel', foreign_keys='WarningModel.sections_id')
+    sections_id = db.Column(db.Integer, db.ForeignKey('section_model.id'))
 
     def __repr__(self):
         return {"id": self.id,
-                "warnings": self.warnings
+                "warnings": self.warnings,
+                "sections": self.sections,
+                "sections_id": self.sections_id
                 }
+
+class WarningSchema(ma.SQLAlchemyAutoSchema):
+    sections = Nested(SectionSchema, many=True)
+    class Meta:
+        model = WarningModel
+        ordered = True
+        fields = (
+            "id",
+            "warnings",
+            "sections",
+            "sections_id"
+        )
+
+
+warning_schema = WarningSchema()
+warnings_schema = WarningSchema(many=True)
