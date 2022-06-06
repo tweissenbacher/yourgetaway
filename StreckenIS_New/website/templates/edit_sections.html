@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.start.label }} <br>
+        {{ form.start(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.end.label }} <br>
+        {{ form.end(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.track.label }} <br>
+        {{ form.track(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.fee.label }} <br>
+        {{ form.fee(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.time.label }} <br>
+        {{ form.time(size=150) }} <br>
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
