@@ -5,13 +5,9 @@
     <u1 class="list-group list-group-flush" id="trainstation-list">
         {% for ts in all_trainstations %}
             <li class="list-group-item">
-
                 <li>
                     <span class="field-name">TS_ID:</span>
                     <span class="field-value">{{ ts.id }}</span>
-                    <button type="button" class="close" onClick="">
-                        <span aria-hidden="true">edit</span>
-                    </button>
                 </li>
                 <li>
                     <span class="field-name">TS_NAME:   </span>
@@ -23,6 +19,7 @@
                 <li>
                     <span class="field-name">TS_Address:</span>
                     <span class="field-value">{{ ts.address }}</span>
+                    <p><a href="/edit_trainstations/{{ ts.id }}">Edit</a></p>
                 </li>
 
             </li>

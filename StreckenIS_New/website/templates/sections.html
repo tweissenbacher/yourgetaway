@@ -11,15 +11,13 @@
                     <span class="field-value">{{ sec.id }}</span>
                 </li>
                 <li>
-                    <button type="button" class="close" onClick="">
-                        <span aria-hidden="true">edit</span>
-                    </button>
                     <span class="field-name":>SEC_start:</span>
-                    <span class="field-value">{{ sec.start }}</span>
+                    <span class="field-value">{{ sec.start.name }}</span>
+                    </li>
                 </li>
                 <li>
                     <span class="field-name":>SEC_end:</span>
-                    <span class="field-value">{{ sec.end }}</span>
+                    <span class="field-value">{{ sec.end.name }}</span>
                     <button type="button" class="close" onClick="deleteSection({{ sec.id }})">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -35,6 +33,7 @@
                 <li>
                     <span class="field-name":>SEC_time:</span>
                     <span class="field-value">{{ sec.time }}</span>
+                    <p><a href="/edit_sections/{{ sec.id }}">Edit</a></p>
                 </li>
             </li>
         {% endfor %}
@@ -46,32 +45,35 @@
   <br />
   <div class="form-group">
     <label for="sec_start">section start</label>
-    <input
-      type="text"
-      class="form-control"
-      id="sec_start"
-      name="sec_start"
-      placeholder="Enter the start for the section"
-    />
+      <select id="sec_start" name="sec_start" class="form-select">
+          {% for ts in all_trainstations %}
+          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+          {% endfor %}
+      </select>
   </div>
+
   <div class="form-group">
     <label for="sec_end">section end</label>
-    <input
-      type="text"
-      class="form-control"
-      id="sec_end"
-      name="sec_end"
-      placeholder="Enter the end for the section"
-    />
+      <select id="sec_end" name="sec_end" class="form-select">
+          {% for ts in all_trainstations %}
+          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+          {% endfor %}
+      </select>
   </div>
   <div class="form-group">
-    <label for="sec_track">section track (normal or special)</label>
+    <label for="sec_track_normal">normal</label>
     <input
-      type="text"
-      class="form-control"
-      id="sec_track"
+      type="radio"
+      id="sec_track_normal"
       name="sec_track"
-      placeholder="Enter the tracktype for the section: <normal> or <special>"
+      value="normal"
+    />
+      <label for="sec_track_special">special</label>
+    <input
+      type="radio"
+      id="sec_track_special"
+      name="sec_track"
+      value="special"
     />
   </div>
   <div class="form-group">

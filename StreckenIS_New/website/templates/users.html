@@ -9,9 +9,6 @@
                 <li>
                     <span class="field-name">User_ID:</span>
                     <span class="field-value">{{ u.id }}</span>
-                    <button type="button" class="close" onClick="">
-                        <span aria-hidden="true">edit</span>
-                    </button>
                 </li>
                 <li>
                     <span class="field-name">User_email:</span>
@@ -25,8 +22,23 @@
                     <span class="field-value">{{ u.first_name }}</span>
                 </li>
                 <li>
+                    <span class="field-name">User_last_name:</span>
+                    <span class="field-value">{{ u.last_name }}</span>
+                </li>
+                <li>
                     <span class="field-name">User_Password:</span>
-                    <span class="field-value">{{ u.password}}</span>
+                    <span class="field-value">{{ u.password }}</span>
+                </li>
+                <li>
+                    <span class="field-name">User_birthday:</span>
+                    <span class="field-value">{{ u.birthday }}</span>
+                </li>
+                <li>
+                    <span class="field-name">User_admin:</span>
+                    <span class="field-value">{{ u.admin }}</span>
+                    {% if user == current_user %}
+                    <p><a href="/edit_users/{{ u.id }}">Edit</a></p>
+                    {% endif %}
                 </li>
             </li>
         {% endfor %}

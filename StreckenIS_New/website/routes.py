@@ -35,7 +35,7 @@ route_resource_fields = {
     'name': fields.String,
     'start': fields.String,
     'end': fields.String,
-    'route_sections': fields.List,
+    'route_sections': fields.String,
     'v_max': fields.Integer
 }
 

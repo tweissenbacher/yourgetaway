@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }} <br>
+        {{ form.name(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.start.label }} <br>
+        {{ form.start(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.end.label }} <br>
+        {{ form.end(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.route_sections.label }} <br>
+        {{ form.route_sections(size=150) }} <br>
+    </p>
+    <p>
+        {{ form.v_max.label }} <br>
+        {{ form.v_max(size=150) }} <br>
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
