@@ -26,9 +26,9 @@
                     <span class="field-value">{{ rou.end.name }}</span>
                 </li>
                 <li>
+                    <span class="field-name":>ROU_sections:</span>
                     {% for r in rou.route_sections %}
-                    <span class="field-name":>ROU_sections</span>
-                    <span class="field-value">{{ r.start.name }} - {{ r.end.name }}</span>
+                    <span class="field-value">[{{ r.start.name }} - {{ r.end.name }}]</span>
                     {% endfor %}
                 </li>
                 <li>

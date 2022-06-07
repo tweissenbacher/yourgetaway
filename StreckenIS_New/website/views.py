@@ -3,6 +3,7 @@ from sqlalchemy.dialects import mysql
 import website.trainstations
 from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .forms import EditProfileForm, EditTrainstationForm, EditSectionForm, EditRouteForm, EditWarningsForm
 from .models import User, Note, TrainstationModel, SectionModel, RouteModel, WarningModel
@@ -23,12 +24,31 @@ def get_all_users():
     if request.method == 'POST':
         us_email = request.form.get('us_email')
         us_first_name = request.form.get('us_first_name')
-        us_password = request.form.get('us_password')
+        us_last_name = request.form.get('us_last_name')
+        us_password1 = request.form.get('us_password1')
+        us_password2 = request.form.get('us_password2')
+        us_birthday = request.form.get('us_birthday')
+        us_admin = request.form.get('us_admin')
 
-        new_user = User(email=us_email, first_name=us_first_name, password=us_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash(' ---   user successfully created!   ---', category='success')
+
+        new_user = User.query.filter_by(email=us_email).first()
+        if new_user:
+            flash('Email already exists.', category='error')
+        elif len(us_email) < 4:
+            flash('Email must be greater than 3 characters.', category='error')
+        elif len(us_first_name) < 2:
+            flash('First name must be greater than 1 character.', category='error')
+        elif us_password1 != us_password2:
+            flash('Passwords don\'t match.', category='error')
+        elif len(us_password1) < 7:
+            flash('Password must be at least 7 characters.', category='error')
+        else:
+            new_user = User(email=us_email, first_name=us_first_name, last_name=us_last_name, birthday=us_birthday,
+                            admin=us_admin, password=generate_password_hash(us_password1, method='sha256'))
+            db.session.add(new_user)
+            db.session.commit()
+            flash(' ---   user successfully created!   ---', category='success')
+            return redirect('/all_users')
 
     all_users = User.query.all()
 
@@ -43,7 +63,8 @@ def edit_users(user_id):
         user_edit.first_name = form.first_name.data
         user_edit.last_name = form.last_name.data
         user_edit.email = form.email.data
-        user_edit.password = form.password.data
+        user_edit.password1 = form.password1.data
+        user_edit.password2 = form.password2.data
         user_edit.birthday = form.birthday.data
         user_edit.admin = form.admin.data
         db.session.commit()
@@ -53,10 +74,24 @@ def edit_users(user_id):
         form.first_name.data = user_edit.first_name
         form.last_name.data = user_edit.last_name
         form.email.data = user_edit.email
-        form.password.data = user_edit.password
+        form.password1.data = user_edit.password1
+        form.password2.data = user_edit.password2
         form.birthday.data = user_edit.birthday
         form.admin.data = user_edit.admin
     return render_template('edit_users.html', title='Edit Users', user=current_user, form=form)
+
+@views.route('/delete-user', methods=['POST'])
+def delete_user():
+    user = json.loads(request.data)
+    userId = user['userId']
+    user = User.query.get(userId)
+    if user == current_user:
+        flash('You cannot delete the logged in user!', category='error')
+    else:
+        db.session.delete(user)
+        db.session.commit()
+
+    return jsonify({})
 
 
 @views.route('/all_trainstations', methods=['GET', 'POST'])
@@ -77,6 +112,7 @@ def get_all_trainstations():
             db.session.add(new_trainstation)
             db.session.commit()
             flash(' ---   trainstation successfully created!   ---', category='success')
+
 
     all_trainstations = TrainstationModel.query.all()
 
@@ -119,19 +155,30 @@ def get_all_sections():
         sec_track = request.form.get('sec_track')
         sec_fee = request.form.get('sec_fee')
         sec_time = request.form.get('sec_time')
+        sec_warning = request.form.getlist('sec_warning')
 
         sec_start = TrainstationModel.query.get(sec_start)
         sec_end = TrainstationModel.query.get(sec_end)
+        warnings = []
 
-        new_section = SectionModel(start=sec_start, end=sec_end, track=sec_track, fee=sec_fee, time=sec_time)
-        db.session.add(new_section)
-        db.session.commit()
-        flash(' ---   section successfully created!   ---', category='success')
+        if sec_start == sec_end:
+            flash('section start cannot be the same as section end', category='error')
+        else:
+            #for w in sec_warning:
+                #warning = WarningModel.query.get(w)
+                #warnings.append(warning)
+
+                new_section = SectionModel(start=sec_start, end=sec_end, track=sec_track, fee=sec_fee,
+                                       time=sec_time, section_warnings=warnings)
+                db.session.add(new_section)
+                db.session.commit()
+                flash(' ---   section successfully created!   ---', category='success')
 
     all_sections = SectionModel.query.all()
     all_trainstations = TrainstationModel.query.all()
+    all_warnings = WarningModel.query.all()
     return render_template("sections.html", user=current_user, all_sections=all_sections,
-                           all_trainstations=all_trainstations)
+                           all_trainstations=all_trainstations, all_warnings=all_warnings)
 
 
 @views.route('/edit_sections/<int:sections_id>', methods=['GET', 'POST'])
@@ -155,6 +202,16 @@ def edit_sections(sections_id):
         form.time.data = sections_edit.time
     return render_template('edit_sections.html', title='Edit Sections', user=current_user, form=form)
 
+@views.route('/delete-section', methods=['POST'])
+def delete_section():
+    section = json.loads(request.data)
+    sectionId = section['sectionId']
+    section = SectionModel.query.get(sectionId)
+    if section:
+        db.session.delete(section)
+        db.session.commit()
+
+    return jsonify({})
 
 @views.route('/all_routes', methods=['GET', 'POST'])
 def get_all_routes():
@@ -162,18 +219,28 @@ def get_all_routes():
         rou_name = request.form.get('rou_name')
         rou_start = request.form.get('rou_start')
         rou_end = request.form.get('rou_end')
-        rou_sections = request.form.get('rou_sections')
+        rou_sections = request.form.getlist('rou_sections')
         rou_v_max = request.form.get('rou_v_max')
+
+        print(rou_sections)
 
         rou_start = TrainstationModel.query.get(rou_start)
         rou_end = TrainstationModel.query.get(rou_end)
-        rou_sections = [SectionModel.query.get(rou_sections)]
+        sections = []
 
-        new_route = RouteModel(name=rou_name, start=rou_start, end=rou_end, route_sections=rou_sections,
-                               v_max=rou_v_max)
-        db.session.add(new_route)
-        db.session.commit()
-        flash(' ---   route successfully created!   ---', category='success')
+        if rou_start == rou_end:
+            flash('route start cannot be the same as route end', category='error')
+        else:
+
+            for r_s in rou_sections:
+                section = SectionModel.query.get(r_s)
+                sections.append(section)
+
+            new_route = RouteModel(name=rou_name, start=rou_start, end=rou_end, route_sections=sections,
+                                       v_max=rou_v_max)
+            db.session.add(new_route)
+            db.session.commit()
+            flash(' ---   route successfully created!   ---', category='success')
 
     all_routes = RouteModel.query.all()
     all_sections = SectionModel.query.all()
@@ -220,9 +287,9 @@ def delete_route():
 def get_all_warnings():
     if request.method == 'POST':
         war_warnings = request.form.get('war_warnings')
-        war_sections = request.form.get('war_sections')
+        war_section = request.form.get('war_section')
 
-        new_warning = WarningModel(warnings=war_warnings, sections=war_sections)
+        new_warning = WarningModel(warnings=war_warnings, section_id=war_section)
         db.session.add(new_warning)
         db.session.commit()
         flash(' ---   warning successfully created!   ---', category='success')
@@ -258,28 +325,6 @@ def delete_warning():
     return jsonify({})
 
 
-@views.route('/delete-section', methods=['POST'])
-def delete_section():
-    section = json.loads(request.data)
-    sectionId = section['sectionId']
-    section = SectionModel.query.get(sectionId)
-    if section:
-        db.session.delete(section)
-        db.session.commit()
-
-    return jsonify({})
-
-
-@views.route('/delete-user', methods=['POST'])
-def delete_user():
-    user = json.loads(request.data)
-    userId = user['userId']
-    user = User.query.get(userId)
-    if user:
-        db.session.delete(user)
-        db.session.commit()
-
-    return jsonify({})
 
 # @views.route('/trainstations', methods=['GET', 'POST', 'PATCH', 'PUT'])
 # def trainstations():

@@ -5,6 +5,7 @@ from os import path
 from flask_login import LoginManager
 from sqlalchemy import event
 from flask_restful import Api
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 DB_NAME = "database.db"

@@ -13,7 +13,7 @@
                 <li>
                     <span class="field-name">User_email:</span>
                     <span class="field-value">{{ u.email }}</span>
-                    <button type="button" class="close" onClick="deleteUser{{ u.id }})">
+                    <button type="button" class="close" onClick="deleteUser({{ u.id }})">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </li>
@@ -27,7 +27,11 @@
                 </li>
                 <li>
                     <span class="field-name">User_Password:</span>
-                    <span class="field-value">{{ u.password }}</span>
+                    <span class="field-value">{{ u.password1 }}</span>
+                </li>
+                <li>
+                    <span class="field-name">User_Password2:</span>
+                    <span class="field-value">{{ u.password2 }}</span>
                 </li>
                 <li>
                     <span class="field-name">User_birthday:</span>
@@ -48,35 +52,54 @@
   <h3 align="center">Add a new User</h3>
   <br />
   <div class="form-group">
-    <label for="u_email">User Email</label>
+    <label for="us_email">User Email</label>
     <input
       type="email"
       class="form-control"
-      id="u_email"
-      name="u_email"
+      id="us_email"
+      name="us_email"
       placeholder="Enter the Email for the new User"
     />
   </div>
   <div class="form-group">
-    <label for="u_first_name">User First Name</label>
+    <label for="us_first_name">User First Name</label>
     <input
       type="text"
       class="form-control"
-      id="u_first_name"
-      name="u_first_name"
+      id="us_first_name"
+      name="us_first_name"
       placeholder="Enter the first name for the new User"
     />
   </div>
   <div class="form-group">
-    <label for="u_password">User Password</label>
+    <label for="us_last_name">User Last Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="us_last_name"
+      name="us_last_name"
+      placeholder="Enter the last name for the new User"
+    />
+  </div>
+  <div class="form-group">
+    <label for="us_password1">User Password</label>
     <input
       type="password"
       class="form-control"
-      id="u_password"
-      name="u_password"
+      id="us_password1"
+      name="us_password1"
       placeholder="Enter the password for the new User"
     />
   </div>
+  <div class="form-group">
+    <label for="us_password2">User Password (Confirm)</label>
+    <input
+      type="password"
+      class="form-control"
+      id="us_password2"
+      name="us_password2"
+      placeholder="Enter the password (confirm) for the new User"
+    />
   <br />
   <button type="add" class="btn btn-primary">Add new User</button>
 </form>
