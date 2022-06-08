@@ -139,20 +139,23 @@ warnings_schema = WarningSchema(many=True)
 
 
 class SectionSchema(ma.SQLAlchemyAutoSchema):
-    start = Nested(TrainstationSchema, many=True)
-    end = Nested(TrainstationSchema, many=True)
+    #(Nested(TrainstationSchema), many=True) -> Trainstation is not iterable (One-To-Many)
+    start = Nested(TrainstationSchema)
+    end = Nested(TrainstationSchema)
     section_warnings = Nested(WarningSchema, many=True)
 
     class Meta:
         model = SectionModel
-        ordered = True
         fields = (
             "id",
-            "start_id"
+            "start",
+            "start_id",
+            "end",
             "end_id",
             "track",
             "fee",
-            "time"
+            "time",
+            "section_warnings"
         )
 
 
@@ -161,8 +164,8 @@ sections_schema = SectionSchema(many=True)
 
 
 class RouteSchema(ma.SQLAlchemyAutoSchema):
-    start = Nested(TrainstationSchema, many=True)
-    end = Nested(TrainstationSchema, many=True)
+    start = Nested(TrainstationSchema)
+    end = Nested(TrainstationSchema)
     route_sections = Nested(SectionSchema, many=True)
 
     class Meta:
@@ -171,9 +174,12 @@ class RouteSchema(ma.SQLAlchemyAutoSchema):
         fields = (
             "id",
             "name",
+            "start",
             "start_id",
+            "end",
             "end_id",
-            "v_max"
+            "v_max",
+            "route_sections"
         )
 
 
@@ -182,7 +188,7 @@ routes_schema = RouteSchema(many=True)
 
 
 class WarningSchemaSection(ma.SQLAlchemyAutoSchema):
-    section = Nested(SectionSchema, many=True)
+    section = Nested(SectionSchema)
 
     class Meta:
         model = WarningModel
@@ -190,7 +196,8 @@ class WarningSchemaSection(ma.SQLAlchemyAutoSchema):
         fields = (
             "id",
             "warnings",
-            "section_id"
+            "section_id",
+            "section"
         )
 
 
