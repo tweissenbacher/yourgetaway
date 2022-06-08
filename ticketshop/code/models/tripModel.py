@@ -1,3 +1,6 @@
+import allEndpoints
+
+
 class TripModel:
 
     def __init__(self, note, departure, train_id, train, price, date_start, date_end, weekdays):
@@ -15,24 +18,24 @@ class TripModel:
         note = json_trip['note']
         departure = json_trip['departure']
         train_id = int(json_trip['train_id'])
-        train = json_trip['train']
+        train = allEndpoints.TrainEndpoint.find_by_id(train_id)['name']
         price = json_trip['price']
         date_start = json_trip['recurrence']['date_start']
         date_end = json_trip['recurrence']['date_end']
         weekdays = []
-        if bool(json_trip['recurrence']['mon']):
+        if int(json_trip['recurrence']['mon']) == 1:
             weekdays.append('Monday')
-        if bool(json_trip['recurrence']['tue']):
+        if int(json_trip['recurrence']['tue']) == 1:
             weekdays.append('Tuesday')
-        if bool(json_trip['recurrence']['wed']):
+        if int(json_trip['recurrence']['wed']):
             weekdays.append('Wednesday')
-        if bool(json_trip['recurrence']['thu']):
+        if int(json_trip['recurrence']['thu']) == 1:
             weekdays.append('Thursday')
-        if bool(json_trip['recurrence']['fri']):
+        if int(json_trip['recurrence']['fri']) == 1:
             weekdays.append('Friday')
-        if bool(json_trip['recurrence']['sat']):
+        if int(json_trip['recurrence']['sat']) == 1:
             weekdays.append('Saturday')
-        if bool(json_trip['recurrence']['sun']):
+        if int(json_trip['recurrence']['sun']) == 1:
             weekdays.append('Sunday')
         # weekdays = json_trip['recurrence']['weekdays']
 

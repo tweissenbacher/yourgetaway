@@ -25,7 +25,8 @@ class LineModel:
         route_id = int(json_line['route_id'])
         sections = []
         for section in json_line['sections']:
-            sections.append(SectionModel.json_to_object(section)) # section['section']
+            # sections.append(SectionModel.json_to_object(section)) # section['section']
+            sections.append(SectionModel.json_to_object(section['section']))
         if len(sections) > 0:
             starting_point = sections[0]
             destination = sections[-1]

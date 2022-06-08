@@ -5,6 +5,14 @@ class DummyTrains:
         trains = []
         trains.append(
             {
+                'id': 0,
+                'name': 'Lokalexpress',
+                'capacity': 50
+            }
+
+        );
+        trains.append(
+            {
                 'id': 1,
                 'name': 'REX3912',
                 'capacity': 300
@@ -50,6 +58,14 @@ class DummyTrains:
         trains = cls.getDummyTrains()
         for train in trains:
             if train['name'] == name:
+                return train
+        return None
+
+    @classmethod
+    def getDummyTrainsById(cls, id):
+        trains = cls.getDummyTrains()
+        for train in trains:
+            if train['id'] == id:
                 return train
         return None
 

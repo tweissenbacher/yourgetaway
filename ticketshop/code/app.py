@@ -1,13 +1,9 @@
-
 from flask import Flask, session, render_template, request, redirect, flash
 from flask_restful import Api
-from flask_jwt import JWT
 from sqlalchemy import event
 
 from models.adminModel import AdminModel
-# from resources.aktionResource import Aktion, Aktionsverwaltung, Aktionen, AktionDelete, Aktionseditierung
 from db import db
-from resources.userResource import UserRegister, User
 from security import authenticate
 
 import ticketmanagement
@@ -20,17 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'valentina'
 api = Api(app)
-
-#jwt = JWT(app, authenticate, identity)
-
-#Ressourcen
-# api.add_resource(Aktion, '/rest/aktion/<int:_id>')
-# api.add_resource(Aktionsverwaltung, '/rest/aktionserstellung')
-# api.add_resource(Aktionseditierung, '/rest/aktionseditierung/<int:_id>')
-# api.add_resource(UserRegister, '/rest/register')
-# api.add_resource(User, '/rest/user/<string:email>')
-# api.add_resource(Aktionen, '/rest/aktionen/')
-# api.add_resource(AktionDelete, '/rest/aktion/entfernen/<int:_id>')
 
 #Ticketmanagement-Urls
 app.add_url_rule('/tickets/neu', view_func=ticketmanagement.ticket_anlegen, methods =["GET", "POST"])

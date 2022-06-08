@@ -104,6 +104,7 @@ def details_festlegen(time_number):
                 return render_template("detailsFestlegen.html", email=session.get("email"),
                                        ticket=ticket, get_time=DateHelper.get_time_for_ride)
         ticket_id = TicketModel.save_to_db(ticket)
+        flash("Ticketkauf erfolgreich")
         return redirect("/tickets")
 
     return render_template("detailsFestlegen.html", email=session.get("email"), ticket =ticket, get_time = DateHelper.get_time_for_ride)
@@ -191,7 +192,7 @@ def calculate_price (from_, to, line, price):
         return 0
     number_of_relevant_sections = len(LineModel.get_relevant_sections(line.id, from_, to))
     price_per_section = round(float(price) / len(line.sections), 2)
-    result =  price_per_section * number_of_relevant_sections
+    result = price_per_section * number_of_relevant_sections
     return round(result, 2)
 
 # calculates discount given a certain date and route
@@ -228,21 +229,23 @@ def make_seat_reservation(ticket):
 
 # fetch warnings from route information system
 def get_warnings(line_id, from_, to):
-    line = LineModel.json_to_object(LineEndpoint.find_by_id(int(line_id)))
-    if not line:
-        return []
-    route = RouteModel.json_to_object(RouteEndpoint.find_by_id(int(line.route_id)))
-    warnings = []
-    from_found = False
-    for section in route.sections:
-        if section.from_ == from_:
-            from_found = True
-        if from_found:
-            for warning in section.warnings:
-                warnings.append(warning)
-        if section.from_ == to:
-            break
-    return warnings
+    # line = LineModel.json_to_object(LineEndpoint.find_by_id(int(line_id)))
+    # if not line:
+    #     return []
+    # route = RouteModel.json_to_object(RouteEndpoint.find_by_id(int(line.route_id)))
+    # warnings = []
+    # from_found = False
+    # for section in route.sections:
+    #     if section.from_ == from_:
+    #         from_found = True
+    #     if from_found:
+    #         for warning in section.warnings:
+    #             warnings.append(warning)
+    #     if section.from_ == to:
+    #         break
+    # return warnings
+
+    return []
 
 
 

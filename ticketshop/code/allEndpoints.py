@@ -28,15 +28,16 @@ class LineEndpoint:
 
     @classmethod
     def find_all(cls):
-        request = requests.get('http://127.0.0.1:5000/ api / lines')
+        request = requests.get('http://127.0.0.1:5000/api/lines')
         json = request.json()
-        return json
+        # print(json)
+        return json['lines']
 
         # return DummyFahrtstrecken.getDummyFahrtstrecken()
 
     @classmethod
     def find_by_id(cls, _id):
-        request = requests.get('http://127.0.0.1:5000/ api / lines /' + str(_id))
+        request = requests.get('http://127.0.0.1:5000/api/lines/' + str(_id))
         json = request.json()
         return json
 
@@ -51,4 +52,8 @@ class TrainEndpoint:
     @classmethod
     def find_by_name(cls, name):
         return DummyTrains.getDummyTrainsByName(name)
+
+    @classmethod
+    def find_by_id(cls, id):
+        return DummyTrains.getDummyTrainsById(id)
 

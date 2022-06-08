@@ -17,7 +17,7 @@ class RouteModel:
         to = json_route['nach']
         sections = []
         for section in json_route['sections']:
-            sections.append(SectionModel.json_to_object(section))
+            sections.append(SectionModel.json_to_object_streckensystem(section))
 
         return RouteModel(id_, from_, to, sections)
 
