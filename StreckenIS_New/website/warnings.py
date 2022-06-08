@@ -3,7 +3,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 
 from . import db
-from website.models import WarningModel
+from .models import WarningModel
 
 warnings = {
     "0": {"warnings": "Maintenance work on sections [St. Pölten Hbf - Linz Hbf] between March 2022 and June 2022"},
