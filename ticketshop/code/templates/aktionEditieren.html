@@ -38,7 +38,6 @@
     <label>Strecke <br>
         <select name="route_picker" id="route_picker">
             {% if route %}
-<!--                <option value="{{route.id}}" disabled selected>{{route.from_}}  -&#45;&#45;  {{route.to}}</option>-->
                 {% for r in get_routes %}
                        {% if r.id == route.id %}
                        <option value="{{r.id}}" selected>{{r.from_}}  ---  {{r.to}}</option>

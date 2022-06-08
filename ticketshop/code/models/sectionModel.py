@@ -26,12 +26,12 @@ class SectionModel:
     @classmethod # streckensystem
     def json_to_object_streckensystem(cls, json_section):
         id_ = int(json_section['id'])
-        from_ = json_section['start'] #['name']
-        to = json_section['end'] #['name']
+        from_ = json_section['start']['name']
+        to = json_section['end']['name']
         time = json_section['time']
         costs = json_section['fee']
         warnings = []
-        for warning in json_section['warnings']:
+        for warning in json_section['section_warnings']:
             warnings.append(WarningModel.json_to_object(warning))
         return SectionModel(id_, from_, to, time, costs, warnings)
 

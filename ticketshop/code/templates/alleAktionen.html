@@ -46,7 +46,7 @@
                 <td>{{ deal.discount }}</td>
                 <td>{{ deal.start_date}}</td>
                 <td>{{ deal.end_date}}</td>
-                {% if deal.route_id > 0 %}
+                {% if deal.route_id > -1 %}
                     <td>{{ route_dictionary[deal.route_id].from_}} ---
                     {{ route_dictionary[deal.route_id].to }}
                     </td>

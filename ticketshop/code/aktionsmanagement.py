@@ -30,7 +30,7 @@ def aktionAnlegen():
         if route_id:
             deal = DealModel(discount, int(route_id), start_date, end_date)
         else:
-            deal = DealModel(discount, 0, start_date, end_date)
+            deal = DealModel(discount, -1, start_date, end_date)
         deal.save_to_db()
         return alleAktionen()
     return render_template("aktionAnlegen.html", email=session.get("email"), get_routes = get_routes, today = DateHelper.get_today)
@@ -63,7 +63,7 @@ def aktionEditieren(_id):
         route = RouteModel.get_route_dictionary()[deal.route_id]
     else:
         route = None
-    today = DateHelper.get_today
+    today = DateHelper.get_today()
     deal_active = deal.start_date < today
 
     if request.method == "POST":
@@ -90,7 +90,7 @@ def aktionEditieren(_id):
         if route_id:
             deal.route_id = int(route_id)
         else:
-            deal.route_id = 0
+            deal.route_id = -1
         deal.save_to_db()
         flash("Aktion erfolgreich editiert!")
         return redirect("/alleAktionen")

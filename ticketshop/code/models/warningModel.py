@@ -11,5 +11,5 @@ class WarningModel:
     @classmethod
     def json_to_object(cls, json_warning):
         id = json_warning['id']
-        text = json_warning['text']
+        text = json_warning['warnings']
         return WarningModel(id, text)

@@ -8,21 +8,38 @@ class SectionEndpoint:
 
     @classmethod
     def find_all(cls):
-        return DummyAbschnitte.getDummyAbschnitte()
+        request = requests.get('http://127.0.0.1:5002/api/sections/')
+        json = request.json()
+        return json['sections']
+
+        # return DummyAbschnitte.getDummyAbschnitte()
 
     @classmethod
     def find_by_id(cls, _id):
-        return DummyAbschnitte.getDummyAbschnittById(_id)
+        request = requests.get('http://127.0.0.1:5002/api/sections/' + str(_id))
+        json = request.json()
+        print(json)
+        return json
+
+        # return DummyAbschnitte.getDummyAbschnittById(_id)
 
 class RouteEndpoint:
 
     @classmethod
     def find_all(cls):
-        return DummyStrecken.getDummyStrecken()
+        request = requests.get('http://127.0.0.1:5002/api/routes/')
+        json = request.json()
+        return json['routes']
+        # return DummyStrecken.getDummyStrecken()
 
     @classmethod
     def find_by_id(cls, _id):
-        return DummyStrecken.getDummyStreckeById(_id)
+        request = requests.get('http://127.0.0.1:5002/api/routes/' + str(_id))
+        json = request.json()
+        print(json)
+        return json
+
+        # return DummyStrecken.getDummyStreckeById(_id)
 
 class LineEndpoint:
 
