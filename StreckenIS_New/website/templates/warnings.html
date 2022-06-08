@@ -7,20 +7,15 @@
         {% for war in all_warnings %}
             <li id="{{ war.id }}" class="entry list-group-item">
                 <li>
-                    <span class="field-name":>WAR_ID:</span>
+                    <span class="field-name":>Warning_ID:</span>
                     <span class="field-value">{{ war.id }}</span>
                 </li>
                 <li>
                     <button type="button" class="close" onClick="deleteWarning({{ war.id }})">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <span class="field-name":>Warning:</span>
+                    <span class="field-name":>Warning Information:</span>
                     <span class="field-value">{{ war.warnings }}</span>
-                </li>
-                <li>
-                    <span class="field-name":>WAR_section:</span>
-                    <span class="field-value">{{ war.sections }}</span>
-                    <p><a href="/edit_warnings/{{ war.id }}">Edit</a></p>
                 </li>
             </li>
         {% endfor %}
@@ -31,8 +26,8 @@
   <h3 align="center">Add a new Warning</h3>
   <br />
   <div class="form-group">
-    <label for="war_sections">Select a section</label>
-      <select id="war_sections" name="war_sections" class="form-select">
+    <label for="war_section">Select a section</label>
+      <select id="war_section" name="war_section" class="form-select">
           {% for sec in all_sections %}
           <option value="{{ sec.id }}">{{ sec.start.name }} - {{ sec.end.name }}</option>
           {% endfor %}

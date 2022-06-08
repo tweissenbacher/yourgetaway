@@ -13,16 +13,15 @@
                 <li>
                     <span class="field-name":>SEC_start:</span>
                     <span class="field-value">{{ sec.start.name }}</span>
-                    </li>
                 </li>
                 <li>
                     <span class="field-name":>SEC_end:</span>
                     <span class="field-value">{{ sec.end.name }}</span>
+                </li>
+                <li>
                     <button type="button" class="close" onClick="deleteSection({{ sec.id }})">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </li>
-                <li>
                     <span class="field-name":>SEC_track:</span>
                     <span class="field-value">{{ sec.track }}</span>
                 </li>
@@ -33,6 +32,12 @@
                 <li>
                     <span class="field-name":>SEC_time:</span>
                     <span class="field-value">{{ sec.time }}</span>
+                </li>
+                <li>
+                    <span class="field-name":>SEC_warnings:</span>
+                    {% for s in sec.section_warnings %}
+                    <span class="field-value">{{ s.warnings }}</span>
+                    {% endfor %}
                     <p><a href="/edit_sections/{{ sec.id }}">Edit</a></p>
                 </li>
             </li>
