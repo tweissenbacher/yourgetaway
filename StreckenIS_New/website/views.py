@@ -1,6 +1,5 @@
 from sqlalchemy.dialects import mysql
 
-import website.trainstations
 from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -222,8 +221,6 @@ def get_all_routes():
         rou_sections = request.form.getlist('rou_sections')
         rou_v_max = request.form.get('rou_v_max')
 
-        print(rou_sections)
-
         rou_start = TrainstationModel.query.get(rou_start)
         rou_end = TrainstationModel.query.get(rou_end)
         sections = []
@@ -289,7 +286,9 @@ def get_all_warnings():
         war_warnings = request.form.get('war_warnings')
         war_section = request.form.get('war_section')
 
-        new_warning = WarningModel(warnings=war_warnings, section_id=war_section)
+        war_section = SectionModel.query.get(war_section)
+
+        new_warning = WarningModel(warnings=war_warnings, warning_section=war_section)
         db.session.add(new_warning)
         db.session.commit()
         flash(' ---   warning successfully created!   ---', category='success')

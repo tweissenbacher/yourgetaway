@@ -15,7 +15,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <span class="field-name":>Warning Information:</span>
-                    <span class="field-value">{{ war.warnings }}</span>
+                    <span class="field-value">{{ war.warnings }} </span>
+                </li>
+                <li>
+                    <span class="field-name":>Warning on Section: </span>
+                    <span class="field-value">[{{ war.warning_section.start.name }} - {{ war.warning_section.end.name }}]</span>
                 </li>
             </li>
         {% endfor %}
