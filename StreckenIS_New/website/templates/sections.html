@@ -3,105 +3,130 @@
 {% block content %}
 <dif class="container">
     <h1 class="py-5">Sections</h1>
+    {% if current_user.admin == True %}
+        <form method="POST">
+          <h3 align="center">Add a new section</h3>
+          <br />
+          <div class="form-group">
+            <label for="sec_start">Choose a trainstation where your new section will start:</label>
+              <select id="sec_start" name="sec_start" class="form-control">
+                  {% for ts in all_trainstations %}
+                    <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="form-group">
+            <label for="sec_end">Choose a trainstation where your new section will end:</label>
+              <select id="sec_end" name="sec_end" class="form-control">
+                  {% for ts in all_trainstations %}
+                    <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Choose the track type for the new section:
+                  <div class="form-group">
+                      <br>
+                    <label for="sec_track_normal">normal track [1435mm]</label>
+                    <input
+                      type="radio"
+                      id="sec_track_normal"
+                      name="sec_track"
+                      value="normal"
+                    />
+                      <br>
+                      <label for="sec_track_special">special track [1000mm]</label>
+                    <input
+                      type="radio"
+                      id="sec_track_special"
+                      name="sec_track"
+                      value="special"
+                    />
+                  </div>
+              </label>
+          </div>
+          <div class="form-group">
+            <label for="sec_fee">Enter the fee value [ € ]:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="sec_fee"
+              name="sec_fee"
+              placeholder="Enter the fee value [ € ]"
+            />
+          </div>
+          <div class="form-group">
+            <label for="sec_time">Enter the duration between two trainstations [ min.]:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="sec_time"
+              name="sec_time"
+              placeholder="Enter the duration between two trainstations [ min.]"
+            />
+          </div>
+          <button type="add" class="btn btn-primary">Add new section</button>
+        </form>
+    {% endif %}
+    <hr />
     <u1 class="list-group list-group-flush" id="section-list">
         {% for sec in all_sections %}
             <li id="{{ sec.id }}" class="entry list-group-item">
+                {% if current_user.admin == True %}
                 <li>
-                    <span class="field-name":>SEC_ID:</span>
+                    <span class="field-name":>Section_id:</span>
                     <span class="field-value">{{ sec.id }}</span>
                 </li>
+                {% endif %}
                 <li>
-                    <span class="field-name":>SEC_start:</span>
-                    <span class="field-value">{{ sec.start.name }}</span>
+                    <span class="field-name":>Section [start-end]:</span>
+                    <span class="field-value">[{{ sec.start.name }} - {{ sec.end.name }}]</span>
                 </li>
+                {% if current_user.admin == True %}
                 <li>
-                    <span class="field-name":>SEC_end:</span>
-                    <span class="field-value">{{ sec.end.name }}</span>
-                </li>
-                <li>
-                    <button type="button" class="close" onClick="deleteSection({{ sec.id }})">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <span class="field-name":>SEC_track:</span>
+                    <span class="field-name":>Section_track type:</span>
                     <span class="field-value">{{ sec.track }}</span>
                 </li>
+                {% endif %}
                 <li>
-                    <span class="field-name":>SEC_fee:</span>
+                    <span class="field-name":>Section_costs [ € ]:</span>
                     <span class="field-value">{{ sec.fee }}</span>
                 </li>
                 <li>
-                    <span class="field-name":>SEC_time:</span>
+                    <span class="field-name":>Section_time [min.]:</span>
                     <span class="field-value">{{ sec.time }}</span>
                 </li>
                 <li>
-                    <span class="field-name":>SEC_warnings:</span>
+                    <span class="field-name":>Section_warning[s]:</span>
+                    <br>
                     {% for s in sec.section_warnings %}
-                    <span class="field-value">{{ s.warnings }}</span>
+                    <span class="field-value">{{ s.warnings }}
+                        {% if current_user.admin == True %}
+                            <button type="button" class="btn btn-danger"
+                                        onClick="deleteWarning({{ s.id }})">X
+                            </button>
+                        {% endif %}
+                    </span>
+
+                    <br>
+
                     {% endfor %}
-                    <p><a href="/edit_sections/{{ sec.id }}">Edit</a></p>
                 </li>
+                {% if current_user.admin == True %}
+                    <p>
+                        <a href="/edit_sections/{{ sec.id }}"
+                           class="btn btn-primary btn-lg-active"
+                           role="button" aria-pressed="true">Edit
+                        </a>
+                        <button type="button" class="btn btn-danger"
+                                onClick="deleteSection({{ sec.id }})">Delete
+                        </button>
+                    </p>
+                {% endif %}
             </li>
         {% endfor %}
     </u1>
 </dif>
 <br />
-<form method="POST">
-  <h3 align="center">Add a new section</h3>
-  <br />
-  <div class="form-group">
-    <label for="sec_start">section start</label>
-      <select id="sec_start" name="sec_start" class="form-select">
-          {% for ts in all_trainstations %}
-          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
-          {% endfor %}
-      </select>
-  </div>
 
-  <div class="form-group">
-    <label for="sec_end">section end</label>
-      <select id="sec_end" name="sec_end" class="form-select">
-          {% for ts in all_trainstations %}
-          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
-          {% endfor %}
-      </select>
-  </div>
-  <div class="form-group">
-    <label for="sec_track_normal">normal</label>
-    <input
-      type="radio"
-      id="sec_track_normal"
-      name="sec_track"
-      value="normal"
-    />
-      <label for="sec_track_special">special</label>
-    <input
-      type="radio"
-      id="sec_track_special"
-      name="sec_track"
-      value="special"
-    />
-  </div>
-  <div class="form-group">
-    <label for="sec_fee">section fee (EUR)</label>
-    <input
-      type="text"
-      class="form-control"
-      id="sec_fee"
-      name="sec_fee"
-      placeholder="Enter the fee for the section in EUR"
-    />
-  </div>
-  <div class="form-group">
-    <label for="sec_time">section time (in min.)</label>
-    <input
-      type="text"
-      class="form-control"
-      id="sec_time"
-      name="sec_time"
-      placeholder="Enter the traveltime for the section in min."
-    />
-  </div>
-  <br />
-  <button type="add" class="btn btn-primary">Add new section</button>
-</form>
 {% endblock %}

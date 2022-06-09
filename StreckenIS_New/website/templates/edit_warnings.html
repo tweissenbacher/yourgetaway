@@ -5,9 +5,9 @@
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.warnings.label }} <br>
-        {{ form.warnings(size=150) }} <br>
+        {{ form.warnings.label(class="form-label") }} <br>
+        {{ form.warnings(class="form-control", size=150) }} <br>
     </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class="form-control") }}</p>
 </form>
 {% endblock %}

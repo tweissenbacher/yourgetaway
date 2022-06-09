@@ -4,6 +4,14 @@ Home
 {% endblock %}
 {% block content%}
 <h1 align="center">Strecken Informationssystem</h1>
+<hr />
+<h2>Welcome {{ user.first_name }} {{ user.last_name }}</h2>
+<hr />
+{% if user.admin == True %}
+<h3>[admin]</h3>
+{% else %}
+<h4>[employee]</h4>
+{% endif %}
 <ul class="list-group list-group-flush" >
 
 </ul>

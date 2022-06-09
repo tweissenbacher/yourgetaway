@@ -5,25 +5,13 @@
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.name.label }} <br>
-        {{ form.name(size=150) }} <br>
+        {{ form.name.label(class="form-label") }} <br>
+        {{ form.name(class="form-control", size=150) }} <br>
     </p>
     <p>
-        {{ form.start.label }} <br>
-        {{ form.start(size=150) }} <br>
+        {{ form.v_max.label(class="form-label") }} <br>
+        {{ form.v_max(class="form-control", size=150) }} <br>
     </p>
-    <p>
-        {{ form.end.label }} <br>
-        {{ form.end(size=150) }} <br>
-    </p>
-    <p>
-        {{ form.route_sections.label }} <br>
-        {{ form.route_sections(size=150) }} <br>
-    </p>
-    <p>
-        {{ form.v_max.label }} <br>
-        {{ form.v_max(size=150) }} <br>
-    </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class="form-control") }}</p>
 </form>
 {% endblock %}
