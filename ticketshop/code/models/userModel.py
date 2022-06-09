@@ -3,7 +3,6 @@ from db import db
 from models.adminModel import AdminModel
 from werkzeug.security import generate_password_hash
 
-
 class UserModel(db.Model):
     __tablename__ = 'users'
 

@@ -2,7 +2,6 @@ from models.userModel import UserModel
 from flask import Flask
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 def authenticate (email, password):
     user = UserModel.find_by_email(email)
     if user and check_password_hash(user.password, password):

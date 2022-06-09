@@ -1,7 +1,5 @@
 import datetime
-
 from flask import session, render_template, request, redirect, flash
-
 from models.dealModel import DealModel
 from models.routeModel import RouteModel
 from models.userModel import UserModel

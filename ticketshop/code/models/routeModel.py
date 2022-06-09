@@ -1,5 +1,4 @@
 from models.sectionModel import SectionModel
-
 from allEndpoints import RouteEndpoint
 
 class RouteModel:

@@ -1,12 +1,9 @@
 import datetime
 from flask import flash
-
 from db import db
-
 from models.userModel import UserModel
 from models.sectionModel import SectionModel
 from allEndpoints import TrainEndpoint, LineEndpoint
-
 from models.lineModel import LineModel
 
 TicketSectionDetail = db.Table('ticketSectionDetails',

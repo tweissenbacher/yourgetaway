@@ -1,5 +1,4 @@
 from allEndpoints import SectionEndpoint
-
 from models.warningModel import WarningModel
 
 

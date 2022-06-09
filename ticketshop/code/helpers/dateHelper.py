@@ -1,7 +1,5 @@
 import datetime
-
 from allEndpoints import LineEndpoint
-
 from models.lineModel import LineModel
 
 

@@ -1,7 +1,3 @@
-from flask import flash
-
-from db import db
-
 class WarningModel:
 
     def __init__(self, id, text):

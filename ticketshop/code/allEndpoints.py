@@ -18,7 +18,6 @@ class SectionEndpoint:
     def find_by_id(cls, _id):
         request = requests.get('http://127.0.0.1:5002/api/sections/' + str(_id))
         json = request.json()
-        print(json)
         return json
 
         # return DummyAbschnitte.getDummyAbschnittById(_id)
@@ -36,7 +35,6 @@ class RouteEndpoint:
     def find_by_id(cls, _id):
         request = requests.get('http://127.0.0.1:5002/api/routes/' + str(_id))
         json = request.json()
-        print(json)
         return json
 
         # return DummyStrecken.getDummyStreckeById(_id)
@@ -47,7 +45,6 @@ class LineEndpoint:
     def find_all(cls):
         request = requests.get('http://127.0.0.1:5000/api/lines')
         json = request.json()
-        # print(json)
         return json['lines']
 
         # return DummyFahrtstrecken.getDummyFahrtstrecken()

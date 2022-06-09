@@ -1,8 +1,5 @@
 import datetime
-
 from flask import Flask, session, render_template, request, redirect, flash
-from flask_restful import Api
-from flask_jwt import JWT
 
 from models.userModel import UserModel
 class SessionHelper:
