@@ -1,20 +1,29 @@
 {% extends "base.html" %}
 {% block title %}Fahrplan-IS - Fahrpläne{% endblock %}
 {% block content %}
-<h1 class="py-5">Fahrtstrecken</h1>
 
 
-{% if user.admin == 1 %}
-<a href="create"
-   class="btn btn-outline-primary">Neue Fahrtstrecke hinzufügen</a>
-<p></p>
+
+<div class="d-flex justify-content-between">
+    <div class="d-flex align-items-center">
+<h1 class="py-4">Fahrtstrecken</h1>
+    </div>
+    <div class="d-flex justify-content-end align-items-center">
+        {% if current_user.admin == 1 %}
+        <a href="create"
+           class="btn btn-outline-primary">Neue Fahrtstrecke hinzufügen</a>
+           {% endif %}
+    </div>
+</div>
+
+<!-- <p></p> -->
 <table class="table">
     <thead>
         <tr>
             <!-- <th scope="col">&#x2666;</th> -->
             <th scope="col">#</th>
             <th scope="col">Fahrtstrecke</th>
-            <th scope="col">auf Strecke</th>
+            <th scope="col">^ Strecke</th>
             <th scope="col">von</th>
             <th scope="col">nach</th>
             <th scope="col"></th>
@@ -32,16 +41,16 @@
             <td data-id="{{ line.id }}">{{ line.route.name }}</td>
             <td data-id="{{ line.id }}">{{ (line.sections | first).section.from_station_name }}</td>
             <td data-id="{{ line.id }}">{{ (line.sections | last).section.to_station_name }}</td>
-            <td data-id="{{ line.id }}"> // </td>
+            <td data-id="{{ line.id }}">  </td>
             <td data-id="{{ line.id }}">
-                <a href="./{{ line.id }}">> Durchführungen</a>
+                <a href="./{{ line.id }}">Fahrplan</a>
             </td>
             <td>
-                <a href="{{ line.id }}"
+                <a href="{{ line.id }}/update"
                    id="btn-edit"
                    class="btn btn-sm btn-outline-secondary"
                    aria-label="Edit">
-                    <span aria-hidden="true">&#x1f589;</span>
+                    <span aria-hidden="true">&#x270E;</span>
                 </a>
             </td>
             <td>
@@ -58,32 +67,6 @@
         {% endfor %}
     </tbody>
 </table>
-{% else %}
-<p>
-    Keine Berechtigung
-</p>
-{% endif %}
 
-{% if False %}
-<br>
-<h2>Fahrtstrecken (groupby Strecke)</h2>
-<hr>
-{% for route, line in lines | groupby('route.name') %}
-<h3 class="border-bottom">{{ route.name }} 
-    <a href="create/{{ route.name }}"
-       class=" btn-sm  my-sm-2"> + Neue Fahrtstrecke hinzufügen</a>
-</h3>
-<ul class="list-group list-group-flush"
-    id="lines-list">
-    {% for line in lines %}
-    <li id="{{ line.id }}"
-        class="entry list-group-item">
-        <span>{{ line.description }}</span>
-        <a href="./{{ line.id }}">> Durchführungen</a>
-    </li>
-    {% endfor %}
-</ul>
 
-{% endfor %}
-{% endif %}
 {% endblock %}

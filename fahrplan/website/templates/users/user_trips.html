@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Fahrplan{% endblock %}
+{% block content %}
+
+{% if current_user == None %}
+<!-- TODO if user not authenticated -->
+<p>404</p>
+{% else %}
+<div class="d-flex justify-content-between">
+    <div class="d-flex align-items-center">
+        <h1 class="py-4">{{current_user}} - Fahrtdurchführungen</h1>
+    </div>
+    <div class="d-flex justify-content-end align-items-center">
+    </div>
+</div>
+
+
+{% if resolved %}
+{% include 'trips/trips_resolved_component.html' %}
+{% endif %}
+
+
+{% endif %}
+{% endblock %}

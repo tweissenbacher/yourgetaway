@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Fahrplan-IS - Personal{% endblock %}
 {% block content %}
-<h1>Personal</h1>
-{% if user.admin == 1 %}
+<h1 class="py-4">Personal</h1>
+{% if current_user.admin == 1 %}
 <table class="table">
     <thead>
         <tr>
@@ -34,15 +34,15 @@
             <td data-id="{{ u.id }}">{{ u.email }}</td>
             <td data-id="{{ u.id }}">{{ u.birthday }}</td>
             <td>
-                <a href="{{ u.id }}"
+                <a href="{{ url_for('users.user_update', user_id=u.id) }}"
                    id="btn-edit"
                    class="btn btn-sm btn-outline-secondary"
                    aria-label="Edit">
-                    <span aria-hidden="true">&#x1f589;</span>
+                    <span aria-hidden="true">&#x270E;</span>
                 </a>
             </td>
             <td>
-                <a href="{{ u.id }}/delete"
+                <a href="{{ url_for('users.user_delete', user_id=u.id) }}"
                    id="btn-delete"
                    class="btn btn-sm btn-outline-danger"
                    aria-label="Delete">

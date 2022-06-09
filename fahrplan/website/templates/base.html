@@ -43,13 +43,17 @@
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
                 <a class="nav-item nav-link"
-                   id="fahrplan"
-                   href="{{ url_for('lines.lines_view') }}">Fahrtstrecken (lines)</a>
+                id="fahrplan"
+                href="{{ url_for('lines.lines_view') }}">Fahrtstrecken</a>
                 {% if current_user.admin == 1 %}
                 <a class="nav-item nav-link"
                    id="users"
-                   href="{{ url_for('users.users_view') }}">Personal (users)</a>
-                {% endif %}
+                   href="{{ url_for('users.users_view') }}">Personal</a>
+                   {% endif %}
+                   <a class="nav-item nav-link"
+                      id="users"
+                      href="{{ url_for('users.user_trips') }}">Meine Fahrten</a>
+
                 {% endif %}
             </ul>
         </div>
@@ -60,7 +64,7 @@
                 <span style="font-size: 1.5em;"><img alt="&#127774;"
                          src="{{ url_for('static', filename='avatar/avatar.svg') }}" /></span>
                 <!-- <a href="users/{{ current_user.id }}" -->
-                <a href="{{ url_for('users.users_update', user_id=current_user.id) }}"
+                <a href="{{ url_for('users.user_update', user_id=current_user.id) }}"
                    class="nav-item nav-link">
                     {{ current_user.first_name }} {{ current_user.last_name }}
                     {% if current_user.admin == 1%}(Admin){% endif %}

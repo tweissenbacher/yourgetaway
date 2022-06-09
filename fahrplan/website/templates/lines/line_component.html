@@ -1,0 +1,47 @@
+<section id="fahrtstrecke"
+         style="border: 1px solid; padding: 0.5em; margin-top: 1em;">
+    <table class="table">
+
+        <thead>
+            <tr>
+                <td colspan="5">
+                    <h2>{{ line.descr }} </h2>
+                    <h5>auf {{ line.route.name }}</h5>
+                    <span>Gesamtpreis: {{ "{:,.2f}".format(line.price/100) | replace('.',',') }} €</span>
+                    <p>Fahrtdauer: {{ (line.sections | last).arrival }} min</p>
+                    <p>Information: {{ line.note if line.note }}</p>
+                    <br>
+                    <h5>Abschnitte:</h5>
+                </td>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">von</th>
+                <th scope="col">nach</th>
+                <th scope="col">Dauer (min)</th>
+                <th scope="col">Kumuliert (min)</th>
+            </tr>
+
+            {% if line.sections %}
+            {% for line_section in line.sections %}
+            <tr>
+                <td>{{ line_section.section.id }}</td>
+                <td>{{ line_section.section.from_station_name }}</td>
+                <td>{{ line_section.section.to_station_name }}</td>
+                <td>{{ line_section.section.duration }} min</td>
+                <td>{{ line_section.arrival }} min</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="11">Keine Abschnitte gewählt</td>
+            </tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+</section>

@@ -1,5 +1,6 @@
-from .line import *
 from .user import *
+from .line import *
+from .schema import *
 
 # __all__ = ["abschnitt", "fahrtstrecke", "user"]
 

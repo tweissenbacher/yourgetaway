@@ -16,6 +16,9 @@ from website.model import (
     Line,
     line_schema,
     lines_schema,
+    Route,
+    route_schema,
+    routes_schema,
     Section,
     section_schema,
     sections_schema,
@@ -36,11 +39,12 @@ api_test = Blueprint("api_test", __name__)
 # https://docs.sqlalchemy.org/en/14/orm/session_basics.html#querying-2-0-style
 
 
-@api_test.route("/test/", methods=["GET"])
 @api_test.route("/test/<another>", methods=["GET"])
-def test_api_multiple(another):
+@api_test.route("/test/", methods=["GET"])
+def test_api_multiple(another=None):
     if another:
         return jsonify(another)
+    res="/test/"
     return jsonify(res)
 
 
@@ -136,6 +140,21 @@ def test_api_trips_filtered(line_id):
 
     res = trips_schema.dump(trips)
     print(res)
+    return jsonify(res)
+
+
+
+# 
+# 
+
+
+@api_test.route("/routes/", methods=["GET"])
+def test_api_routes():
+    routes = Route.query.all()
+    # routes = []
+    print(routes)
+    res = routes_schema.dump(routes)
+    # return jsonify({"routes": res})
     return jsonify(res)
 
 
