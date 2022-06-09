@@ -2,54 +2,68 @@
 {% block title %}Trainstations{% endblock %}
 {% block content %}
     <h1 class="py-5">Trainstations</h1>
+    {% if current_user.admin == True %}
+        <form method="POST">
+          <h3 align="center">Add a new Trainstation</h3>
+          <br />
+          <div class="form-group">
+            <label for="ts_name">Enter a name for your new trainstation:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ts_name"
+              name="ts_name"
+              placeholder="Enter a name for your new trainstation"
+            />
+          </div>
+          <div class="form-group">
+            <label for="ts_address">Enter the address for your new trainstation:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ts_address"
+              name="ts_address"
+              placeholder="Enter the address for your new trainstation"
+            />
+          </div>
+          <button type="add" class="btn btn-primary">Add new Trainstation</button>
+          <br />
+          <br />
+        </form>
+    {% endif %}
+    <hr />
     <u1 class="list-group list-group-flush" id="trainstation-list">
         {% for ts in all_trainstations %}
             <li class="list-group-item">
+                {% if current_user.admin == True %}
+                    <li>
+                        <span class="field-name">Trainstation_id:</span>
+                        <span class="field-value">{{ ts.id }}</span>
+                    </li>
+                {% endif %}
                 <li>
-                    <span class="field-name">TS_ID:</span>
-                    <span class="field-value">{{ ts.id }}</span>
-                </li>
-                <li>
-                    <span class="field-name">TS_NAME:   </span>
+                    <span class="field-name">Trainstation_name:</span>
                     <span class="field-value">{{ ts.name }}</span>
-                    <button type="button" class="close" onClick="deleteTrainstation({{ ts.id }})">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+
                 </li>
                 <li>
-                    <span class="field-name">TS_Address:</span>
+                    <span class="field-name">Trainstation_address:</span>
                     <span class="field-value">{{ ts.address }}</span>
-                    <p><a href="/edit_trainstations/{{ ts.id }}">Edit</a></p>
+                    {% if current_user.admin == True %}
+                    <p>
+                        <a href="/edit_trainstations/{{ ts.id }}"
+                           class="btn btn-primary btn-lg-active"
+                           role="button" aria-pressed="true">Edit
+                        </a>
+                        <button type="button" class="btn btn-danger"
+                                onClick="deleteTrainstation({{ ts.id }})">Delete
+                        </button>
+                    </p>
+                    {% endif %}
                 </li>
 
             </li>
         {% endfor %}
     </u1>
 <br />
-<form method="POST">
-  <h3 align="center">Add a new Trainstation</h3>
-  <br />
-  <div class="form-group">
-    <label for="ts_name">Trainstation Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="ts_name"
-      name="ts_name"
-      placeholder="Enter the Name for the Trainstation"
-    />
-  </div>
-  <div class="form-group">
-    <label for="ts_address">Trainstation Address</label>
-    <input
-      type="text"
-      class="form-control"
-      id="ts_address"
-      name="ts_address"
-      placeholder="Enter the address for the Trainstation"
-    />
-  </div>
-  <br />
-  <button type="add" class="btn btn-primary">Add new Trainstation</button>
-</form>
 {% endblock %}

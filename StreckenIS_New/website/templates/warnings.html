@@ -3,17 +3,43 @@
 {% block content %}
 <dif>
     <h1 class="py-5">Warnings</h1>
+    {% if current_user.admin == True %}
+    <form method="POST">
+      <h3 align="center">Add a new Warning</h3>
+      <br />
+      <div class="form-group">
+        <label for="war_section">Select a section</label>
+          <select id="war_section" name="war_section" class="form-control">
+              {% for sec in all_sections %}
+              <option value="{{ sec.id }}">{{ sec.start.name }} - {{ sec.end.name }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div class="form-group">
+        <label for="war_warnings">Enter the warning for the selected section:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="war_warnings"
+          name="war_warnings"
+          placeholder="Enter the warning for the selected section"
+        />
+      </div>
+      <br />
+      <button type="add" class="btn btn-primary">Add new Warning</button>
+    </form>
+    {% endif %}
+    <hr />
     <u1 class="list-group list-group-flush" id="warning-list">
         {% for war in all_warnings %}
             <li id="{{ war.id }}" class="entry list-group-item">
+                {% if current_user.admin == True %}
+                    <li>
+                        <span class="field-name":>Warning_ID:</span>
+                        <span class="field-value">{{ war.id }}</span>
+                    </li>
+                {% endif %}
                 <li>
-                    <span class="field-name":>Warning_ID:</span>
-                    <span class="field-value">{{ war.id }}</span>
-                </li>
-                <li>
-                    <button type="button" class="close" onClick="deleteWarning({{ war.id }})">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <span class="field-name":>Warning Information:</span>
                     <span class="field-value">{{ war.warnings }} </span>
                 </li>
@@ -21,33 +47,19 @@
                     <span class="field-name":>Warning on Section: </span>
                     <span class="field-value">[{{ war.warning_section.start.name }} - {{ war.warning_section.end.name }}]</span>
                 </li>
+                {% if current_user.admin == True %}
+                    <p>
+                        <a href="/edit_warnings/{{ war.id }}"
+                           class="btn btn-primary btn-lg-active"
+                           role="button" aria-pressed="true">Edit
+                        </a>
+                        <button type="button" class="btn btn-danger"
+                                onClick="deleteWarning({{ war.id }})">Delete
+                        </button>
+                    </p>
+                {% endif %}
             </li>
         {% endfor %}
     </u1>
 </dif>
-<br />
-<form method="POST">
-  <h3 align="center">Add a new Warning</h3>
-  <br />
-  <div class="form-group">
-    <label for="war_section">Select a section</label>
-      <select id="war_section" name="war_section" class="form-select">
-          {% for sec in all_sections %}
-          <option value="{{ sec.id }}">{{ sec.start.name }} - {{ sec.end.name }}</option>
-          {% endfor %}
-      </select>
-  </div>
-  <div class="form-group">
-    <label for="war_warnings">Warning</label>
-    <input
-      type="text"
-      class="form-control"
-      id="war_warnings"
-      name="war_warnings"
-      placeholder="Enter the Warning"
-    />
-  </div>
-  <br />
-  <button type="add" class="btn btn-primary">Add new Warning</button>
-</form>
 {% endblock %}

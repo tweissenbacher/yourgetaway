@@ -3,99 +3,113 @@
 {% block content %}
 <dif>
     <h1 class="py-5">Routes</h1>
+    {% if current_user.admin == True %}
+    <form method="POST">
+      <h3 align="center">Add a new Route</h3>
+      <br />
+      <div class="form-group">
+        <label for="rou_name">Enter a name for your new route:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="rou_name"
+          name="rou_name"
+          placeholder="Enter a name for your new route"
+        />
+      </div>
+      <div class="form-group">
+        <label for="rou_start">Choose a trainstation where your new route will start:</label>
+          <select id="rou_start" name="rou_start" class="form-control">
+              {% for ts in all_trainstations %}
+                <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div class="form-group">
+        <label for="rou_end">Choose a trainstation where your new route will end:</label>
+          <select id="rou_end" name="rou_end" class="form-control">
+              {% for ts in all_trainstations %}
+              <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div>
+          <label>Add the section[s] for your new route:</label>
+          <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    {% for sec in all_sections %}
+                        <label class="switch ">
+                            <input type="checkbox" name="rou_sections" class="danger"
+                                   value="{{ sec.id }}">{{ sec.start.name }} - {{ sec.end.name }}
+                            <span class="slider round"></span>
+                        </label>
+                    <br>
+                    {% endfor %}
+                </li>
+          </ul>
+      </div>
+      <div class="form-group">
+        <label for="rou_v_max">Enter the max_speed for your new route[km/h]:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="rou_v_max"
+          name="rou_v_max"
+          placeholder="Enter the max_speed for your new route[km/h]"
+        />
+      </div>
+      <br />
+      <button type="add" class="btn btn-primary">Add new route</button>
+    </form>
+    {% endif %}
+    <hr />
     <u1 class="list-group list-group-flush" id="route-list">
         {% for rou in all_routes %}
             <li id="{{ rou.id }}" class="entry list-group-item">
+                {% if current_user.admin == True %}
+                    <li>
+                        <span class="field-name":>Route_id:</span>
+                        <span class="field-value">{{ rou.id }}</span>
+                    </li>
+                {% endif %}
                 <li>
-                    <span class="field-name":>ROU_ID:</span>
-                    <span class="field-value">{{ rou.id }}</span>
-                </li>
-                <li>
-                    <span class="field-name":>ROU_name:</span>
+                    <span class="field-name":>Routename:</span>
                     <span class="field-value">{{ rou.name }}</span>
                 </li>
                 <li>
-                    <span class="field-name":>ROU_start:</span>
+                    <span class="field-name":>Route_start:</span>
                     <span class="field-value">{{ rou.start.name }}</span>
-                    <button type="button" class="close" onClick="deleteRoute({{ rou.id }})">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </li>
                 <li>
-                    <span class="field-name":>ROU_end:</span>
+                    <span class="field-name":>Route_end:</span>
                     <span class="field-value">{{ rou.end.name }}</span>
                 </li>
                 <li>
-                    <span class="field-name":>ROU_sections:</span>
+                    <span class="field-name":>Route_sections:</span>
+                    <br>
                     {% for r in rou.route_sections %}
-                    <span class="field-value">[{{ r.start.name }} - {{ r.end.name }}]</span>
+                    <span class="field-value">[{{ r.start.name }} - {{ r.end.name }}]<br></span>
                     {% endfor %}
                 </li>
                 <li>
-                    <span class="field-name":>ROU_v_max:</span>
+                    <span class="field-name":>Route_max_speed [km/h]:</span>
                     <span class="field-value">{{ rou.v_max }}</span>
-                    <p><a href="/edit_routes/{{ rou.id }}">Edit</a></p>
                 </li>
+                {% if current_user.admin == True %}
+                    <p>
+                        <a href="/edit_routes/{{ rou.id }}"
+                           class="btn btn-primary btn-lg-active"
+                           role="button" aria-pressed="true">Edit
+                        </a>
+                        <button type="button" class="btn btn-danger"
+                                onClick="deleteRoute({{ rou.id }})">Delete
+                        </button>
+                        </p>
+                {% endif %}
             </li>
         {% endfor %}
     </u1>
 </dif>
 <br />
-<form method="POST">
-  <h3 align="center">Add a new Sections_route</h3>
-  <br />
-  <div class="form-group">
-    <label for="rou_name">Route Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="rou_name"
-      name="rou_name"
-      placeholder="Enter the Name for the route"
-    />
-  </div>
-  <div class="form-group">
-    <label for="rou_start">route start</label>
-      <select id="rou_start" name="rou_start" class="form-select">
-          {% for ts in all_trainstations %}
-          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
-          {% endfor %}
-      </select>
-  </div>
-  <div class="form-group">
-    <label for="rou_end">route end</label>
-      <select id="rou_end" name="rou_end" class="form-select">
-          {% for ts in all_trainstations %}
-          <option value="{{ ts.id }}">{{ ts.name }} - {{ ts.address }}</option>
-          {% endfor %}
-      </select>
-  </div>
-  <div>
-    <ul class="list-group list-group-flush">
-    <li class="list-group-item">Route_sections
-        <br>
-        {% for sec in all_sections %}
-    <label class="switch ">
-    <input type="checkbox" name="rou_sections" class="danger" value="{{ sec.id }}">{{ sec.start.name }} - {{ sec.end.name }}
-    <span class="slider round"></span>
-    </label>
-        <br>
-        {% endfor %}
-    </li>
-    </ul>
-  </div>
 
-  <div class="form-group">
-    <label for="rou_v_max">Route v_max</label>
-    <input
-      type="number"
-      class="form-control"
-      id="rou_v_max"
-      name="rou_v_max"
-      placeholder="Enter the v_max for the route (in km/h)"
-    />
-  </div>
-  <br />
-  <button type="add" class="btn btn-primary">Add new route</button>
-</form>
 {% endblock %}

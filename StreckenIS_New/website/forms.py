@@ -1,14 +1,23 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField, DateField, BooleanField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, IntegerField, SubmitField, PasswordField, DateField, BooleanField, EmailField, widgets
+from wtforms.validators import DataRequired, Length, Email, InputRequired, EqualTo, email_validator
+from wtforms.widgets import PasswordInput
 
 
-class EditProfileForm(FlaskForm):
+class EditEmpUserForm(FlaskForm):
     first_name = StringField('first_name', validators=[DataRequired()])
     last_name = StringField('last_name', validators=[Length(min=3, max=150)])
-    email = StringField('email', validators=[Length(min=3, max=150)])
-    password1 = StringField('password1', validators=[Length(min=3, max=150)])
-    password2 = StringField('password2', validators=[Length(min=3, max=150)])
+    email = EmailField('email', validators=email_validator)
+    password = StringField('password required to save your changes', validators=[InputRequired()], widget=PasswordInput(hide_value=True))
+    birthday = DateField('birthday')
+    submit = SubmitField('submit')
+
+
+class EditUserForm(FlaskForm):
+    first_name = StringField('first_name', validators=[DataRequired()])
+    last_name = StringField('last_name', validators=[Length(min=3, max=150)])
+    email = EmailField('email', validators=email_validator)
+    password = PasswordField('password', widget=PasswordInput(hide_value=False))
     birthday = DateField('birthday')
     admin = BooleanField('admin')
     submit = SubmitField('submit')
@@ -21,20 +30,15 @@ class EditTrainstationForm(FlaskForm):
 
 
 class EditSectionForm(FlaskForm):
-    start = StringField('start', validators=[DataRequired()])
-    end = StringField('end', validators=[Length(min=3, max=150)])
     track = StringField('track', validators=[Length(min=3, max=150)])
-    fee = StringField('fee')
-    time = StringField('time')
+    fee = IntegerField('fee')
+    time = IntegerField('time')
     submit = SubmitField('submit')
 
 
 class EditRouteForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
-    start = StringField('start', validators=[Length(min=3, max=150)])
-    end = StringField('end', validators=[Length(min=3, max=150)])
-    route_sections = StringField('route_sections', validators=[Length(min=3, max=150)])
-    v_max = StringField('v_max')
+    v_max = IntegerField('max_speed')
     submit = SubmitField('submit')
 
 

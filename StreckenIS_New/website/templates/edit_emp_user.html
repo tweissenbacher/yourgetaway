@@ -21,13 +21,9 @@
         {{ form.birthday(class="form-control", size=150) }} <br>
     </p>
     <p>
-        {{ form.admin.label(class="form-label") }} <br>
-        {{ form.admin() }} <br>
-    </p>
-    <p>
         {{ form.password.label(class="form-label") }} <br>
         {{ form.password(class="form-control") }} <br>
     </p>
-    <p>{{ form.submit(class="form-control") }}</p>
+    <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}

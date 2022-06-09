@@ -1,21 +1,100 @@
 {% extends "base.html" %}
 {% block title %}Users{% endblock %}
 {% block content %}
-    <h1 class="py-5">Users</h1>
-    <u1 class="list-group list-group-flush" id="users-list">
+<h1 class="py-5">Your User</h1>
+    {% if user.admin == False %}
+        <li>
+            <span class="field-name">Your Email Address:</span>
+            <span class="field-value">{{ current_user.email }}</span>
+        </li>
+        <li>
+            <span class="field-name">Your first name:</span>
+            <span class="field-value">{{ current_user.first_name }}</span>
+        </li>
+        <li>
+            <span class="field-name">Your last name:</span>
+            <span class="field-value">{{ current_user.last_name }}</span>
+        </li>
+        <li>
+            <span class="field-name">Your birthday:</span>
+            <span class="field-value">{{ current_user.birthday }}</span>
+            <p>
+                <a href="/edit_emp_user/{{ current_user.id }}"
+                   class="btn btn-primary btn-lg-active"
+                   role="button" aria-pressed="true">Adapt your profile
+                </a>
+            </p>
+        </li>
+    {% else %}
+        <br />
+        <form method="POST">
+          <h2 align="center">Add a new User</h2>
+          <br />
+          <div class="form-group">
+            <label for="us_email">Enter the email for the new user:</label>
+            <input
+              type="email"
+              class="form-control"
+              id="us_email"
+              name="us_email"
+              placeholder="Enter the email for the new user"
+            />
+          </div>
+          <div class="form-group">
+            <label for="us_first_name">Enter the firstname for the new user:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="us_first_name"
+              name="us_first_name"
+              placeholder="Enter the firstname for the new user"
+            />
+          </div>
+          <div class="form-group">
+            <label for="us_last_name">Enter the lastname for the new user:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="us_last_name"
+              name="us_last_name"
+              placeholder="Enter the lastname for the new user"
+            />
+          </div>
+          <div class="form-group">
+            <label for="us_password1">Enter the password for the new user:</label>
+            <input
+              type="password"
+              class="form-control"
+              id="us_password1"
+              name="us_password1"
+              placeholder="Enter the password for the new user"
+            />
+          </div>
+          <div class="form-group">
+            <label for="us_password2">Confirm the password:</label>
+            <input
+              type="password"
+              class="form-control"
+              id="us_password2"
+              name="us_password2"
+              placeholder="Confirm the password"
+            />
+          </div>
+          <br />
+          <button type="add" class="btn btn-primary">Add new User</button>
+        </form>
+        <hr />
+        <h3 class="py-5">All Users:</h3>
+        <u1 class="list-group list-group-flush" id="users-list">
         {% for u in all_users %}
             <li class="list-group-item">
-
                 <li>
-                    <span class="field-name">User_ID:</span>
+                    <span class="field-name">User_id:</span>
                     <span class="field-value">{{ u.id }}</span>
                 </li>
                 <li>
                     <span class="field-name">User_email:</span>
                     <span class="field-value">{{ u.email }}</span>
-                    <button type="button" class="close" onClick="deleteUser({{ u.id }})">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </li>
                 <li>
                     <span class="field-name">User_first_name:</span>
@@ -26,81 +105,24 @@
                     <span class="field-value">{{ u.last_name }}</span>
                 </li>
                 <li>
-                    <span class="field-name">User_Password:</span>
-                    <span class="field-value">{{ u.password1 }}</span>
-                </li>
-                <li>
-                    <span class="field-name">User_Password2:</span>
-                    <span class="field-value">{{ u.password2 }}</span>
-                </li>
-                <li>
                     <span class="field-name">User_birthday:</span>
                     <span class="field-value">{{ u.birthday }}</span>
                 </li>
                 <li>
                     <span class="field-name">User_admin:</span>
                     <span class="field-value">{{ u.admin }}</span>
-                    {% if user == current_user %}
-                    <p><a href="/edit_users/{{ u.id }}">Edit</a></p>
-                    {% endif %}
+                    <p>
+                        <a href="/edit_users/{{ u.id }}"
+                           class="btn btn-primary btn-lg-active"
+                           role="button" aria-pressed="true">Edit
+                        </a>
+                        <button type="button" class="btn btn-danger"
+                                onClick="deleteUser({{ u.id }})">Delete
+                        </button>
+                    </p>
                 </li>
             </li>
         {% endfor %}
     </u1>
-<br />
-<form method="POST">
-  <h3 align="center">Add a new User</h3>
-  <br />
-  <div class="form-group">
-    <label for="us_email">User Email</label>
-    <input
-      type="email"
-      class="form-control"
-      id="us_email"
-      name="us_email"
-      placeholder="Enter the Email for the new User"
-    />
-  </div>
-  <div class="form-group">
-    <label for="us_first_name">User First Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="us_first_name"
-      name="us_first_name"
-      placeholder="Enter the first name for the new User"
-    />
-  </div>
-  <div class="form-group">
-    <label for="us_last_name">User Last Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="us_last_name"
-      name="us_last_name"
-      placeholder="Enter the last name for the new User"
-    />
-  </div>
-  <div class="form-group">
-    <label for="us_password1">User Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="us_password1"
-      name="us_password1"
-      placeholder="Enter the password for the new User"
-    />
-  </div>
-  <div class="form-group">
-    <label for="us_password2">User Password (Confirm)</label>
-    <input
-      type="password"
-      class="form-control"
-      id="us_password2"
-      name="us_password2"
-      placeholder="Enter the password (confirm) for the new User"
-    />
-  <br />
-  <button type="add" class="btn btn-primary">Add new User</button>
-</form>
+    {% endif %}
 {% endblock %}

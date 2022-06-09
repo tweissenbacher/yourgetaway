@@ -5,25 +5,17 @@
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.start.label }} <br>
-        {{ form.start(size=150) }} <br>
+        {{ form.track.label(class="form-label") }} <br>
+        {{ form.track(class="form-control", size=150) }} <br>
     </p>
     <p>
-        {{ form.end.label }} <br>
-        {{ form.end(size=150) }} <br>
+        {{ form.fee.label(class="form-label") }} <br>
+        {{ form.fee(class="form-control", size=150) }} <br>
     </p>
     <p>
-        {{ form.track.label }} <br>
-        {{ form.track(size=150) }} <br>
+        {{ form.time.label(class="form-label") }} <br>
+        {{ form.time(class="form-control", size=150) }} <br>
     </p>
-    <p>
-        {{ form.fee.label }} <br>
-        {{ form.fee(size=150) }} <br>
-    </p>
-    <p>
-        {{ form.time.label }} <br>
-        {{ form.time(size=150) }} <br>
-    </p>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class="form-control") }}</p>
 </form>
 {% endblock %}

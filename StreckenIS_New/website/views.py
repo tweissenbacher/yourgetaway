@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .forms import EditProfileForm, EditTrainstationForm, EditSectionForm, EditRouteForm, EditWarningsForm
+from .forms import EditUserForm, EditTrainstationForm, EditSectionForm, EditRouteForm, EditWarningsForm, EditEmpUserForm
 from .models import User, Note, TrainstationModel, SectionModel, RouteModel, WarningModel
 from . import db
 import json
@@ -28,7 +28,6 @@ def get_all_users():
         us_password2 = request.form.get('us_password2')
         us_birthday = request.form.get('us_birthday')
         us_admin = request.form.get('us_admin')
-
 
         new_user = User.query.filter_by(email=us_email).first()
         if new_user:
@@ -54,16 +53,39 @@ def get_all_users():
     return render_template("users.html", user=current_user, all_users=all_users)
 
 
+@views.route('/edit_emp_user/<int:user_id>', methods=['GET', 'POST'])
+def edit_emp_users(user_id):
+    form = EditEmpUserForm()
+    emp_user_edit = User.query.get(user_id)
+    if form.validate_on_submit():
+        emp_user_edit.first_name = form.first_name.data
+        emp_user_edit.last_name = form.last_name.data
+        emp_user_edit.email = form.email.data
+        emp_user_edit.password = form.password.data
+        emp_user_edit.password = generate_password_hash(emp_user_edit.password)
+        emp_user_edit.birthday = form.birthday.data
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect('/all_users')
+    elif request.method == 'GET':
+        form.first_name.data = emp_user_edit.first_name
+        form.last_name.data = emp_user_edit.last_name
+        form.email.data = emp_user_edit.email
+        form.password.data = emp_user_edit.password
+        form.birthday.data = emp_user_edit.birthday
+    return render_template('edit_emp_user.html', title='Edit Your Profile', user=current_user, form=form)
+
+
 @views.route('/edit_users/<int:user_id>', methods=['GET', 'POST'])
 def edit_users(user_id):
-    form = EditProfileForm()
+    form = EditUserForm()
     user_edit = User.query.get(user_id)
     if form.validate_on_submit():
         user_edit.first_name = form.first_name.data
         user_edit.last_name = form.last_name.data
         user_edit.email = form.email.data
-        user_edit.password1 = form.password1.data
-        user_edit.password2 = form.password2.data
+        user_edit.password = form.password.data
+        user_edit.password = generate_password_hash(user_edit.password)
         user_edit.birthday = form.birthday.data
         user_edit.admin = form.admin.data
         db.session.commit()
@@ -73,11 +95,11 @@ def edit_users(user_id):
         form.first_name.data = user_edit.first_name
         form.last_name.data = user_edit.last_name
         form.email.data = user_edit.email
-        form.password1.data = user_edit.password1
-        form.password2.data = user_edit.password2
+        form.password.data = user_edit.password
         form.birthday.data = user_edit.birthday
         form.admin.data = user_edit.admin
     return render_template('edit_users.html', title='Edit Users', user=current_user, form=form)
+
 
 @views.route('/delete-user', methods=['POST'])
 def delete_user():
@@ -111,7 +133,6 @@ def get_all_trainstations():
             db.session.add(new_trainstation)
             db.session.commit()
             flash(' ---   trainstation successfully created!   ---', category='success')
-
 
     all_trainstations = TrainstationModel.query.all()
 
@@ -149,6 +170,7 @@ def delete_trainstation():
 @views.route('/all_sections', methods=['GET', 'POST'])
 def get_all_sections():
     if request.method == 'POST':
+        #sec_id = request.form.get('sec_id')
         sec_start = request.form.get('sec_start')
         sec_end = request.form.get('sec_end')
         sec_track = request.form.get('sec_track')
@@ -162,16 +184,20 @@ def get_all_sections():
 
         if sec_start == sec_end:
             flash('section start cannot be the same as section end', category='error')
+        elif len(sec_fee) > 3:
+            flash('section fee cannot be over 3 digits', category='error')
+        elif len(sec_time) > 3:
+            flash('section time cannot be over 3 digits', category='error')
         else:
-            #for w in sec_warning:
-                #warning = WarningModel.query.get(w)
-                #warnings.append(warning)
+            # for w in sec_warning:
+            # warning = WarningModel.query.get(w)
+            # warnings.append(warning)
 
-                new_section = SectionModel(start=sec_start, end=sec_end, track=sec_track, fee=sec_fee,
+            new_section = SectionModel(start=sec_start, end=sec_end, track=sec_track, fee=sec_fee,
                                        time=sec_time, section_warnings=warnings)
-                db.session.add(new_section)
-                db.session.commit()
-                flash(' ---   section successfully created!   ---', category='success')
+            db.session.add(new_section)
+            db.session.commit()
+            flash(' ---   section successfully created!   ---', category='success')
 
     all_sections = SectionModel.query.all()
     all_trainstations = TrainstationModel.query.all()
@@ -185,8 +211,6 @@ def edit_sections(sections_id):
     form = EditSectionForm()
     sections_edit = SectionModel.query.get(sections_id)
     if form.validate_on_submit():
-        sections_edit.start = form.start.data
-        sections_edit.end = form.end.data
         sections_edit.track = form.track.data
         sections_edit.fee = form.fee.data
         sections_edit.time = form.time.data
@@ -194,12 +218,11 @@ def edit_sections(sections_id):
         flash('Your changes have been saved')
         return redirect('/all_sections')
     elif request.method == 'GET':
-        form.start.data = sections_edit.start
-        form.end.data = sections_edit.end
         form.track.data = sections_edit.track
         form.fee.data = sections_edit.fee
         form.time.data = sections_edit.time
     return render_template('edit_sections.html', title='Edit Sections', user=current_user, form=form)
+
 
 @views.route('/delete-section', methods=['POST'])
 def delete_section():
@@ -211,6 +234,7 @@ def delete_section():
         db.session.commit()
 
     return jsonify({})
+
 
 @views.route('/all_routes', methods=['GET', 'POST'])
 def get_all_routes():
@@ -227,14 +251,19 @@ def get_all_routes():
 
         if rou_start == rou_end:
             flash('route start cannot be the same as route end', category='error')
+        elif len(rou_name) < 1:
+            flash('route name cannot be empty', category='error')
+        elif len(rou_v_max) < 1:
+            flash('route max_speed cannot be empty', category='error')
+        elif len(rou_v_max) != 3:
+            flash('max_speed value need to be 3 digits long', category='error')
         else:
-
             for r_s in rou_sections:
                 section = SectionModel.query.get(r_s)
                 sections.append(section)
 
             new_route = RouteModel(name=rou_name, start=rou_start, end=rou_end, route_sections=sections,
-                                       v_max=rou_v_max)
+                                   v_max=rou_v_max)
             db.session.add(new_route)
             db.session.commit()
             flash(' ---   route successfully created!   ---', category='success')
@@ -252,18 +281,12 @@ def edit_routes(routes_id):
     routes_edit = RouteModel.query.get(routes_id)
     if form.validate_on_submit():
         routes_edit.name = form.name.data
-        routes_edit.start = form.start.data
-        routes_edit.end = form.end.data
-        routes_edit.route_sections = form.route_sections.data
         routes_edit.v_max = form.v_max.data
         db.session.commit()
         flash('Your changes have been saved')
         return redirect('/all_routes')
     elif request.method == 'GET':
         form.name.data = routes_edit.name
-        form.start.data = routes_edit.start
-        form.end.data = routes_edit.end
-        form.route_sections.data = routes_edit.route_sections
         form.v_max.data = routes_edit.v_max
     return render_template('edit_routes.html', title='Edit Routes', user=current_user, form=form)
 
@@ -322,17 +345,3 @@ def delete_warning():
         db.session.commit()
 
     return jsonify({})
-
-
-
-# @views.route('/trainstations', methods=['GET', 'POST', 'PATCH', 'PUT'])
-# def trainstations():
-#    trainstations = json.loads(request.data)
-#    trainstations_id = trainstations['trainstations']
-#    trainstations = trainstations.query.get(trainstations_id)
-#    if trainstations:
-#        if trainstations.user_id == current_user.id:
-#            db.session.delete(trainstations)
-#            db.session.commit()
-
-#    return jsonify({})

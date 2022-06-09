@@ -139,13 +139,14 @@ warnings_schema = WarningSchema(many=True)
 
 
 class SectionSchema(ma.SQLAlchemyAutoSchema):
-    #(Nested(TrainstationSchema), many=True) -> Trainstation is not iterable (One-To-Many)
+    # (Nested(TrainstationSchema), many=True) -> Trainstation is not iterable (One-To-Many)
     start = Nested(TrainstationSchema)
     end = Nested(TrainstationSchema)
     section_warnings = Nested(WarningSchema, many=True)
 
     class Meta:
         model = SectionModel
+        ordered = True
         fields = (
             "id",
             "start",
