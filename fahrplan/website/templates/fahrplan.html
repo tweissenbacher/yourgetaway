@@ -4,7 +4,7 @@
 <h1 class="py-5">Fahrpläne</h1>
 
 
-{% if user.admin == 1 %}
+{% if current_user.admin == 1 %}
 <a href="create"
    class="btn btn-outline-primary">Neue Fahrtstrecke hinzufügen</a>
 <p></p>

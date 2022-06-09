@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Fahrtstrecke bearbeiten{% endblock %}
+{% block content %}
+
+{% if current_user == None %}
+<!-- TODO if user not authenticated -->
+<p>404</p>
+{% elif current_user.admin == 1 %}
+
+<form method="post">
+
+    <section id="update">
+
+        <p>line.id: {{ line.id if line != undefined or None }}</p>
+        <p>line.route.name: {{line.route.name}}</p>
+
+        <label for="route_id">Wähle Strecke</label>
+        <select name="route_id"
+                class="form-select"
+                id="route_id"
+                disabled>
+            <option value="{{ line.route.id }}">{{ line.route.name }}</option>
+        </select>
+
+        <label for="descr">Beschreibung</label>
+        <input type="text"
+               class="form-control"
+               id="descr"
+               name="descr"
+               value="{{ line.descr if line.descr }}"
+               placeholder="Beschreibung" />
+
+        <label for="price">Gesamtpreis</label>
+        <input type="text"
+               class="form-control"
+               id="price"
+               name="price"
+               value="{{ line.price if line.price }}"
+               placeholder="cent" />
+
+        <!-- Startbahnhof -->
+        {% if line.sections is not undefined or None %}
+        <label for="first_section">Startbahnhof</label>
+        <select name="first_section"
+                class="form-select"
+                id="first_section">
+            {% for section in line.route.sections %}
+            <option value="{{ section.id }}"
+                    {{ 'selected' if (line.sections|first).section.id == section.id }}>
+                {{ section.from_station_name }}
+            </option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        <!-- Endbahnhof -->
+        {% if line.sections != undefined or None %}
+        <label for="last_section">Endbahnhof</label>
+        <select name="last_section"
+                class="form-select"
+                id="last_section">
+            {% for section in line.route.sections %}
+            <option value="{{ section.id }}"
+                    {{ 'selected' if (line.sections|last).section.id == section.id }}>
+                {{ section.to_station_name }}
+            </option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+
+        <br />
+        <!-- <a href="?{{ route_id if route_id }}"
+   class="btn btn-outline-primary">Weiter</a> -->
+
+        <button type="submit"
+                class="btn btn-primary">Vorschau aktualisieren</button>
+    </section>
+
+    {% if line is not undefined or None %}
+    {% if line.route is not undefined or None %}
+    {% include 'lines/line_component.html' %}
+    <br>
+    <label for="confirm">Alles richtig? </label>
+    <input type="checkbox"
+           class="form-check-input"
+           id="confirm"
+           name="confirm"
+           placeholder="confirm" />
+    <br><br>
+    <button type="submit"
+            class="btn btn-primary">Speichern</button>
+    {% endif %}
+    {% endif %}
+</form>
+{% endif %}
+{% endblock %}

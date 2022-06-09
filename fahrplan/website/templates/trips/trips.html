@@ -2,7 +2,7 @@
 {% block title %}Fahrplan-IS - Fahrplan bearbeiten{% endblock %}
 {% block content %}
 
-{% if user == None %}
+{% if current_user == None %}
 <!-- TODO if user not authenticated -->
 <p>404</p>
 {% elif current_user.admin == 1 %}

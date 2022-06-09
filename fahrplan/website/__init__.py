@@ -23,9 +23,9 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_ABS_PATH}"
     # https://stackoverflow.com/questions/33738467/how-do-i-know-if-i-can-disable-sqlalchemy-track-modifications
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["JSON_SORT_KEYS"] = False
+    # app.config["JSON_SORT_KEYS"] = True
 
-    from .model import User, Line, Section
+    from .model import User, Trip, Line
 
     db.init_app(app)
     # event.listen(db.engine, "connect", lambda c, _: c.execute("PRAGMA foreign_keys = ON"))
@@ -36,9 +36,10 @@ def create_app():
     ma.init_app(app)
 
     from .api import api, api_test
-    
+
     # from .views import auth, login_manager
-    from .views import auth, login_manager, index, lines, users
+    from .views import auth, login_manager, index, lines, users, trips
+
     # from .views import views
     # from views import Line
 
@@ -46,11 +47,12 @@ def create_app():
 
     app.register_blueprint(api_test, url_prefix="/api-test")
     app.register_blueprint(api, url_prefix="/")
-    
+
     app.register_blueprint(auth, url_prefix="/")
+    app.register_blueprint(users, url_prefix="/")
     app.register_blueprint(index, url_prefix="/")
     app.register_blueprint(lines, url_prefix="/")
-    app.register_blueprint(users, url_prefix="/")
+    app.register_blueprint(trips, url_prefix="/")
 
     # from .data import dummy_data
     # dummy_data.insert_users()

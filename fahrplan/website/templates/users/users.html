@@ -2,7 +2,7 @@
 {% block title %}Fahrplan-IS - Personal{% endblock %}
 {% block content %}
 <h1>Personal</h1>
-{% if user.admin == 1 %}
+{% if current_user.admin == 1 %}
 <table class="table">
     <thead>
         <tr>

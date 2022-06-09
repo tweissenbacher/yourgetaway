@@ -19,7 +19,11 @@ users = Blueprint("users", __name__)
 @login_required
 def users_view():
     all_users = User.query.all()
-    return render_template("users.html", user=current_user, users=all_users)
+    all_users = sorted(all_users, key=lambda u: u.id)
+    # all_users.sort()
+    return render_template(
+        "users/users.html", current_user=current_user, users=all_users
+    )
 
 
 @users.route("/users/<int:user_id>/delete", methods=["GET"])
@@ -30,7 +34,9 @@ def users_delete(user_id):
         db.session.delete(user)
         db.session.commit()
         flash("Benutzer entfernt!", category="success")
-        return redirect(url_for("users.users"))
+        return redirect(url_for("users.users_view"))
+    flash(f"Benutzer ID {user_id} nicht vorhanden!", category="error")
+    return redirect(url_for("users.users_view"))
 
 
 @users.route("/users/<int:user_id>", methods=["GET", "POST"])
@@ -90,7 +96,7 @@ def users_update(user_id):
             return redirect(request.referrer)
     user = User.query.get(user_id)
     print(user)
-    return render_template("users_c_u.html", current_user=current_user, user=user)
+    return render_template("users/users_c_u.html", current_user=current_user, user=user)
 
 
 @users.route("/users/create", methods=["GET", "POST"])
@@ -105,17 +111,22 @@ def users_create():
         admin = request.form.get("admin")
 
         user = User.query.filter_by(email=email).first()
-        # print(user.email == email)
+        # print(user.email)
         if user:
-            flash("Email in Benutzung")
+            flash("Email in Benutzung", category="error")
+            return redirect(request.referrer)
         elif len(email) < 4:
             flash("E-Mail zu kurz (<3)", category="error")
+            return redirect(request.referrer)
         elif len(first_name) < 2:
             flash("Name zu kurz (<1)", category="error")
+            return redirect(request.referrer)
         elif password1 != password2:
             flash("Pw stimmt nicht überein", category="error")
+            return redirect(request.referrer)
         elif len(password1) < 3:
             flash("PW zu kurz(<3)", category="error")
+            return redirect(request.referrer)
         else:
             new_user = User(
                 email=email,
@@ -127,7 +138,7 @@ def users_create():
             db.session.add(new_user)
             db.session.commit()
             flash("Benutzer angelegt!", category="success")
-        return redirect(request.referrer)
-        # return redirect(url_for("users.users"))
-    # user = User.query.get(user_id)
-    return render_template("users_c_u.html", current_user=current_user, user=False)
+        return redirect(url_for("users.users_view"))
+    return render_template(
+        "users/users_c_u.html", current_user=current_user, user=False
+    )
