@@ -1,0 +1,63 @@
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <td colspan="11"
+                        style="padding-top: 2em;">
+                        <!-- <h5>Durchführungen:</h5> -->
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="col">L</th>
+                    <th scope="col">B</th>
+                    <th scope="col">von</th>
+                    <th scope="col">bis</th>
+                    <th scope="col">Mo</th>
+                    <th scope="col">Di</th>
+                    <th scope="col">Mi</th>
+                    <th scope="col">Do</th>
+                    <th scope="col">Fr</th>
+                    <th scope="col">Sa</th>
+                    <th scope="col">So</th>
+                </tr>
+
+                {% if line.trips %}
+                {% for trip in line.trips %}
+                <tr>
+                    <td>
+                        <a href="{{ trip.id }}"
+                           id="btn-edit"
+                           class="btn btn-sm btn-outline-secondary"
+                           aria-label="Edit">
+                            <span aria-hidden="true">&#x1f589;</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ trip.id }}/delete"
+                           id="btn-delete"
+                           class="btn btn-sm btn-outline-danger"
+                           aria-label="Delete">
+                            <span aria-hidden="true">&#x2A09;</span>
+                            <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
+                        </a>
+                    </td>
+                    <td>{{ trip.recurrence.date_start }}</td>
+                    <td>{{ trip.recurrence.date_end }}</td>
+                    <td>{{ trip.departure if trip.recurrence.mon }}</td>
+                    <td>{{ trip.departure if trip.recurrence.tue }}</td>
+                    <td>{{ trip.departure if trip.recurrence.wed }}</td>
+                    <td>{{ trip.departure if trip.recurrence.thu }}</td>
+                    <td>{{ trip.departure if trip.recurrence.fri }}</td>
+                    <td>{{ trip.departure if trip.recurrence.sat }}</td>
+                    <td>{{ trip.departure if trip.recurrence.sun }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="11">Keine Durchführungen</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>

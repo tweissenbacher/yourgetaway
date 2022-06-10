@@ -45,6 +45,8 @@
             <td data-id="{{ line.id }}">
                 <a href="./{{ line.id }}">Fahrplan</a>
             </td>
+            {% if current_user.admin == 1 %}
+
             <td>
                 <a href="{{ line.id }}/update"
                    id="btn-edit"
@@ -62,6 +64,7 @@
                     <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
                 </a>
             </td>
+            {% endif %}
         </tr>
         {#% endif %#}
         {% endfor %}
