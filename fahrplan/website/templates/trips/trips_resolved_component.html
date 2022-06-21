@@ -13,7 +13,7 @@
             <th scope="col">Fahrtstrecke</th>
             <th scope="col">Von</th>
             <th scope="col">Nach</th>
-            <th scope="col">^Datum</th>
+            <th scope="col" style="text-align: right; padding-right: 2em;">^Datum</th>
             <th scope="col">ab</th>
             <th scope="col">an</th>
             <th scope="col">Zug</th>
@@ -29,11 +29,10 @@
                 {{(r.line.sections | first).section.from_station_name}}
             </td>
             <td>
-
                 {{(r.line.sections | last).section.to_station_name}}
             </td>
-            <td>
-                {{r.date}}
+            <td style="text-align: right; padding-right: 2em;">
+                {{(r.date).strftime('%A %d.%m.%Y')}} {#r.date|format_date(format='full', locale='fr_FR') #}
             </td>
             <td>
                 {{r.departure}}

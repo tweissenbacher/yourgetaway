@@ -5,7 +5,7 @@ fahrplan app
 ## run
 
 ```
-pip install pipenv
+(sudo) pip install pipenv
 mkdir .venv
 pipenv shell
 pipenv install

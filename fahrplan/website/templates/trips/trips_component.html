@@ -2,9 +2,9 @@
     <thead>
         <tr>
             <td {% if current_user.admin ==1 %}
-                colspan="11"
+                colspan="12"
                 {% else %}
-                colspan="9"
+                colspan="10"
                 {% endif %}
                 style="padding-top: 2em;">
                 <!-- <h5>Durchführungen:</h5> -->
@@ -13,6 +13,7 @@
     </thead>
     <tbody>
         <tr>
+            <th></th>
             {% if current_user.admin ==1 %}
             <th scope="col">B</th>
             <th scope="col">L</th>
@@ -32,6 +33,7 @@
         {% for t in line.trips %}
         <tr >
             {% if current_user.admin ==1 %}
+            <td>{{ ('+ ' if t.id == trip.id) if trip }}</td>
             <td>
                 <a href="{{ url_for('trips.trip_update', trip_id=t.id) }}"
                    id="btn-edit"
@@ -51,7 +53,7 @@
             </td>
             {% endif %}
 
-            <td>{{ ('+ ' if t.id == trip.id) if trip }}{{ t.recurrence.date_start }}</td>
+            <td>{{ t.recurrence.date_start }}</td>
             <td>{{ t.recurrence.date_end }}</td>
             <td>{{ t.departure if t.recurrence.mon }}</td>
             <td>{{ t.departure if t.recurrence.tue }}</td>

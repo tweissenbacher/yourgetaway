@@ -8,17 +8,31 @@
 {% else %}
 <div class="d-flex justify-content-between">
     <div class="d-flex align-items-center">
-        <h1 class="py-4">{{current_user}} - Fahrtdurchführungen</h1>
+        <h1 class="py-4">Fahrtdurchführungen - {{user}}</h1>
     </div>
     <div class="d-flex justify-content-end align-items-center">
+        <a href="{{ url_for('users.user_trips', user_id=user.id, show='all') }}"
+           id="btn-showall"
+           class="btn btn-outline-primary mx-2"
+           aria-label="Show All">
+            <span aria-hidden="true">Alle anzeigen</span>
+        </a>
+        <a href="{{ url_for('users.user_trips', user_id=user.id, show='future') }}"
+           id="btn-edit"
+           class="btn btn-outline-primary mx-2"
+           aria-label="Edit">
+            <span aria-hidden="true">Zukünftige anzeigen</span>
+        </a>
     </div>
 </div>
 
-
-{% if resolved %}
-{% include 'trips/trips_resolved_component.html' %}
-{% endif %}
-
+<div>
+    {% if resolved %}
+    {% include 'trips/trips_resolved_component.html' %}
+    {% else %}
+    <p>Keine Fahrten</p>
+    {% endif %}
+</div>
 
 {% endif %}
 {% endblock %}

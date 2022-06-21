@@ -9,10 +9,9 @@
 
 <form method="post">
     <br />
-    <h3>Fahrtstrecke anlegen</h3>
+    <h1>Fahrtstrecke anlegen</h1>
     <br />
 
-    <p>sel_route.id: {{ sel_route.id if sel_route != undefined or None }}</p>
     <div class="form-group">
 
         <label for="route_id">Wähle Strecke</label>
@@ -25,19 +24,27 @@
             {% endfor %}
         </select>
 
-        <label for="descr">Beschreibung</label>
+        <label for="descr">Name der Fahrtstrecke</label>
         <input type="text"
                class="form-control"
                id="descr"
                name="descr"
                value="{{ descr if descr }}"
-               placeholder="Beschreibung" />
+               placeholder="Name der Fahrtstrecke" />
+
+        <label for="note">Information</label>
+        <textarea type="text"
+                  class="form-control"
+                  id="note"
+                  name="note"
+                  placeholder="">{{ note if note }}</textarea>
 
         <label for="price">Gesamtpreis</label>
-        <input type="text"
+        <input type="number"
                class="form-control"
                id="price"
                name="price"
+               required
                value="{{ price if price }}"
                placeholder="cent" />
 
@@ -74,29 +81,26 @@
 
         <button type="submit"
                 class="btn btn-primary">Weiter</button>
-
-        <br><br>
-        <h5>Vorschau:</h5>
-
-        {% if line is not undefined or None %}
-        {% if line.route is not undefined or None %}
-        {% include 'lines/line_component.html' %}
-        <br>
-
-        <label for="confirm">Alles richtig? </label>
-        <input type="checkbox"
-               class="form-check-input"
-               id="confirm"
-               name="confirm"
-               placeholder="confirm" />
-        <br><br>
-        <button type="submit"
-                class="btn btn-primary">Speichern</button>
-        {% endif %}
-        {% endif %}
-
-
     </div>
+
+    <br><br>
+    <h5>Vorschau:</h5>
+
+    {% if line is not undefined or None %}
+    {% if line.route is not undefined or None %}
+    {% include 'lines/line_component.html' %}
+    <br>
+    <label for="confirm">Alles richtig? </label>
+    <input type="checkbox"
+           class="form-check-input"
+           id="confirm"
+           name="confirm"
+           placeholder="confirm" />
+    <br><br>
+    <button type="submit"
+            class="btn btn-primary">Speichern</button>
+    {% endif %}
+    {% endif %}
 </form>
 
 {% endif %}

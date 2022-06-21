@@ -23,7 +23,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_ABS_PATH}"
     # https://stackoverflow.com/questions/33738467/how-do-i-know-if-i-can-disable-sqlalchemy-track-modifications
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    # app.config["JSON_SORT_KEYS"] = True
+    app.config["JSON_SORT_KEYS"] = True
 
     from .model import User, Trip, Line
 

@@ -10,7 +10,7 @@
 
 <form method="post">
     <br>
-    <h3>Durchführung anlegen</h3>
+    <h1>Durchführung anlegen</h1>
     <br>
 
     <h5>Auf Fahrtstrecke: {{ trip.line_parent.descr }}
@@ -192,11 +192,11 @@
         <hr>
         <br>
         {% if trip.personell %}
-        <h5>Vorschau:</h5>
+        <h2>Vorschau:</h2>
 
         {% include 'trips/trips_component.html' %}
         <br>
-        <h3>neue df</h3>
+        <h3>Neue Durchführungen</h3>
         {% include 'trips/trips_resolved_component.html' %}
 
 

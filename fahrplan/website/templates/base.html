@@ -52,7 +52,7 @@
                    {% endif %}
                    <a class="nav-item nav-link"
                       id="users"
-                      href="{{ url_for('users.user_trips') }}">Meine Fahrten</a>
+                      href="{{ url_for('users.user_trips', user_id=current_user.id) }}">Meine Fahrten</a>
 
                 {% endif %}
             </ul>

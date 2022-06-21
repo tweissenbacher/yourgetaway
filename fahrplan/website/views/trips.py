@@ -187,10 +187,7 @@ def trip_create(line_id):
         date_start = request.form.get("date_start", default=None, type=str)
         date_end = request.form.get("date_end", default=None, type=str)
         # print(date_start, date_end, date_single)
-        mon = request.form.get(
-            "mon",
-            default=0,
-        )
+        mon = request.form.get("mon", default=0, type=int)
         tue = request.form.get("tue", default=0, type=int)
         wed = request.form.get("wed", default=0, type=int)
         thu = request.form.get("thu", default=0, type=int)
@@ -206,7 +203,7 @@ def trip_create(line_id):
         trip.departure = time.fromisoformat(departure)
         trip.price = price
         recurrence = Recurrence()
-        resolved=[]
+        resolved = []
 
         if recurring == 0 and date_single is not None:
             # flash("date", category="error")
@@ -258,43 +255,24 @@ def trip_create(line_id):
             with db.session.no_autoflush:
                 users = User.query.all()
         if personell:
-            print(personell)
+            print(f"personell: {personell}")
             with db.session.no_autoflush:
+                # trip.personell = [(user for user_id in personell for user in User.query.get(user_id))]
                 for user_id in personell:
-                    user =  User.query.get(user_id)
+                    user = User.query.get(user_id)
                     if user:
                         trip.personell.append(user)
-                        # db.session.flush()
-                # trip.personell = [(user for user_id in personell for user in User.query.get(user_id))]
-            start_date = trip.recurrence.date_start
-            end_date = trip.recurrence.date_end
-            current_date = start_date
-            i = 0
-            while current_date <= end_date:
-                resolved.append(
-                    {
-                        "rec_id": trip.recurrence.id,
-                        "date": current_date,
-                        "line": trip.line_parent,
-                        "departure": trip.departure,
-                        "arrival": time(
-                            hour=trip.departure.hour,
-                            minute=trip.departure.minute
-                            + trip.line_parent.sections[-1].arrival,
-                        ),
-                        "personell": trip.personell,
-                        "train_id": trip.train_id,
-                    }
-                )
-                current_date += timedelta(days=1)
+            # db.session.flush()
+  
+            resolved = trip.get_resolved_all_dict()
 
             resolved = sorted(resolved, key=lambda d: d["date"])
-
+            db.session.flush()
         if confirm:
             db.session.add(trip)
             db.session.commit()
             flash("Durchführung angelegt!", category="success")
-            return(redirect(url_for("lines.line_detail", line_id=line.id)))
+            return redirect(url_for("lines.line_detail", line_id=line.id))
 
         return render_template(
             "trips/trip_c3.html",

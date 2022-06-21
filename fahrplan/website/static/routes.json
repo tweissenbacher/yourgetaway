@@ -1,0 +1,188 @@
+[
+    {
+      "end": {
+        "address": "Am Hbf 1, 1100 Wien", 
+        "id": 5, 
+        "name": "Wien Hbf"
+      }, 
+      "end_id": 5, 
+      "id": 1, 
+      "name": "Weststrecke", 
+      "route_sections": [
+        {
+          "end": {
+            "address": "Bahnhofstra\u00dfe 31, 4600 Wels", 
+            "id": 2, 
+            "name": "Wels Hbf"
+          }, 
+          "end_id": 2, 
+          "fee": 10, 
+          "id": 1, 
+          "section_warnings": [
+            {
+              "id": 1, 
+              "warnings": "Baustelle bei Neumarkt a. W. - Verz\u00f6gerungen von ca 15 min."
+            }
+          ], 
+          "start": {
+            "address": "Suedtirolerplatz 1, 5020 Salzburg", 
+            "id": 1, 
+            "name": "Salzburg Hbf"
+          }, 
+          "start_id": 1, 
+          "time": 60, 
+          "track": "normal"
+        }, 
+        {
+          "end": {
+            "address": "Bahnhofplatz 3-6, 4020 Linz", 
+            "id": 3, 
+            "name": "Linz Hbf"
+          }, 
+          "end_id": 3, 
+          "fee": 8, 
+          "id": 2, 
+          "section_warnings": [], 
+          "start": {
+            "address": "Bahnhofstra\u00dfe 31, 4600 Wels", 
+            "id": 2, 
+            "name": "Wels Hbf"
+          }, 
+          "start_id": 2, 
+          "time": 30, 
+          "track": "normal"
+        }, 
+        {
+          "end": {
+            "address": "Bahnhofplatz 1, 3100 St. P\u00f6lten", 
+            "id": 4, 
+            "name": "St. P\u00f6lten Hbf"
+          }, 
+          "end_id": 4, 
+          "fee": 12, 
+          "id": 3, 
+          "section_warnings": [], 
+          "start": {
+            "address": "Bahnhofplatz 3-6, 4020 Linz", 
+            "id": 3, 
+            "name": "Linz Hbf"
+          }, 
+          "start_id": 3, 
+          "time": 80, 
+          "track": "normal"
+        }, 
+        {
+          "end": {
+            "address": "Am Hbf 1, 1100 Wien", 
+            "id": 5, 
+            "name": "Wien Hbf"
+          }, 
+          "end_id": 5, 
+          "fee": 10, 
+          "id": 4, 
+          "section_warnings": [
+            {
+              "id": 3, 
+              "warnings": "Maskenpflicht bei WIEN bis --.--.----"
+            }
+          ], 
+          "start": {
+            "address": "Bahnhofplatz 1, 3100 St. P\u00f6lten", 
+            "id": 4, 
+            "name": "St. P\u00f6lten Hbf"
+          }, 
+          "start_id": 4, 
+          "time": 60, 
+          "track": "normal"
+        }
+      ], 
+      "start": {
+        "address": "Suedtirolerplatz 1, 5020 Salzburg", 
+        "id": 1, 
+        "name": "Salzburg Hbf"
+      }, 
+      "start_id": 1, 
+      "v_max": 230
+    }, 
+    {
+      "end": {
+        "address": "Fritz-Mayer-Platz 1, 6900 Bregenz", 
+        "id": 8, 
+        "name": "Bregenz Hbf"
+      }, 
+      "end_id": 8, 
+      "id": 2, 
+      "name": "Suedstrecke", 
+      "route_sections": [
+        {
+          "end": {
+            "address": "Europaplatz 4, 8020 Graz", 
+            "id": 6, 
+            "name": "Graz Hbf"
+          }, 
+          "end_id": 6, 
+          "fee": 15, 
+          "id": 6, 
+          "section_warnings": [
+            {
+              "id": 2, 
+              "warnings": "Maskenpflicht bei WIEN bis --.--.----"
+            }
+          ], 
+          "start": {
+            "address": "Am Hbf 1, 1100 Wien", 
+            "id": 5, 
+            "name": "Wien Hbf"
+          }, 
+          "start_id": 5, 
+          "time": 120, 
+          "track": "normal"
+        }, 
+        {
+          "end": {
+            "address": "Walther-von-der-Vogelweideplatz 1, 9020 Klagenfurt a.W.", 
+            "id": 7, 
+            "name": "Klagenfurt Hbf"
+          }, 
+          "end_id": 7, 
+          "fee": 12, 
+          "id": 7, 
+          "section_warnings": [], 
+          "start": {
+            "address": "Europaplatz 4, 8020 Graz", 
+            "id": 6, 
+            "name": "Graz Hbf"
+          }, 
+          "start_id": 6, 
+          "time": 80, 
+          "track": "normal"
+        }, 
+        {
+          "end": {
+            "address": "Fritz-Mayer-Platz 1, 6900 Bregenz", 
+            "id": 8, 
+            "name": "Bregenz Hbf"
+          }, 
+          "end_id": 8, 
+          "fee": 30, 
+          "id": 8, 
+          "section_warnings": [], 
+          "start": {
+            "address": "Walther-von-der-Vogelweideplatz 1, 9020 Klagenfurt a.W.", 
+            "id": 7, 
+            "name": "Klagenfurt Hbf"
+          }, 
+          "start_id": 7, 
+          "time": 200, 
+          "track": "normal"
+        }
+      ], 
+      "start": {
+        "address": "Am Hbf 1, 1100 Wien", 
+        "id": 5, 
+        "name": "Wien Hbf"
+      }, 
+      "start_id": 5, 
+      "v_max": 200
+    }
+  ]

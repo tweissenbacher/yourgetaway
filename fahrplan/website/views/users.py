@@ -27,42 +27,33 @@ def users_view():
     )
 
 
-@users.route("/users/trips", methods=["GET"])
+@users.route("/users/<int:user_id>/trips", methods=["GET"])
 @login_required
-def user_trips():
-    trips = current_user.trips
+def user_trips(user_id):
+    show = request.args.get("show", default="all")  # future
+    # sortby = request.args.get("sortby", default="date")  # line
+
+    user = User.query.get(user_id)
+    trips = user.trips
+
     resolved = []
     for trip in trips:
-        start_date = trip.recurrence.date_start
-        end_date = trip.recurrence.date_end
-        current_date = start_date
-        i = 0
-        while current_date <= end_date:
-            if (current_date >= datetime.date.today()):
-                resolved.append(
-                    {
-                        "rec_id": trip.recurrence.id,
-                        "line": trip.line_parent,
-                        "date": current_date,
-                        "departure": trip.departure,
-                        "arrival": datetime.time(
-                            hour=trip.departure.hour,
-                            minute=trip.departure.minute + trip.line_parent.sections[-1].arrival,
-                        ),
-                        "personell": trip.personell,
-                        "train_id": trip.train_id,
-                    }
-                )
-            current_date += datetime.timedelta(days=1)
+        resolved.extend(trip.get_resolved_all_dict())
 
-    resolved = sorted(resolved, key=lambda d: d["date"])
+    if show == "future":
+        resolved = filter(lambda rt: rt["date"] >= datetime.date.today(), resolved)
+
+    # if sortby == "line":
+    #     resolved = sorted(resolved, key=lambda rt: rt["line"])
+    # else:
+    #     resolved = sorted(resolved, key=lambda rt: rt["date"])
 
     return render_template(
-        "users/user_trips.html", current_user=current_user, resolved=resolved
+        "users/user_trips.html", current_user=current_user, resolved=resolved, user=user
     )
 
 
-@users.route("/users/<int:user_id>", methods=["GET", "POST"])
+@users.route("/users/<int:user_id>/update", methods=["GET", "POST"])
 @login_required
 def user_update(user_id):
     if request.method == "POST":

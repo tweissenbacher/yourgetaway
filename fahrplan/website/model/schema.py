@@ -1,5 +1,5 @@
 from marshmallow import fields
-from marshmallow_sqlalchemy.fields import Nested
+from marshmallow.fields import Nested
 
 from website.model.line import Line, LineSection, Recurrence, Route, Section, Trip
 from website.model.user import User
@@ -9,7 +9,6 @@ from .. import db, ma
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
-        # include_fk = True
         ordered = True
         fields = ("id", "email", "first_name", "last_name", "birthday")
 
@@ -104,7 +103,6 @@ class RecurrenceSchema(ma.SQLAlchemyAutoSchema):
 
 
 recurrence_schema = RecurrenceSchema(many=False)
-# intervals_schema = IntervalSchema(many=True)
 
 
 class TripSchema(ma.SQLAlchemyAutoSchema):
@@ -169,7 +167,6 @@ class UserWithTripsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = User
-        # include_fk = True
         ordered = True
         fields = ("id", "email", "first_name", "last_name", "birthday", "trips")
 

@@ -8,11 +8,11 @@
 {% elif current_user.admin == 1 %}
 
 <form method="post">
+    <br />
+    <h1>Fahrtstrecke bearbeiten</h1>
+    <br />
 
     <section id="update">
-
-        <p>line.id: {{ line.id if line != undefined or None }}</p>
-        <p>line.route.name: {{line.route.name}}</p>
 
         <label for="route_id">Wähle Strecke</label>
         <select name="route_id"
@@ -22,19 +22,27 @@
             <option value="{{ line.route.id }}">{{ line.route.name }}</option>
         </select>
 
-        <label for="descr">Beschreibung</label>
+        <label for="descr">Name der Fahrstrecke</label>
         <input type="text"
                class="form-control"
                id="descr"
                name="descr"
                value="{{ line.descr if line.descr }}"
-               placeholder="Beschreibung" />
+               placeholder="Name der Fahrstrecke" />
+
+        <label for="note">Information</label>
+        <textarea type="text"
+                  class="form-control"
+                  id="note"
+                  name="note"
+                  placeholder="">{{ note if note }}</textarea>
 
         <label for="price">Gesamtpreis</label>
-        <input type="text"
+        <input type="number"
                class="form-control"
                id="price"
                name="price"
+               required
                value="{{ line.price if line.price }}"
                placeholder="cent" />
 
@@ -76,6 +84,8 @@
         <button type="submit"
                 class="btn btn-primary">Vorschau aktualisieren</button>
     </section>
+    <br><br>
+    <h5>Vorschau:</h5>
 
     {% if line is not undefined or None %}
     {% if line.route is not undefined or None %}

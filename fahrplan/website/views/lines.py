@@ -38,9 +38,11 @@ def line_detail(line_id):
 # @lines.route("/lines/<int:line_id>/update", methods=["GET", "POST"])
 @login_required
 def line_create():
+    
     if request.method == "POST":
         route_id = request.form.get("route_id", default=None, type=int)
         descr = request.form.get("descr", default=None, type=str)
+        note = request.form.get("note", default=None, type=str)
         price = request.form.get("price", default=None, type=int)
 
         first_section = request.form.get("first_section", default=None, type=int)
@@ -61,6 +63,7 @@ def line_create():
 
             line = Line(
                 descr=descr,
+                note=note,
                 price=price,
                 route=Route.query.get(route_id),
                 sections=linesections,
@@ -71,7 +74,7 @@ def line_create():
             db.session.add(line)
             db.session.commit()
             flash("Fahrtstrecke angelegt!", category="success")
-            return redirect(url_for("lines.lines_detail", id=line.id))
+            return redirect(url_for("lines.line_detail", line_id=line.id))
 
         routes = Route.query.all()
         return render_template(
@@ -86,6 +89,22 @@ def line_create():
             line=line,
         )
 
+    url = os.environ.get("STRECKEN_API_URL")
+    try:
+        res = requests.get(url).content
+        routes = json.loads(res)["routes"]
+        for r in routes:
+            r = Route.dict_to_obj(r)
+            db_route = Route.query.get(r.id)
+            print(db_route)
+            if not db_route:
+                db.session.add(r)
+        db.session.commit()
+        flash("Streckendaten erfolgreich geladen!", category="success")
+    except requests.exceptions.RequestException as e:
+        flash(f"Streckendaten laden fehlgeschlagen!", category="error")
+        flash(f"- {e}", category="error")
+    
     routes = Route.query.all()
     return render_template(
         "lines/line_c.html",
@@ -141,7 +160,7 @@ def line_update(line_id):
             if confirm:
                 db.session.commit()
                 flash("Fahrtstrecke bearbeitet!", category="success")
-                return redirect(url_for("lines.lines_detail", id=line.id))
+                return redirect(url_for("lines.line_detail", line_id=line.id))
 
         routes = Route.query.all()
         return render_template(
@@ -208,31 +227,12 @@ def line_detail_trips_resolved(line_id):
             Trip.line_id == line_id,
             # Trip.departure >= t_dep,
         )
-    ).slice(i, i + items)
+    )
+    # .slice(i, i + items)
 
     resolved = []
     for trip in trips:
-        start_date = trip.recurrence.date_start
-        end_date = trip.recurrence.date_end
-        current_date = start_date
-        i = 0
-        while current_date <= end_date:
-            resolved.append(
-                {
-                    "rec_id": trip.recurrence.id,
-                    "date": current_date,
-                    "line": trip.line_parent,
-                    "departure": trip.departure,
-                    "arrival": datetime.time(
-                        hour=trip.departure.hour,
-                        minute=trip.departure.minute
-                        + trip.line_parent.sections[-1].arrival,
-                    ),
-                    "personell": trip.personell,
-                    "train_id": trip.train_id,
-                }
-            )
-            current_date += datetime.timedelta(days=1)
+        resolved.extend(trip.get_resolved_all_dict())
 
     resolved = sorted(resolved, key=lambda d: d["date"])
     return render_template(
