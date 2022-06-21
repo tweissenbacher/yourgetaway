@@ -1,74 +1,72 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
+</head>
 
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a class="active" href="/tickets/neu">Ticket kaufen</a>
-  <a href="/tickets">Tickets</a>
-  <a href="/profil">Profil</a>
+    <a class="active" href="/tickets/neu">Ticket kaufen</a>
+    <a href="/tickets">Tickets</a>
+    <a href="/profil">Profil</a>
 </div>
 
 
 <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 <!-- Page content -->
 <div class="content-ticket">
-<h1>Fahrtdurchführung wählen</h1>
-<div class ="fahrtdurchfuehrungen">
+    <h1>Fahrtdurchführung wählen</h1>
+    <div class="fahrtdurchfuehrungen">
 
 
- <table>
-        <tr>
-        <td>Id Fahrtstrecke</td>
-         <td>Zug</td>
-        <td>Abfahrt</td>
-        <td>Ankunft</td>
-        <td>Warnungen</td>
-        <td> </td>
-     {% for t in times %}
-    <tr>
+        <table>
+            <tr>
+                <td>Zug</td>
+                <td>Abfahrt</td>
+                <td>Ankunft</td>
+                <td>Warnungen</td>
+                <td></td>
+                {% for t in times %}
+            <tr>
+                <td>{{t['train']}}</td>
+                <td>{{get_time(t['line_id'], t['line_date'], from_)}} von {{from_}}</td>
+                <td>{{get_time(t['line_id'], t['line_date'], to)}} in {{to}}</td>
+                <td>
+                    <ul>
+                        {% for w in get_warnings(t['line_id'], from_, to) %}
+                        <li>{{w.text}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/tickets/details/{{loop.index0}}">
+                    <button>Auswählen</button>
+                </a></td>
 
+            </tr>
+            {% endfor %}
+        </table>
 
-        <td>{{t['line_id']}} </td>
-         <td>{{t['train']}} </td>
-        <td>{{get_time(t['line_id'], t['line_date'], from_)}} von {{from_}}</td>
-        <td>{{get_time(t['line_id'], t['line_date'], to)}} in {{to}}</td>
-        <td>
-            <ul>
-                {% for w in get_warnings(t['line_id'], from_, to) %}
-                <li>{{w.text}}</li>
-                {% endfor %}
-            </ul>
-        </td>
-        <td><a data-confirm="Are you sure?" data-method="delete" href="/tickets/details/{{loop.index0}}"><button>Auswählen</button></a></td>
+    </div>
+    <form method="POST">
+        <input type="submit" value="Abbruch"/>
 
-    </tr>
-     {% endfor %}
-</table>
-
-</div>
-    <form method = "POST">
-    <input type = "submit" value ="Abbruch"/>
-
-</form>
+    </form>
 
     {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
- </html>
+</html>

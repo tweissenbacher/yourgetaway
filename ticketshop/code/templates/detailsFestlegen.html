@@ -1,56 +1,56 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../../static/css/ticketshop.css">
-  </head>
+</head>
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a class="active" href="/tickets/neu">Ticket kaufen</a>
-  <a href="/tickets">Tickets</a>
-  <a href="/profil">Profil</a>
+    <a class="active" href="/tickets/neu">Ticket kaufen</a>
+    <a href="/tickets">Tickets</a>
+    <a href="/profil">Profil</a>
 </div>
 
 
 <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 <!-- Page content -->
 <div class="content-ticket">
-<h1>Details zu Ihrer Fahrt</h1>
-<h3>Gewählte Fahrt:</h3>
+    <h1>Details zu Ihrer Fahrt</h1>
+    <h3>Gewählte Fahrt:</h3>
     <p>Von: {{ticket.from_}}</p>
     <p>Nach: {{ticket.to}}</p>
     <p>Abfahrt: {{ticket.date}}</p>
     <p>Ankunft: {{ get_time(ticket.line_id, ticket.line_date, ticket.to) }}</p>
     <p>Preis: {{ticket.price}} Euro</p>
     <p>Rabatt: {{ticket.discount}} %</p>
-    <p> <b>Preis gesamt:</b> {{ticket.price * (100 -ticket.discount) / 100}} Euro</p>
+    <p><b>Preis gesamt:</b> {{apply_discount(ticket.price, ticket.discount)}} Euro</p>
 
 
-    <form method = "POST">
-    <div>
-      <input type="checkbox" id="seat_reservation" name="seat_reservation">
-      <label for="seat_reservation">Sitzplatz reservieren</label>
-    </div>
-    <p></p>
-    <input type = "submit" value ="Zahlungspflichtig kaufen"/>
+    <form method="POST">
+        <div>
+            <input type="checkbox" id="seat_reservation" name="seat_reservation">
+            <label for="seat_reservation">Sitzplatz reservieren</label>
+        </div>
+        <p></p>
+        <input type="submit" value="Zahlungspflichtig kaufen"/>
 
-</form>
+    </form>
 
-{% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 
- </html>
+</html>

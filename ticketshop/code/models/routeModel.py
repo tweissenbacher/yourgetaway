@@ -34,13 +34,8 @@ class RouteModel:
             return None
         return filtered_routes[0]
 
-    # returns a dictionary for all routes with the route id as key and the actual route as value
+    # returns route by id
     @classmethod
-    def get_route_dictionary(cls):
-        all_routes = RouteEndpoint.find_all()
-        all_routes = [cls.json_to_object(r) for r in all_routes]
-        dictionary = {}
-        for route in all_routes:
-            dictionary[route.id] = route
-
-        return dictionary
+    def get_route_by_id(cls, id):
+        route_json = RouteEndpoint.find_by_id(id)
+        return RouteModel.json_to_object(route_json)

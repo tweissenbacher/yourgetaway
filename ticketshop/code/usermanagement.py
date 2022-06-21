@@ -5,10 +5,12 @@ from security import authenticate
 from models.userModel import UserModel
 from helpers.sessionHelper import SessionHelper
 from helpers.dateHelper import DateHelper
+from db import db
 
 # takes care of user login
 def login():
     session.clear()
+    db.session.execute('pragma foreign_keys=on')
     if request.method == "POST":
         email =request.form.get("email")
         password= request.form.get("password")
@@ -62,7 +64,7 @@ def profilEditieren():
             else:
                 firstname = request.form.get("firstname")
                 lastname = request.form.get("lastname")
-                birthday = request.form.get("geburtsdatum")
+                birthday = request.form.get("birthday")
                 if birthday:
                     birthday = birthday.replace("T", " ")
                     if birthday > today:

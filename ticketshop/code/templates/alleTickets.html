@@ -1,96 +1,100 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
+</head>
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a href="/tickets/neu">Ticket kaufen</a>
-  <a class="active" href="/tickets">Tickets</a>
-  <a href="/profil">Profil</a>
+    <a href="/tickets/neu">Ticket kaufen</a>
+    <a class="active" href="/tickets">Tickets</a>
+    <a href="/profil">Profil</a>
 </div>
 
-  <!-- user-info -->
- <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+<!-- user-info -->
+<div class="container-user" style="float:right">
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
     {% if isAdmin %}
-    <span class = "admin-field">ADMIN</span> <br>
+    <span class="admin-field">ADMIN</span> <br>
     {% endif %}
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 
 <!-- Page content -->
 <div class="content">
-      <div class ="aktionen-content">
-<h1>Ihre Tickets</h1>
-</div>
-  <table class="tickets">
-    <tr>
-        <td>Ticket-ID</td>
-         <td>Zug</td>
-        <td>Von</td>
-        <td>Nach</td>
-        <td>Abfahrt</td>
-        <td>Ankunft</td>
-        <td>Preis</td>
-        <td>Rabatt</td>
-        <td>Warnungen</td>
-        <td>Sitzplatz</td>
-        <td>Status</td>
-        <td>Stornieren</td>
-        <td>Details</td>
-    </tr>
-      {% for ticket in tickets %}
-            <tr>
-                <td>{{ ticket.id}}</td>
-                <td>{{ ticket.train }}</td>
-                <td>{{ ticket.from_}}</td>
-                <td>{{ ticket.to}}</td>
-                <td>{{ ticket.date}}</td>
-                <td>{{ ticket.end_date}}</td>
-                <td>{{ ticket.price}}</td>
-                <td>{{ticket.discount}} %</td>
-                <td class ="warnings">
-                    <ul>
-                        {% for w in get_warnings(ticket.line_id, ticket.from_, ticket.to) %}
-                        <li>{{w.text}}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-                {% if ticket.seat_reservation %}
-                <td>ja</td>
-                {% else %}
-                <td>nein</td>
-                {% endif %}
-                {% if ticket.date < today() %}
-                    {% if ticket.end_date < today() %}
-                        <td> <span class ="status-beendet">BEENDET</span> </td>
-                    {% else %}
-                        <td> <span class ="status-aktiv">AKTIV</span></td>
-                    {% endif %}
-                    <td>-</td>
-                {% else %}
-                    <td> <span class ="status-inaktiv">INAKTIV</span></td>
-                    <td><a data-confirm="Are you sure?" data-method="delete" href="/ticketEntfernen/{{ticket.id}}"><button>Stornieren</button></a></td>
-                {% endif %}
-                <td><a data-confirm="Are you sure?" data-method="delete" href="/timetableRide/{{ticket.id}}"><button>Details</button></a></td>
-            </tr>
+    <div class="aktionen-content">
+        <h1>Ihre Tickets</h1>
+    </div>
+    <table class="tickets">
+        <tr>
+            <td>Ticket-ID</td>
+            <td>Zug</td>
+            <td>Von</td>
+            <td>Nach</td>
+            <td>Abfahrt</td>
+            <td>Ankunft</td>
+            <td>Preis</td>
+            <td>Rabatt</td>
+            <td>Warnungen</td>
+            <td>Sitzplatz</td>
+            <td>Status</td>
+            <td>Stornieren</td>
+            <td>Details</td>
+        </tr>
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.id}}</td>
+            <td>{{ ticket.train }}</td>
+            <td>{{ ticket.from_}}</td>
+            <td>{{ ticket.to}}</td>
+            <td>{{ ticket.date}}</td>
+            <td>{{ ticket.end_date}}</td>
+            <td>{{ ticket.price}}</td>
+            <td>{{ticket.discount}} %</td>
+            <td class="warnings">
+                <ul>
+                    {% for w in get_warnings(ticket.line_id, ticket.from_, ticket.to) %}
+                    <li>{{w.text}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            {% if ticket.seat_reservation %}
+            <td>ja</td>
+            {% else %}
+            <td>nein</td>
+            {% endif %}
+            {% if ticket.date < today() %}
+            {% if ticket.end_date < today() %}
+            <td><span class="status-beendet">BEENDET</span></td>
+            {% else %}
+            <td><span class="status-aktiv">AKTIV</span></td>
+            {% endif %}
+            <td>-</td>
+            {% else %}
+            <td><span class="status-inaktiv">INAKTIV</span></td>
+            <td><a data-confirm="Are you sure?" data-method="delete" href="/ticketEntfernen/{{ticket.id}}">
+                <button>Stornieren</button>
+            </a></td>
+            {% endif %}
+            <td><a data-confirm="Are you sure?" data-method="delete" href="/timetableRide/{{ticket.id}}">
+                <button>Details</button>
+            </a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
     {% endfor %}
-</table>
-
- {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+    {% endif %}
+    {% endwith %}
 
 </div>
-  </html>
+</html>

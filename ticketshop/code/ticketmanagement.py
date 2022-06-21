@@ -15,20 +15,17 @@ def ticket_anlegen():
     if not user:
         return redirect("/")
     clear_ticket_session_data()
-    today = DateHelper.get_today()
 
     if request.method == "POST":
-        from_ = request.form.get("from_")
-        to = request.form.get("to")
+        from_ = request.form.get("from-picker")
+        to = request.form.get("to-picker")
         date = request.form.get("date").replace("T", " ")
-        if date < today:
-            flash("Der Fahrtzeitpunkt muss in der Zukunft liegen.")
-        else:
+        if ticket_input_valid(date, from_, to):
             session['from_'] = from_
             session['to'] = to
             session['date'] = date
             return redirect('/tickets/fahrtSuchen')
-    return render_template("ticketAnlegen.html", email=session.get("email"), today = today)
+    return render_template("ticketAnlegen.html", email=session.get("email"), today = DateHelper.get_today, get_stations = LineModel.get_all_stations)
 
 # searches for possible rides
 def fahrt_suchen():
@@ -103,7 +100,7 @@ def details_festlegen(time_number):
         flash("Ticketkauf erfolgreich")
         return redirect("/tickets")
 
-    return render_template("detailsFestlegen.html", email=session.get("email"), ticket =ticket, get_time = DateHelper.get_time_for_ride)
+    return render_template("detailsFestlegen.html", email=session.get("email"), ticket =ticket, get_time = DateHelper.get_time_for_ride, apply_discount = apply_discount)
 
 # presentation of all tickets belonging to the logged in user
 def alle_tickets():
@@ -187,9 +184,10 @@ def calculate_price (from_, to, line, price):
     if not line or not from_ or not to or not price:
         return 0
     number_of_relevant_sections = len(LineModel.get_relevant_sections(line.id, from_, to))
-    price_per_section = round(float(price) / len(line.sections), 2)
+    price_per_section = float(price) / len(line.sections)
     result = price_per_section * number_of_relevant_sections
-    return round(result, 2)
+    return round(result,2)
+
 
 # calculates discount given a certain date and route
 def calculate_discount (route_id, date):
@@ -201,6 +199,10 @@ def calculate_discount (route_id, date):
     if general_deal and general_deal.discount > discount_percentage:
         discount_percentage = general_deal.discount
     return discount_percentage
+
+# applys discount to given price
+def apply_discount(ticket_price, discount):
+    return round((ticket_price * (100 - discount) / 100), 2)
 
 # clears session data regarding ticket booking
 def clear_ticket_session_data ():
@@ -223,32 +225,42 @@ def make_seat_reservation(ticket):
     flash("Sitzplatzreservierung erfolgreich")
     return True
 
+# checks if user input regarding ticket is valid
+def ticket_input_valid(date, from_, to):
+    today = DateHelper.get_today()
+    if date < today:
+        flash("Der Fahrtzeitpunkt muss in der Zukunft liegen.")
+        return False
+    if from_ == to:
+        flash("Start- und Zielbahnhof dürfen nicht identisch sein.")
+        return False
+    return True
+
 # fetch warnings from route information system
 def get_warnings(line_id, from_, to):
-    # json_line = LineEndpoint.find_by_id(int(line_id))
-    # if not json_line:
-    #     return []
-    # route_id = json_line['route_id']
-    # route = RouteEndpoint.find_by_id(route_id)
-    # if not route:
-    #     return []
-    # line = LineModel.json_to_object(json_line)
-    # if not line:
-    #     return []
-    # route = RouteModel.json_to_object(RouteEndpoint.find_by_id(int(line.route_id)))
-    # warnings = []
-    # from_found = False
-    # for section in route.sections:
-    #     if section.from_ == from_:
-    #         from_found = True
-    #     if from_found:
-    #         for warning in section.warnings:
-    #             warnings.append(warning)
-    #     if section.from_ == to:
-    #         break
-    # return warnings
+    json_line = LineEndpoint.find_by_id(int(line_id))
+    if not json_line:
+        return []
+    route_id = json_line['route_id']
+    route = RouteEndpoint.find_by_id(route_id)
+    if not route:
+        return []
+    line = LineModel.json_to_object(json_line)
+    if not line:
+        return []
+    route = RouteModel.json_to_object(RouteEndpoint.find_by_id(int(line.route_id)))
+    warnings = []
+    from_found = False
+    for section in route.sections:
+        if section.from_ == from_:
+            from_found = True
+        if from_found:
+            for warning in section.warnings:
+                warnings.append(warning)
+        if section.from_ == to:
+            break
+    return warnings
 
-    return []
 
 
 

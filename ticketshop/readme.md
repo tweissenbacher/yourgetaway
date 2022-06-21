@@ -24,3 +24,6 @@ Your Getaway - Ticketshop**
 * navigate to code directory in ticketshop
 * run 'rm data.db'
 
+**admin user access**
+email: admin@jku.at
+

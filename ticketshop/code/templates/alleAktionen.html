@@ -1,90 +1,91 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
+</head>
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a href="/aktionen/neu">Aktion anlegen</a>
-  <a class="active" href="/alleAktionen">Aktionen</a>
-  <a href="/profil">Profil</a>
+    <a href="/aktionen/neu">Aktion anlegen</a>
+    <a class="active" href="/alleAktionen">Aktionen</a>
+    <a href="/profil">Profil</a>
 </div>
 
-  <!-- user-info -->
- <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+<!-- user-info -->
+<div class="container-user" style="float:right">
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
-    <span class = "admin-field">ADMIN</span> <br>
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <span class="admin-field">ADMIN</span> <br>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 
 <!-- Page content -->
 <div class="content">
-      <div class ="aktionen-content">
-<h1>Aktionen</h1>
+    <div class="aktionen-content">
+        <h1>Aktionen</h1>
 
 
-  <table>
-    <tr>
-        <td>ID</td>
-        <td>Rabatt</td>
-        <td>Startdatum</td>
-        <td>Enddatum</td>
-        <td>Strecke</td>
-        <td>Status</td>
-        <td>Editieren</td>
-        <td>Löschen</td>
-    </tr>
-      {% for deal in deals %}
+        <table>
+            <tr>
+                <td>ID</td>
+                <td>Rabatt</td>
+                <td>Startdatum</td>
+                <td>Enddatum</td>
+                <td>Strecke</td>
+                <td>Status</td>
+                <td>Editieren</td>
+                <td>Löschen</td>
+            </tr>
+            {% for deal in deals %}
             <tr>
                 <td>{{ deal.id}}</td>
                 <td>{{ deal.discount }}</td>
                 <td>{{ deal.start_date}}</td>
                 <td>{{ deal.end_date}}</td>
                 {% if deal.route_id > -1 %}
-                    <td>{{ route_dictionary[deal.route_id].from_}} ---
-                    {{ route_dictionary[deal.route_id].to }}
-                    </td>
+                <td>{{ get_route_by_id(deal.route_id).from_ }} ---
+                    {{ get_route_by_id(deal.route_id).to }}
+                </td>
                 {% else %}
-                <td> - </td>
+                <td> -</td>
                 {% endif %}
                 <td>
-                {% if deal.end_date < today() %}
+                    {% if deal.end_date < today() %}
                     <span class="status-beendet">BEENDET </span>
-                {% endif %}
-                {% if deal.end_date > today() and deal.start_date < today() %}
+                    {% endif %}
+                    {% if deal.end_date > today() and deal.start_date < today() %}
                     <span class="status-aktiv">AKTIV </span>
-                {% endif %}
-                {% if deal.end_date > today() and deal.start_date > today()  %}
+                    {% endif %}
+                    {% if deal.end_date > today() and deal.start_date > today() %}
                     <span class="status-inaktiv">INAKTIV </span>
-                {% endif %}
+                    {% endif %}
 
                 </td>
                 {% if deal.end_date > today() %}
-                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEditieren/{{deal.id}}"><button>Editieren</button></a></td>
-                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{deal.id}}"><button>Löschen</button></a></td>
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEditieren/{{deal.id}}">
+                    <button>Editieren</button>
+                </a></td>
+                <td><a data-confirm="Are you sure?" data-method="delete" href="/aktionEntfernen/{{deal.id}}">
+                    <button>Löschen</button>
+                </a></td>
                 {% else %}
                 <td>-</td>
                 <td>-</td>
                 {% endif %}
             </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
     {% endfor %}
-</table>
+    {% endif %}
+    {% endwith %}
 </div>
- {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
-
-
-</div> 
-
-  </html>
+</html>

@@ -4,7 +4,7 @@ from models.dealModel import DealModel
 from models.routeModel import RouteModel
 from models.userModel import UserModel
 from models.sectionModel import SectionModel
-from allEndpoints import RouteEndpoint
+from allEndpoints import RouteEndpoint, SectionEndpoint
 from helpers.sessionHelper import SessionHelper
 from helpers.dateHelper import DateHelper
 
@@ -45,10 +45,8 @@ def alleAktionen():
     if not user:
         return redirect("/")
     deals = DealModel.find_all()
-    route_dictionary = RouteModel.get_route_dictionary()
-    section_dictionary = SectionModel.get_section_dictionary()
     return render_template("alleAktionen.html", deals=deals, today = DateHelper.get_today, email=session.get("email"),
-                           route_dictionary = route_dictionary, section_dictionary = section_dictionary)
+                           get_route_by_id = RouteModel.get_route_by_id)
 
 # takes care of user interaction for adapting a certain deal which is identified by id
 def aktionEditieren(_id):
@@ -61,7 +59,7 @@ def aktionEditieren(_id):
 
     # fetch route
     if deal.route_id > 0:
-        route = RouteModel.get_route_dictionary()[deal.route_id]
+        route = RouteEndpoint.find_by_id(deal.route_id)
     else:
         route = None
     today = DateHelper.get_today()

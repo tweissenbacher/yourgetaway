@@ -1,88 +1,90 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
+</head>
 <body>
 
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a  href="/aktionen/neu">Aktion anlegen</a>
-  <a class="active" href="/alleAktionen">Aktionen</a>
-  <a href="/profil">Profil</a>
+    <a href="/aktionen/neu">Aktion anlegen</a>
+    <a class="active" href="/alleAktionen">Aktionen</a>
+    <a href="/profil">Profil</a>
 </div>
 
 <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
-    <span class = "admin-field">ADMIN</span> <br>
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <span class="admin-field">ADMIN</span> <br>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 <!-- Page content -->
 <div class="content">
-    <div class ="aktionen-content">
-<h1>Aktion editieren</h1>
-<form method = "POST">
-    <label>Rabatt (in Prozent)
-        <br>
-    <input type ="number" name ="discount" value="{{ deal.discount }}"required oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
-    oninput="this.setCustomValidity('')"/>
-    </label>
-    <p></p>
+    <div class="aktionen-content">
+        <h1>Aktion editieren</h1>
+        <form method="POST">
+            <label>Rabatt (in Prozent)
+                <br>
+                <input type="number" name="discount" value="{{ deal.discount }}" required
+                       oninvalid="this.setCustomValidity('Es muss ein Rabatt eingegeben werden.')"
+                       oninput="this.setCustomValidity('')"/>
+            </label>
+            <p></p>
 
-    <label>Strecke <br>
-        <select name="route_picker" id="route_picker">
-            {% if route %}
-                {% for r in get_routes %}
-                       {% if r.id == route.id %}
-                       <option value="{{r.id}}" selected>{{r.from_}}  ---  {{r.to}}</option>
-                       {% else %}
-                       <option value="{{r.id}}">{{r.from_}}  ---  {{r.to}}</option>
-                       {% endif %}
-                {% endfor %}
-                <option value="">Keine</option>
-            {% else %}
-                 <option selected value="">Keine</option>          
-                {% for r in get_routes %}
-                    <option value="{{r.id}}">{{r.from_}}  ---  {{r.to}}</option>
-                {% endfor %}
-             {% endif %}
-        </select>
-    </label>
-     <p></p>
-    <label>Startdatum
-        <br>
-    {% if not deal_active %}
-      <input type="datetime-local" id="start_date"  name="start_date" value = "{{ deal.start_date}}" >
-    {% else %}
-      <input type="datetime-local" id="start_date_fixed"  name="start_date_fixed" value = "{{ deal.start_date}}" disabled>
-    {% endif %}
-    </label>
-      <p></p>
+            <label>Strecke <br>
+                <select name="route_picker" id="route_picker">
+                    {% if route %}
+                    {% for r in get_routes %}
+                    {% if r.id == route.id %}
+                    <option value="{{r.id}}" selected>{{r.from_}} --- {{r.to}}</option>
+                    {% else %}
+                    <option value="{{r.id}}">{{r.from_}} --- {{r.to}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    <option value="">Keine</option>
+                    {% else %}
+                    <option selected value="">Keine</option>
+                    {% for r in get_routes %}
+                    <option value="{{r.id}}">{{r.from_}} --- {{r.to}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </label>
+            <p></p>
+            <label>Startdatum
+                <br>
+                {% if not deal_active %}
+                <input type="datetime-local" id="start_date" name="start_date" value="{{ deal.start_date}}">
+                {% else %}
+                <input type="datetime-local" id="start_date_fixed" name="start_date_fixed" value="{{ deal.start_date}}"
+                       disabled>
+                {% endif %}
+            </label>
+            <p></p>
 
-    <label>Enddatum
-        <br>
-      <input type="datetime-local" id="end_date" name="end_date" value = "{{ deal.end_date }}" >
-    </label>
-      <p></p>
-    <input class ="button-aktionAnlegen" type = "submit" value ="Aktion editieren"/>
+            <label>Enddatum
+                <br>
+                <input type="datetime-local" id="end_date" name="end_date" value="{{ deal.end_date }}">
+            </label>
+            <p></p>
+            <input class="button-aktionAnlegen" type="submit" value="Aktion editieren"/>
 
-</form>
-        </div>
+        </form>
+    </div>
 
     {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 </body>
- </html>
+</html>
 

@@ -1,64 +1,66 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
-<body class ="registrieren">
+</head>
+<body class="registrieren">
 {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+{% if messages %}
+{% for message in messages %}
+<p class="flash-messages">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
     <p></p>
-    <div class ="register-pic-upload">
-           <img class = "add-user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+    <div class="register-pic-upload">
+        <img class="add-user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+             alt="user picture" style="width:70px;height:70x;"> <br>
         <button>Bild uploaden</button>
     </div>
 </div>
 
 
-<div class ="register-text">
-<h1>Registrieren</h1>
-<form method = "POST">
-    <label>Email *
-        <br>
-    <input type ="email" name ="email" required oninvalid="this.setCustomValidity('Es muss eine Email eingegeben werden.')"
-    oninput="this.setCustomValidity('')"/>
-    </label>
-    <p></p>
-    <label>Passwort *
-        <br>
-    <input type ="password" name ="password" required oninvalid="this.setCustomValidity('Es muss ein Passwort eingegeben werden.')"
-    oninput="this.setCustomValidity('')"/>
-    </label>
-    <p></p>
-    <label>Vorname
-        <br>
-    <input type ="firstname" name ="firstname"/>
-    </label>
-    <p></p>
-    <label>Nachname
-        <br>
-    <input type ="lastname" name ="lastname"/>
-    </label>
-    <p></p>
-    <label>Geburtsdatum
-        <br>
-      <input type="datetime-local" id="birthday"  name="birthday" value="{{today}}">
-    </label>
-    <p></p>
-    <input type = "submit" value ="Registrieren"/>
+<div class="register-text">
+    <h1>Registrieren</h1>
+    <form method="POST">
+        <label>Email *
+            <br>
+            <input type="email" name="email" required
+                   oninvalid="this.setCustomValidity('Es muss eine Email eingegeben werden.')"
+                   oninput="this.setCustomValidity('')"/>
+        </label>
+        <p></p>
+        <label>Passwort *
+            <br>
+            <input type="password" name="password" required
+                   oninvalid="this.setCustomValidity('Es muss ein Passwort eingegeben werden.')"
+                   oninput="this.setCustomValidity('')"/>
+        </label>
+        <p></p>
+        <label>Vorname
+            <br>
+            <input type="firstname" name="firstname"/>
+        </label>
+        <p></p>
+        <label>Nachname
+            <br>
+            <input type="lastname" name="lastname"/>
+        </label>
+        <p></p>
+        <label>Geburtsdatum
+            <br>
+            <input type="datetime-local" id="birthday" name="birthday" value="{{today}}">
+        </label>
+        <p></p>
+        <input type="submit" value="Registrieren"/>
 
-</form>
-<p>Bereits ein Account? <a href ="/"> Einloggen </a> </p>
+    </form>
+    <p>Bereits ein Account? <a href="/"> Einloggen </a></p>
 </div>
 </body>
- </html>
+</html>

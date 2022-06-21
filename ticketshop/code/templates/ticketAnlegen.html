@@ -1,59 +1,67 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Ticketshop</title>
     <link rel="stylesheet" href="../static/css/ticketshop.css">
-  </head>
+</head>
 <body>
 
 
 <!-- sidebar -->
 <div class="sidebar">
     <h2>YOUR GETAWAY <br> Ticketshop</h2>
-  <a class="active" href="/tickets/neu">Ticket kaufen</a>
-  <a href="/tickets">Tickets</a>
-  <a href="/profil">Profil</a>
+    <a class="active" href="/tickets/neu">Ticket kaufen</a>
+    <a href="/tickets">Tickets</a>
+    <a href="/profil">Profil</a>
 </div>
 
 
 <div class="container-user" style="float:right">
-     <img class = "user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
-          alt="user picture" style="width:70px;height:70x;">  <br>
+    <img class="user-pic" src="https://www.cubicalseo.com/public/admin/testimonial/1622187559.png"
+         alt="user picture" style="width:70px;height:70x;"> <br>
     <span>{{ email }}</span> <br>
-    <a href="/ausloggen"><span >Ausloggen</span></a>
+    <a href="/ausloggen"><span>Ausloggen</span></a>
 </div>
 
 <!-- Page content -->
 <div class="content-ticket">
-<h1>Ticket kaufen</h1>
-<form method = "POST">
-    <label>Von
-        <br>
-    <input type ="text" name ="from_"/>
-    </label>
-     <p></p>
-    <label>Nach
-        <br>
-    <input type ="text" name ="to" />
-    </label>
-     <p></p>
-    <label>Datum
-        <br>
-      <input type="datetime-local" id="date"  name="date" value="{{today}}">
-    </label>
-      <p></p>
-    <input class ="button-ticketAnlegen" type = "submit" value ="Weiter"/>
+    <h1>Ticket kaufen</h1>
+    <form method="POST">
 
-</form>
+        <label>Von<br>
+            <select name="from-picker" id="from-picker">
+                {% for s in get_stations() %}
+                <option value="{{s}}">{{ s }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <p></p>
+        <label>Nach<br>
+            <select name="to-picker" id="to-picker">
+                {% for s in get_stations() %}
+                <option value="{{s}}">{{ s }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <p></p>
 
-        {% with messages = get_flashed_messages() %}
-         {% if messages %}
-               {% for message in messages %}
-                    <p class ="flash-messages">{{ message }}</p>
-               {% endfor %}
-         {% endif %}
-      {% endwith %}
+        <label>Datum
+            <br>
+            <input type="datetime-local" id="date" name="date" value="{{today()}}">
+        </label>
+        <p></p>
+        <input class="button-ticketAnlegen" type="submit" value="Weiter"/>
+
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="flash-messages">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
 </div>
 </body>
- </html>
+</html>

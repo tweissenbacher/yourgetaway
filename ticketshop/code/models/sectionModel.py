@@ -47,14 +47,14 @@ class SectionModel:
             return None
         return filtered_sections[0]
 
-    # returns a dictionary for all sections with the section id as key and the actual section as value
-    @classmethod
-    def get_section_dictionary(cls):
-        all_sections = SectionEndpoint.find_all()
-        all_sections = [cls.json_to_object_streckensystem(s) for s in all_sections]
-        dictionary = {}
-        for section in all_sections:
-            dictionary[section.id] = section
-        return dictionary
+    # # returns a dictionary for all sections with the section id as key and the actual section as value
+    # @classmethod
+    # def get_section_dictionary(cls):
+    #     all_sections = SectionEndpoint.find_all()
+    #     all_sections = [cls.json_to_object_streckensystem(s) for s in all_sections]
+    #     dictionary = {}
+    #     for section in all_sections:
+    #         dictionary[section.id] = section
+    #     return dictionary
 
 

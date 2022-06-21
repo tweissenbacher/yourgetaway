@@ -1,5 +1,6 @@
- @import 'base/base.css';
+@import 'base/base.css';
 
+ /* General */
 
 body, html {
   height: 100%;
@@ -33,7 +34,6 @@ div.content-ticket {
 .tickets {
     margin-left: 120px;
 }
-
 
  /* Ende Ticketverwaltung */
 
@@ -146,12 +146,6 @@ div.container-user {
 }
 
 
- /* funktioniert nicht*/
-input button-aktionAnlegen{
-    width: 50x;
-}
-
-
  /* The side navigation menu */
 .sidebar {
   margin: 0;
@@ -232,6 +226,12 @@ th,
 td {
     max-width: 250px;
     padding: 12px 15px;
+}
+
+td.warnings{
+    max-width: 200px;
+    padding: 12px 15px;
+    font-size: 0.7em;
 }
 
 tbody tr {

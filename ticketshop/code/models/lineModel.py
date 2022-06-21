@@ -53,3 +53,17 @@ class LineModel:
             if from_found:
                 relevant_sections.append(section)
         return relevant_sections
+
+    # returns all  existing line stations
+    @classmethod
+    def get_all_stations(cls):
+        lines = [LineModel.json_to_object(line) for line in LineEndpoint.find_all()]
+        stations = []
+        for line in lines:
+            for section in line.sections:
+                if section.from_ not in stations:
+                    stations.append(section.from_)
+                if section.to not in stations:
+                    stations.append(section.to)
+        stations.sort()
+        return stations
