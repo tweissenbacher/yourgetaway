@@ -1,11 +1,9 @@
 from flask import Flask, session, render_template, request, redirect, flash
 from flask_restful import Api
 from sqlalchemy import event
-
 from models.adminModel import AdminModel
 from db import db
 from security import authenticate
-
 import ticketmanagement
 import aktionsmanagement
 import usermanagement
@@ -25,7 +23,7 @@ app.add_url_rule('/tickets', view_func=ticketmanagement.alle_tickets, methods =[
 app.add_url_rule('/ticketEntfernen/<int:_id>', view_func=ticketmanagement.delete_ticket, methods =["GET", "DELETE"])
 app.add_url_rule('/timetableRide/<int:ticket_id>', view_func=ticketmanagement.ticket_timetale, methods =["GET", "POST"])
 
-#Aktionsmanagement-Urls
+#Dealmanagement-Urls
 app.add_url_rule('/aktionen/neu', view_func=aktionsmanagement.aktionAnlegen, methods =["GET", "POST"])
 app.add_url_rule('/aktionEntfernen/<int:_id>', view_func=aktionsmanagement.aktionEntfernen, methods =["GET", "DELETE"])
 app.add_url_rule('/alleAktionen', view_func=aktionsmanagement.alleAktionen)
@@ -37,7 +35,7 @@ app.add_url_rule('/registrierung', view_func=usermanagement.register, methods =[
 app.add_url_rule('/profil', view_func=usermanagement.profilEditieren, methods =["GET", "POST"])
 app.add_url_rule('/ausloggen', view_func=usermanagement.ausloggen)
 
-
+# creates tables
 @app.before_first_request
 def create_tables():
     db.create_all()

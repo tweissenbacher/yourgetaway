@@ -1,3 +1,4 @@
+# served as dummy data for routes -> no longer relevant and also outdated
 class DummyStrecken:
 
     @classmethod

@@ -1,8 +1,8 @@
 from db import db
-
 from models.adminModel import AdminModel
 from werkzeug.security import generate_password_hash
 
+# serves the representation of user objects
 class UserModel(db.Model):
     __tablename__ = 'users'
 
@@ -26,18 +26,17 @@ class UserModel(db.Model):
         self.birthday = birthday
         self.check_if_admin();
 
-    def json(self):
-        return {"email": self.email, "password": self.password,
-                "firstname": self.firstname, "lastname": self.lastname, "birthday": self.birthday, "is_admin": self.is_admin}
-
+    # saves user to db
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
+    # deletes user from db
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
 
+    # checks if user is admin
     def check_if_admin(self):
         user = AdminModel.find_admin(self.email)
         if user:
@@ -45,10 +44,12 @@ class UserModel(db.Model):
         else:
             self.is_admin = False
 
+    # finds user by email
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email= email).first()
 
+    # finds user by id
     @classmethod
     def find_by_id(cls, user_id):
         return cls.query.filter_by(id = user_id).first()

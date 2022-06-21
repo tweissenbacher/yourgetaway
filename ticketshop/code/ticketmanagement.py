@@ -1,5 +1,4 @@
 import datetime
-
 from flask import session, render_template, request, redirect, flash
 from models.userModel import UserModel
 from models.ticketModel import TicketModel, TicketSectionModel
@@ -8,11 +7,9 @@ from helpers.dateHelper import DateHelper
 from allEndpoints import LineEndpoint, RouteEndpoint
 from models.lineModel import LineModel
 from models.routeModel import RouteModel
-
-# takes care of user input for ticket creation
 from helpers.sessionHelper import SessionHelper
 
-
+# takes care of user input for ticket creation
 def ticket_anlegen():
     user = SessionHelper.normal_user_check(session.get("email"))
     if not user:
@@ -53,7 +50,7 @@ def fahrt_suchen():
         return redirect('/tickets/neu')
     # fetch times for possible rides
     times = filter_by_date(date, lines, from_)
-    if len(times) < 10:
+    if len(times) < 3: # if less than 3 results times of the following day are also fetched
         times_for_next_day = filter_by_date(DateHelper.get_next_day(date), lines, from_)
         times = times + times_for_next_day
     if len(times) <= 0:
@@ -162,7 +159,6 @@ def filter_by_destination(from_, to, lines):
     return lines_filtered
 
 # returns possible ride-times for a certain date and destination
-#nur fahrten am selben Tag berücksichtigt
 def filter_by_date(date, lines, destination):
     times = []
     date_format_str = '%Y-%m-%d %H:%M'
@@ -186,6 +182,7 @@ def filter_by_date(date, lines, destination):
                     )
     return times
 
+# calculates price for the actual ride based on the trip price by taking only relevant sections into consideration
 def calculate_price (from_, to, line, price):
     if not line or not from_ or not to or not price:
         return 0
@@ -228,7 +225,14 @@ def make_seat_reservation(ticket):
 
 # fetch warnings from route information system
 def get_warnings(line_id, from_, to):
-    # line = LineModel.json_to_object(LineEndpoint.find_by_id(int(line_id)))
+    # json_line = LineEndpoint.find_by_id(int(line_id))
+    # if not json_line:
+    #     return []
+    # route_id = json_line['route_id']
+    # route = RouteEndpoint.find_by_id(route_id)
+    # if not route:
+    #     return []
+    # line = LineModel.json_to_object(json_line)
     # if not line:
     #     return []
     # route = RouteModel.json_to_object(RouteEndpoint.find_by_id(int(line.route_id)))

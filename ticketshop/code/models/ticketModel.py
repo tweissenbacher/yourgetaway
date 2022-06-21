@@ -11,6 +11,7 @@ TicketSectionDetail = db.Table('ticketSectionDetails',
     db.Column('ticket_id', db.Integer, db.ForeignKey('tickets.id')),
     db.Column('section_id', db.Integer, db.ForeignKey('ticket_sections.id')))
 
+# serves the representation of ticket objects
 class TicketModel(db.Model):
     __tablename__ = 'tickets'
 
@@ -44,6 +45,7 @@ class TicketModel(db.Model):
         self.line_date = line_date
         self.train = train
 
+    # adds the relevant sections to the ticket
     def add_sections(self):
         capacity = int(TrainEndpoint.find_by_name(self.train)['capacity'])
         relevant_sections = TicketModel.get_relevant_sections(self)
@@ -55,58 +57,40 @@ class TicketModel(db.Model):
                 ticket_section = TicketSectionModel(section.from_, section.to, section_start_date, section_end_date, self.line_id, capacity)
             self.sections.append(ticket_section)
 
-    def json(self):
-        #fahrtdurchfuehrung = get_fahrtdurchfuehrung_by_id... -> schnittstelle
-        line = ''
-        user = UserModel.find_by_id(self.user_id).json()
-        return {
-            "id": self.id,
-            "from_": self.from_,
-            "to": self.to,
-            "price": self.price,
-            "date": self.date,
-            "end_date": self.end_date,
-            "discount": self.discount,
-            "seat_reservation": self.seat_reservation,
-
-            "line": line,
-            "line_date": self.line_date,
-            "train": self.train,
-
-            "warnings": [],
-
-            "user": user
-
-        }
-
+    # saves ticket to db
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
         db.session.refresh(self)
         return self.id
 
+    # deletes ticket from db
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
 
-
+    # finds ticket by id
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
+    # finds all tickets
     @classmethod
     def find_all(cls):
         return cls.query.all();
 
+    # finds all ticket of a certain user who is identified by email
     @classmethod
     def find_by_user(cls, email):
         user_id = UserModel.find_by_email(email).id
         return cls.query.filter_by(user_id=user_id)
 
+    # checks whether a ticket is active (start date < now < end date)
     def ticket_active (self):
         today = str(datetime.datetime.now())
         return self.date < today
 
+    # fetches all relevant sections for a certain ticket (based on the line the ticket refers to)
     def get_relevant_sections(self):
         sections = LineModel.json_to_object(LineEndpoint.find_by_id(int(self.line_id))).sections
         relevant_sections = []
@@ -120,6 +104,8 @@ class TicketModel(db.Model):
                 relevant_sections.append(section)
         return relevant_sections
 
+    # calculates the date the train is located at a certain destination (given the line the starting time of the trip)
+    # line id and starting time serve to identify the desired trip within a line
     @classmethod
     def get_time_for_ride(cls, line_id, time_str, destination):
         line = LineModel.json_to_object(LineEndpoint.find_by_id(line_id))
@@ -133,6 +119,8 @@ class TicketModel(db.Model):
             time = time + datetime.timedelta(minutes=s.time)
         return time.strftime('%Y-%m-%d %H:%M')
 
+# serves the representation of ticket section objects
+# ticket sections are all sections which are relevant for the booked ride
 class TicketSectionModel(db.Model):
     __tablename__ = 'ticket_sections'
 
@@ -152,16 +140,19 @@ class TicketSectionModel(db.Model):
         self.line_id = line_id
         self.capacity = capacity
 
+    # saves ticket section to db
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
         db.session.refresh(self)
         return self.id
 
+    # deletes ticket section from db
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
 
+    # adds seat for passenger to ticket section
     def add_passenger(self):
         if self.capacity > 0:
             self.capacity -= 1
@@ -170,14 +161,17 @@ class TicketSectionModel(db.Model):
         flash("Kein Sitzplatz mehr verfügbar.")
         return False
 
+    # removes passenger seat from ticket section
     def remove_passenger(self):
         self.capacity += 1
         self.save_to_db()
 
+    # finds ticket section by id
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
+    # finds all ticket sections
     @classmethod
     def find_all(cls):
         return cls.query.all();

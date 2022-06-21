@@ -1,14 +1,13 @@
 import datetime
 from flask import flash
-
 from db import db
-
 from models.userModel import UserModel
 from models.sectionModel import SectionModel
 from allEndpoints import TrainEndpoint, LineEndpoint
 from models.tripModel import TripModel
 
-
+# serves the representation of line objects which are fetched from the fahrplan-informationssystem
+# not a DB-Model!
 class LineModel:
 
     def __init__(self, id, route_id, starting_point, destination, sections, trips):
@@ -19,6 +18,7 @@ class LineModel:
         self.sections = sections
         self.trips = trips
 
+    # maps the json line which is delivered by the fahrplan-informationssystem for the usage in the ticketshop
     @classmethod
     def json_to_object(cls, json_line):
         id = int(json_line['id'])
@@ -39,6 +39,7 @@ class LineModel:
 
         return LineModel(id, route_id, starting_point, destination, sections, trips)
 
+    # returns only those sections of a given line which are relevant (given a certain start and end point)
     @classmethod
     def get_relevant_sections(cls, line_id, from_, to):
         sections = LineModel.json_to_object(LineEndpoint.find_by_id(int(line_id))).sections

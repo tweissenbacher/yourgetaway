@@ -1,5 +1,6 @@
 from db import db
 
+# serves the management of admins (storage of admin email)
 class AdminModel (db.Model):
     __tablename__ = 'admins'
 
@@ -9,10 +10,12 @@ class AdminModel (db.Model):
     def __init__(self, email):
         self.email = email
 
+    # finds admin per email
     @classmethod
     def find_admin(cls, email):
         return cls.query.filter_by(email = email).first()
 
+    # saves admin to db
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

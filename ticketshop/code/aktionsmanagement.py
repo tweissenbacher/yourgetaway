@@ -8,7 +8,7 @@ from allEndpoints import RouteEndpoint
 from helpers.sessionHelper import SessionHelper
 from helpers.dateHelper import DateHelper
 
-
+# takes care of user interaction for deal creation
 def aktionAnlegen():
     # permission check
     user = SessionHelper.admin_check(session.get("email"))
@@ -33,11 +33,13 @@ def aktionAnlegen():
         return alleAktionen()
     return render_template("aktionAnlegen.html", email=session.get("email"), get_routes = get_routes, today = DateHelper.get_today)
 
+# deletes a certain deal by id
 def aktionEntfernen(_id):
     deal = DealModel.find_by_id(_id)
     deal.delete_from_db()
     return alleAktionen()
 
+# fetches all existing deals and displays them for the user
 def alleAktionen():
     user = SessionHelper.admin_check(session.get("email"))
     if not user:
@@ -48,6 +50,7 @@ def alleAktionen():
     return render_template("alleAktionen.html", deals=deals, today = DateHelper.get_today, email=session.get("email"),
                            route_dictionary = route_dictionary, section_dictionary = section_dictionary)
 
+# takes care of user interaction for adapting a certain deal which is identified by id
 def aktionEditieren(_id):
     user = SessionHelper.admin_check(session.get("email"))
     if not user:
@@ -95,6 +98,9 @@ def aktionEditieren(_id):
 
     return render_template("aktionEditieren.html", email=session.get("email"), deal = deal, route=route,  deal_active = deal_active, get_routes = get_routes())
 
+# Helper methods
+
+# fetches all routes
 def get_routes():
     routes = RouteEndpoint.find_all()
     routes = [RouteModel.json_to_object(r) for r in routes]

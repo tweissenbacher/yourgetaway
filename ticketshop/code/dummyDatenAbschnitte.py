@@ -1,3 +1,4 @@
+# served as dummy data for sections -> no longer relevant and outdated
 class DummyAbschnitte:
 
     @classmethod

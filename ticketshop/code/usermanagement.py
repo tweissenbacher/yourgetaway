@@ -6,7 +6,7 @@ from models.userModel import UserModel
 from helpers.sessionHelper import SessionHelper
 from helpers.dateHelper import DateHelper
 
-
+# takes care of user login
 def login():
     session.clear()
     if request.method == "POST":
@@ -22,6 +22,7 @@ def login():
         flash("Inkorrekte Email und/oder inkorrektes Passwort.\nVersuchen Sie es erneut oder registrieren Sie sich, wenn Sie noch keinen Account haben.")
     return render_template("login.html", email = session.get("email"))
 
+# takes care of user registration
 def register():
     today = DateHelper.get_today()
     if request.method == "POST":
@@ -43,6 +44,7 @@ def register():
         flash("Es gibt bereits einen User mit dieser Email-Adresse. Bitte loggen Sie sich ein oder wählen Sie eine andere Emailadresse.")
     return render_template("register.html", email = session.get("email"), today = today)
 
+# takes care of adaptations to user profile
 def profilEditieren():
     if session.get("email") is None:
         return redirect ("/")
@@ -80,6 +82,7 @@ def profilEditieren():
             flash("Falsches Passwort. Versuchen Sie es noch einmal.")
     return render_template("profil.html", email=session.get("email"), is_admin = is_admin, user=user, today = today)
 
+# takes care of log out
 def ausloggen():
     session.clear()
     flash("Erfolgreich ausgeloggt.")

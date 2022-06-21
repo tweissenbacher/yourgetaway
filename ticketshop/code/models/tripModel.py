@@ -1,6 +1,7 @@
 import allEndpoints
 
-
+# serves the representation of trip objects which are fetched from the fahrplan-informationssystem
+# not a DB-Model!
 class TripModel:
 
     def __init__(self, note, departure, train_id, train, price, date_start, date_end, weekdays):
@@ -13,6 +14,7 @@ class TripModel:
         self.date_end = date_end
         self.weekdays = weekdays
 
+    # maps the json trip which is delivered by the fahrplan-informationssystem for the usage in the ticketshop
     @classmethod
     def json_to_object(cls, json_trip):
         note = json_trip['note']

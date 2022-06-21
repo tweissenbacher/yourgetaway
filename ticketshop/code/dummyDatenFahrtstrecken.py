@@ -1,6 +1,6 @@
 from dummyDatenAbschnitte import DummyAbschnitte
 
-
+# served as dummy data for lines -> no longer relevant and outdated
 class DummyFahrtstrecken:
 
     # != strecken

@@ -1,6 +1,8 @@
 from models.sectionModel import SectionModel
 from allEndpoints import RouteEndpoint
 
+# serves the representation of route objects which are fetched from the strecken-informationssystem
+# not a DB-Model!
 class RouteModel:
 
     def __init__(self, id, from_, to, sections):
@@ -9,6 +11,7 @@ class RouteModel:
         self.to = to
         self.sections = sections
 
+    # maps the json route which is delivered by the strecken-informationssystem for the usage in the ticketshop
     @classmethod
     def json_to_object(cls, json_route):
         id_ = int(json_route['id'])
@@ -20,6 +23,7 @@ class RouteModel:
 
         return RouteModel(id_, from_, to, sections)
 
+    # fetches a route given a certain start and end point
     @classmethod
     def find_route_from_to(cls, from_, to):
         routes = RouteEndpoint.find_all()
@@ -30,6 +34,7 @@ class RouteModel:
             return None
         return filtered_routes[0]
 
+    # returns a dictionary for all routes with the route id as key and the actual route as value
     @classmethod
     def get_route_dictionary(cls):
         all_routes = RouteEndpoint.find_all()
