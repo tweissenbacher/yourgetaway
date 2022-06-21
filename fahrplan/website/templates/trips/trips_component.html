@@ -1,0 +1,73 @@
+<table class="table">
+    <thead>
+        <tr>
+            <td {% if current_user.admin ==1 %}
+                colspan="12"
+                {% else %}
+                colspan="10"
+                {% endif %}
+                style="padding-top: 2em;">
+                <!-- <h5>Durchführungen:</h5> -->
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th></th>
+            {% if current_user.admin ==1 %}
+            <th scope="col">B</th>
+            <th scope="col">L</th>
+            {% endif %}
+            <th scope="col">Von</th>
+            <th scope="col">Bis</th>
+            <th scope="col">Mo</th>
+            <th scope="col">Di</th>
+            <th scope="col">Mi</th>
+            <th scope="col">Do</th>
+            <th scope="col">Fr</th>
+            <th scope="col">Sa</th>
+            <th scope="col">So</th>
+        </tr>
+
+        {% if line.trips %}
+        {% for t in line.trips %}
+        <tr >
+            {% if current_user.admin ==1 %}
+            <td>{{ ('+ ' if t.id == trip.id) if trip }}</td>
+            <td>
+                <a href="{{ url_for('trips.trip_update', trip_id=t.id) }}"
+                   id="btn-edit"
+                   class="btn btn-sm btn-outline-secondary"
+                   aria-label="Edit">
+                    <span aria-hidden="true">&#x270E;</span>
+                </a>
+            </td>
+            <td>
+                <a href="{{ url_for('trips.trip_delete', trip_id=t.id) }}"
+                   id="btn-delete"
+                   class="btn btn-sm btn-outline-danger"
+                   aria-label="Delete">
+                    <span aria-hidden="true">&#x2A09;</span>
+                    <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
+                </a>
+            </td>
+            {% endif %}
+
+            <td>{{ t.recurrence.date_start }}</td>
+            <td>{{ t.recurrence.date_end }}</td>
+            <td>{{ t.departure if t.recurrence.mon }}</td>
+            <td>{{ t.departure if t.recurrence.tue }}</td>
+            <td>{{ t.departure if t.recurrence.wed }}</td>
+            <td>{{ t.departure if t.recurrence.thu }}</td>
+            <td>{{ t.departure if t.recurrence.fri }}</td>
+            <td>{{ t.departure if t.recurrence.sat }}</td>
+            <td>{{ t.departure if t.recurrence.sun }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="11">Keine Durchführungen</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>

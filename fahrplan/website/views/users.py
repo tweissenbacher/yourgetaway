@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
@@ -19,23 +20,42 @@ users = Blueprint("users", __name__)
 @login_required
 def users_view():
     all_users = User.query.all()
-    return render_template("users.html", user=current_user, users=all_users)
+    all_users = sorted(all_users, key=lambda u: u.id)
+    # all_users.sort()
+    return render_template(
+        "users/users.html", current_user=current_user, users=all_users
+    )
 
 
-@users.route("/users/<int:user_id>/delete", methods=["GET"])
+@users.route("/users/<int:user_id>/trips", methods=["GET"])
 @login_required
-def users_delete(user_id):
+def user_trips(user_id):
+    show = request.args.get("show", default="all")  # future
+    # sortby = request.args.get("sortby", default="date")  # line
+
     user = User.query.get(user_id)
-    if user:
-        db.session.delete(user)
-        db.session.commit()
-        flash("Benutzer entfernt!", category="success")
-        return redirect(url_for("users.users"))
+    trips = user.trips
+
+    resolved = []
+    for trip in trips:
+        resolved.extend(trip.get_resolved_all_dict())
+
+    if show == "future":
+        resolved = filter(lambda rt: rt["date"] >= datetime.date.today(), resolved)
+
+    # if sortby == "line":
+    #     resolved = sorted(resolved, key=lambda rt: rt["line"])
+    # else:
+    #     resolved = sorted(resolved, key=lambda rt: rt["date"])
+
+    return render_template(
+        "users/user_trips.html", current_user=current_user, resolved=resolved, user=user
+    )
 
 
-@users.route("/users/<int:user_id>", methods=["GET", "POST"])
+@users.route("/users/<int:user_id>/update", methods=["GET", "POST"])
 @login_required
-def users_update(user_id):
+def user_update(user_id):
     if request.method == "POST":
         email = request.form.get("email")
         first_name = request.form.get("firstName")
@@ -64,12 +84,11 @@ def users_update(user_id):
         elif (
             password1 == None or password1 == "" and password2 == ""
         ):  # pw fields empty
-            print("lolll")
             user.update(email, first_name, last_name, admin)
             db.session.commit()
             flash("Benutzer bearbeitet!", category="success")
-            # return redirect(url_for("users.users"))
-            return redirect(request.referrer)
+            return redirect(url_for("users.users"))
+            # return redirect(request.referrer)
 
         elif password1 != password2:
             flash("Pw stimmt nicht überein", category="error")
@@ -90,12 +109,12 @@ def users_update(user_id):
             return redirect(request.referrer)
     user = User.query.get(user_id)
     print(user)
-    return render_template("users_c_u.html", current_user=current_user, user=user)
+    return render_template("users/users_c_u.html", current_user=current_user, user=user)
 
 
 @users.route("/users/create", methods=["GET", "POST"])
 @login_required
-def users_create():
+def user_create():
     if request.method == "POST":
         email = request.form.get("email")
         first_name = request.form.get("firstName")
@@ -105,17 +124,22 @@ def users_create():
         admin = request.form.get("admin")
 
         user = User.query.filter_by(email=email).first()
-        # print(user.email == email)
+        # print(user.email)
         if user:
-            flash("Email in Benutzung")
+            flash("Email in Benutzung", category="error")
+            return redirect(request.referrer)
         elif len(email) < 4:
             flash("E-Mail zu kurz (<3)", category="error")
+            return redirect(request.referrer)
         elif len(first_name) < 2:
             flash("Name zu kurz (<1)", category="error")
+            return redirect(request.referrer)
         elif password1 != password2:
             flash("Pw stimmt nicht überein", category="error")
+            return redirect(request.referrer)
         elif len(password1) < 3:
             flash("PW zu kurz(<3)", category="error")
+            return redirect(request.referrer)
         else:
             new_user = User(
                 email=email,
@@ -127,7 +151,20 @@ def users_create():
             db.session.add(new_user)
             db.session.commit()
             flash("Benutzer angelegt!", category="success")
-        return redirect(request.referrer)
-        # return redirect(url_for("users.users"))
-    # user = User.query.get(user_id)
-    return render_template("users_c_u.html", current_user=current_user, user=False)
+        return redirect(url_for("users.users_view"))
+    return render_template(
+        "users/users_c_u.html", current_user=current_user, user=False
+    )
+
+
+@users.route("/users/<int:user_id>/delete", methods=["GET"])
+@login_required
+def user_delete(user_id):
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash("Benutzer entfernt!", category="success")
+        return redirect(url_for("users.users_view"))
+    flash(f"Benutzer ID {user_id} nicht vorhanden!", category="error")
+    return redirect(url_for("users.users_view"))

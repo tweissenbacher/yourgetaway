@@ -3,7 +3,8 @@ FLASK_APP=fahrplan
 FLASK_ENV=development
 FLASK_RUN_PORT=5000
 
-STRECKEN_API_BASE_URL="https://reqbin.com/echo/get/json"
+STRECKEN_API_URL="http://127.0.0.1:5002/api/routes/"
+
 
 
 # https://prettyprinted.com/tutorials/automatically_load_environment_variables_in_flask

@@ -1,0 +1,62 @@
+
+<table class="table">
+    <thead>
+        <tr>
+            <td colspan="8"
+                style="padding-top: 0em;">
+                <h6>Einzeldurchführungen:</h6>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="col">Fahrtstrecke</th>
+            <th scope="col">Von</th>
+            <th scope="col">Nach</th>
+            <th scope="col" style="text-align: right; padding-right: 2em;">^Datum</th>
+            <th scope="col">ab</th>
+            <th scope="col">an</th>
+            <th scope="col">Zug</th>
+            <th scope="col">Personal</th>
+        </tr>
+        {% if resolved %}
+        {% for r in resolved %}
+        <tr >
+            <td>
+                <a href="{{ url_for('lines.line_detail', line_id=r.line.id) }}">{{r.line.descr}}</a>
+            </td>
+            <td>
+                {{(r.line.sections | first).section.from_station_name}}
+            </td>
+            <td>
+                {{(r.line.sections | last).section.to_station_name}}
+            </td>
+            <td style="text-align: right; padding-right: 2em;">
+                {{(r.date).strftime('%A %d.%m.%Y')}} {#r.date|format_date(format='full', locale='fr_FR') #}
+            </td>
+            <td>
+                {{r.departure}}
+            </td>
+            <td>
+                {{r.arrival}}
+            </td>
+            <td>
+                {{r.train_id}}
+            </td>
+            <td>
+                {% set comma = joiner("-") %}
+                {% for p in r.personell %}
+                {{ comma() }} <span style="padding: 2px; border: 1px solid;">{{p}}</span>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+
+        {% else %}
+        <tr>
+            <td colspan="11">Keine Durchführungen</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+

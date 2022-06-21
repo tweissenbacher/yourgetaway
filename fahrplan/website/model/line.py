@@ -1,12 +1,11 @@
-# from dataclasses import fields
-from marshmallow_sqlalchemy.fields import Nested
-from marshmallow import fields
-
-from sqlalchemy import Column, ForeignKey, Integer, String, Date, Time
+from datetime import datetime, timedelta
+from pydoc import resolve
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, Table, Time
 from sqlalchemy.orm import relationship, backref, object_session
 from sqlalchemy.sql import func
 
 from .. import db, ma
+from .user import user_trip
 
 
 # *
@@ -18,35 +17,25 @@ class Section(db.Model):
     from_station_name = Column(String(100))
     to_station_name = Column(String(100))
     duration = Column(Integer())
-    # line_id = Column(Integer(), ForeignKey("line.id"))
-    route_id = Column(Integer(), ForeignKey("route.id"))  # ? del
-
-    def __init__(self, id, from_station, to_station, duration):
-        self.id = id
-        self.from_station = from_station
-        self.to_station = to_station
-        self.duration = duration
+    route_id = Column(Integer(), ForeignKey("route.id"))
+    fee = Column(Integer())
+    track = Column(String())
 
     def __repr__(self) -> str:
         return f"Section {self.id}: {self.from_station_name} to {self.to_station_name}"
 
-
-class SectionSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Section
-        ordered = True
-        fields = (
-            "id",
-            "from_station",
-            "to_station",
-            "from_station_name",
-            "to_station_name",
-            "duration",
+    @classmethod
+    def dict_to_obj(self, sectiondata):
+        return Section(
+            id=int(sectiondata["id"]),
+            from_station=int(sectiondata["start"]["id"]),
+            to_station=int(sectiondata["end"]["id"]),
+            from_station_name=sectiondata["start"]["name"],
+            to_station_name=sectiondata["end"]["name"],
+            duration=int(sectiondata["time"]),
+            fee=int(sectiondata["fee"]),
+            track=sectiondata["track"],
         )
-
-
-section_schema = SectionSchema()
-sections_schema = SectionSchema(many=True)
 
 
 # *
@@ -54,21 +43,30 @@ sections_schema = SectionSchema(many=True)
 class Route(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
-    sections = relationship("Section", backref=backref("route"), lazy="joined")  # ??
     # https://www.reddit.com/r/flask/comments/97p7gc/help_jinja_template_error_with_sqlalchemy/
+    sections = relationship(
+        "Section",
+        backref=backref("route"),
+        lazy="joined",
+        order_by="Section.id",
+    )
 
+    @classmethod
+    def dict_to_obj(self, routedata):
+        id = routedata["id"]
+        name = str(routedata["name"])
+        # print(id)
+        routesectiondata = routedata["route_sections"]
+        sections = []
+        for s in routesectiondata:
+            s = Section.dict_to_obj(s)
+            db_section = Section.query.get(s.id)
+            print(db_section)
+            if not db_section:
+                db.session.add(s)
 
-class RouteSchema(ma.SQLAlchemyAutoSchema):
-    sections = Nested(SectionSchema, many=True)
-
-    class Meta:
-        model = Route
-        ordered = True
-        fields = ("id", "name", "sections")
-
-
-route_schema = RouteSchema()
-routes_schema = RouteSchema(many=True)
+            # sections.append(Section.dict_to_obj(s))
+        return Route(id=id, name=name, sections=sections)
 
 
 # *
@@ -87,111 +85,92 @@ class Recurrence(db.Model):
     sat = Column(Integer())
     sun = Column(Integer())
 
-    def __init__(self, date_start, date_end, mon, tue, wed, thu, fri, sat, sun):
-        self.date_start = date_start
-        self.date_end = date_end
-        self.mon = mon
-        self.tue = tue
-        self.wed = wed
-        self.thu = thu
-        self.fri = fri
-        self.sat = sat
-        self.sun = sun
-
-
-class RecurrenceSchema(ma.SQLAlchemyAutoSchema):
-
-    daily = fields.Method("is_daily")
-    workdays = fields.Method("is_workdays")
-    weekend = fields.Method("is_weekend")
-
-    def is_daily(self, obj):
-        if (
-            obj.mon
-            and obj.tue
-            and obj.wed
-            and obj.thu
-            and obj.fri
-            and obj.sat
-            and obj.sun == 1
-        ):
-            return "true"
-        else:
-            return "false"
-
-    def is_workdays(self, obj):
-        if obj.mon and obj.tue and obj.wed and obj.thu and obj.fri == 1:
-            return "true"
-        else:
-            return "false"
-
-    def is_weekend(self, obj):
-        if obj.sat and obj.sun == 1:
-            return "true"
-        else:
-            return "false"
-
-    class Meta:
-        model = Recurrence
-        ordered = True
-        fields = (
-            "date_start",
-            "date_end",
-            "daily",
-            "workdays",
-            "weekend",
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri",
-            "sat",
-            "sun",
-        )
-
-
-recurrence_schema = RecurrenceSchema(many=False)
-# intervals_schema = IntervalSchema(many=True)
-
 
 class Trip(db.Model):
     id = Column(Integer(), primary_key=True)
-    note = Column(String(100))
+    line_id = Column(Integer(), ForeignKey("line.id"))
     departure = Column(Time())  # ? auslagern in recurence? stundenintervall?
+    price = Column(Integer())
+    note = Column(String(100))
     train_id = Column(Integer())
     # train_name =
-    price = Column(Integer())
-    
+    personell = relationship(
+        "User",
+        secondary=user_trip,
+        # cascade="all, delete-orphan",
+        lazy="joined",
+        back_populates="trips",
+        # backref=backref("trips", lazy="joined"),
+        # order_by="User.id",
+    )
+
     recurrence_id = Column(Integer(), ForeignKey("recurrence.id"))
     recurrence = relationship("Recurrence", uselist=False)
-    
     # recurrence_date_start = Column(Date(), ForeignKey("recurrence.date_start"))  #? for trips order_by date_start ?
     # recurrence_date_start =
-    line_id = Column(Integer(), ForeignKey("line.id"))
 
     # @property  # https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#building-query-enabled-properties
     # def recurrence_date_start(self):
     #     return object_session(self).query(Recurrence).with_parent(self).first()
 
-
-class TripSchema(ma.SQLAlchemyAutoSchema):
-    recurrence = Nested(RecurrenceSchema)  # many=False)
-
-    class Meta:
-        model = Trip
-        ordered = True
-        fields = (
-            "line_parent.descr",
-            "note",
-            "departure",
-            "train_id",
-            "price",
-            "recurrence",
+    def __repr__(self) -> str:
+        return (
+            f" Trip {self.id}:"
+            f" id:{self.id}"
+            f" lineid:{self.line_id}"
+            f" dep:{self.departure}"
+            f" price:{self.price}"
+            f" note:{self.note}"
+            f" trainid:{self.train_id}"
+            f" personell:({self.personell}"
+            f" recurrence:({self.recurrence}"
         )
 
+    # @classmethod
+    def is_trip_on_day(self, date):
+        week = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        day = week[date.weekday()]
+        print(day)
+        return (
+            (self.recurrence.mon == 1 and day == "mon")
+            or (self.recurrence.tue == 1 and day == "tue")
+            or (self.recurrence.wed == 1 and day == "wed")
+            or (self.recurrence.thu == 1 and day == "thu")
+            or (self.recurrence.fri == 1 and day == "fri")
+            or (self.recurrence.sat == 1 and day == "sat")
+            or (self.recurrence.sun == 1 and day == "sun")
+        )
 
-trip_schema = TripSchema()
-trips_schema = TripSchema(many=True)
+    def get_resolved_dict(self, date):
+        return {
+            "rec_id": self.recurrence.id,
+            "date": date,
+            "line": self.line_parent,
+            "departure": self.departure,
+            "arrival": (
+                datetime(
+                    year=date.year,
+                    month=date.month,
+                    day=date.day,
+                    hour=self.departure.hour,
+                    minute=self.departure.minute,
+                )
+                + timedelta(minutes=self.line_parent.sections[-1].arrival)
+            ).time(),
+            "personell": self.personell,
+            "train_id": self.train_id,
+        }
+    
+    def get_resolved_all_dict(self):
+        start_date = self.recurrence.date_start
+        end_date = self.recurrence.date_end
+        current_date = start_date
+        resolved = []
+        while current_date <= end_date:
+            if self.is_trip_on_day(current_date):
+                resolved.append(self.get_resolved_dict(current_date))
+            current_date += timedelta(days=1)
+        return resolved
 
 
 # *
@@ -199,31 +178,10 @@ trips_schema = TripSchema(many=True)
 class LineSection(db.Model):
     line_id = Column(Integer(), ForeignKey("line.id"), primary_key=True)
     section_id = Column(Integer(), ForeignKey("section.id"), primary_key=True)
+    section = relationship("Section")
     arrival = Column(Integer())
     # line = relationship("Line", back_populates="")
-    section = relationship("Section")
-
     # order = Column(Integer()) # ordered by arrival
-
-
-class LineSectionSchema(ma.SQLAlchemyAutoSchema):
-
-    section = Nested(SectionSchema)
-
-    class Meta:
-        model = LineSection
-        ordered = True
-        fields = (
-            "line_id",
-            "section_id",
-            "section",
-            "arrival",
-            "line_parent.price",
-        )
-
-
-line_section_schema = LineSectionSchema()
-line_sections_schema = LineSectionSchema(many=True)
 
 
 # *
@@ -238,6 +196,7 @@ class Line(db.Model):
     sections = relationship(
         "LineSection",
         backref=backref("line_parent", lazy="joined"),
+        cascade="all, delete-orphan",
         lazy="joined",
         order_by="LineSection.arrival",
     )
@@ -250,16 +209,8 @@ class Line(db.Model):
     # https://docs.sqlalchemy.org/en/14/orm/backref.html
     # https://www.reddit.com/r/flask/comments/97p7gc/help_jinja_template_error_with_sqlalchemy/
 
-
-class LineSchema(ma.SQLAlchemyAutoSchema):
-    sections = Nested(LineSectionSchema, many=True)
-    trips = Nested(TripSchema, many=True)
-
-    class Meta:
-        model = Line
-        ordered = True
-        fields = ("id", "descr", "route_id", "note", "sections", "trips")
-
-
-line_schema = LineSchema()
-lines_schema = LineSchema(many=True)
+    def update(self, descr, price, note, sections):
+        self.descr = descr
+        self.price = price
+        self.note = note
+        self.sections = sections

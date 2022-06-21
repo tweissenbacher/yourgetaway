@@ -10,6 +10,8 @@ flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 python-dotenv = "*"
 requests = "*"
+flask-wtf = "*"
+wtforms-sqlalchemy = "*"
 
 [dev-packages]
 isort = "*"

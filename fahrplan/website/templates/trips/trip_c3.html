@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Durchführung anlegen{% endblock %}
+{% block content %}
+
+{% if current_user == None %}
+<!-- TODO if user not authenticated -->
+<p>404</p>
+{% elif current_user.admin == 1 %}
+
+
+<form method="post">
+    <br>
+    <h1>Durchführung anlegen</h1>
+    <br>
+
+    <h5>Auf Fahrtstrecke: {{ trip.line_parent.descr }}
+    </h5>
+
+    <div class="form-group">
+
+        <!-- step 1 - recurrence -->
+        <label for="note">Notiz:</label>
+        <input class="form-control"
+               id="note"
+               name="note"
+               type="text"
+               value="{{ trip.note if trip.note }}">
+
+        <label for="departure">Abfahrtszeit:</label>
+        <input class="form-control"
+               id="departure"
+               name="departure"
+               required=""
+               value="{{ trip.departure if trip.departure }}">
+        <br>
+        <fieldset>
+            <!-- <legend>Select a maintenance drone:</legend> -->
+            <input type="radio"
+                   id="single"
+                   name="recurring"
+                   value="0"
+                   {{ "checked" if recurring == 0}}>
+            <label for="single">Einzelfahrt</label>
+
+            <input type="radio"
+                   id="recurring"
+                   name="recurring"
+                   value="1"
+                   {{ "checked" if recurring == 1}}>
+            <label for="recurring">Intervall</label>
+
+        </fieldset>
+        <br>
+
+        {% if True %}
+        {% if recurring == 0 %}
+        <label for="single">Einzelfahrt</label>
+        <table id="single">
+            <tbody>
+                <tr>
+                    <th><label for=date">Datum:</label></th>
+                    <td><input id="date"
+                               name="date"
+                               type="date"
+                               value="{{ recurrence.date_start }}"></td>
+                </tr>
+            </tbody>
+        </table>
+        {% elif recurring == 1 %}
+        <label for="recurrence">Intervall</label>
+        <table id="recurrence">
+            <tbody>
+                <tr>
+                    <th><label for=date_start">Startdatum:</label></th>
+                    <td><input id="date_start"
+                               name="date_start"
+                               type="date"
+                               value="{{ recurrence.date_start }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="date_end">Enddatum:</label></th>
+                    <td><input id="date_end"
+                               name="date_end"
+                               type="date"
+                               value="{{ recurrence.date_end }}"></td>
+                </tr>
+                <tr>
+                    <th><label for="mon">Montag:</label></th>
+                    <td><input id="mon"
+                               name="mon"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.mon }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="tue">Dienstag:</label></th>
+                    <td><input id="tue"
+                               name="tue"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.tue }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="wed">Mittwoch:</label></th>
+                    <td><input id="wed"
+                               name="wed"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.wed }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="thu">Donnerstag:</label></th>
+                    <td><input id="thu"
+                               name="thu"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.thu == True }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="fri">Freitag:</label></th>
+                    <td><input id="fri"
+                               name="fri"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.fri }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="sat">Samstag:</label></th>
+                    <td><input id="sat"
+                               name="sat"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.sat }}
+                               value="1"></td>
+                </tr>
+                <tr>
+                    <th><label for="sun">Sonntag:</label></th>
+                    <td><input id="sun"
+                               name="sun"
+                               type="checkbox"
+                               {{ 'checked=""' if recurrence.sun }}
+                               value="1"></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <label for="price">Preis:</label>
+        <input class="form-control"
+               id="price"
+               name="price"
+               type="number"
+               value="{{ trip.price }}">
+
+        <!-- step 2 -->
+        {% if trip.recurrence %}
+        <label for="train_id">Zug:</label>
+        <select class="form-control"
+                id="train_id"
+                name="train_id">
+            {%for t in trains %}
+            <option value="{{t[0]}}"
+                    {{ 'selected' if t[0] == trip.train_id }}>{{t[1]}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        {% if trip.train_id %}
+        <br>
+
+        <!-- step 3 -->
+        <label for="personell">Personal:</label>
+        <select class="form-control"
+                id="personell"
+                multiple="multiple"
+                name="personell"
+                size="8">
+            {% for u in users %}
+            <option value="{{ u.id }}"
+                    {{ 'selected' if (u in trip.personell)}}>{{ u.id }}{{ u.last_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+
+        {% endif %}
+        {% endif %}
+        {% endif %}
+        {% endif %}
+
+        <button type="submit"
+                class="btn btn-primary">Weiter</button>
+
+        <br>
+        <hr>
+        <br>
+        {% if trip.personell %}
+        <h2>Vorschau:</h2>
+
+        {% include 'trips/trips_component.html' %}
+        <br>
+        <h3>Neue Durchführungen</h3>
+        {% include 'trips/trips_resolved_component.html' %}
+
+
+        <label for="confirm">Alles richtig? </label>
+        <input type="checkbox"
+               class="form-check-input"
+               id="confirm"
+               name="confirm"
+               placeholder="confirm">
+        <br><br>
+        <button type="submit"
+                class="btn btn-primary">Speichern</button>
+        {% endif %}
+
+
+
+    </div>
+</form>
+
+
+
+{% endif %}
+{% endblock %}

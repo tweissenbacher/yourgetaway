@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Fahrplan-IS - Fahrpläne{% endblock %}
 {% block content %}
-<h1 class="py-5">Fahrpläne</h1>
+<h1 class="py-4">Fahrpläne</h1>
 
 
-{% if user.admin == 1 %}
+{% if current_user.admin == 1 %}
 <a href="create"
    class="btn btn-outline-primary">Neue Fahrtstrecke hinzufügen</a>
 <p></p>
@@ -41,7 +41,7 @@
                    id="btn-edit"
                    class="btn btn-sm btn-outline-secondary"
                    aria-label="Edit">
-                    <span aria-hidden="true">&#x1f589;</span>
+                    <span aria-hidden="true">&#x270E;</span>
                 </a>
             </td>
             <td>

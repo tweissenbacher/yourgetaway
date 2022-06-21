@@ -8,6 +8,8 @@ from website.model import (
     User,
     user_schema,
     users_schema,
+    user_with_trips_schema,
+    users_with_trips_schema,
     Line,
     line_schema,
     lines_schema,
@@ -31,6 +33,7 @@ def api_index():
             "api": [
                 "/lines",
                 "/lines/<int:line_id>",
+                "/lines/<int:line_id>/trips?t_dep=13:58:00&dt_start=2022-05-02&items=5&page=1",
                 "/users",
                 "/users/<int:user_id>",
             ]
@@ -54,15 +57,19 @@ def api_lines_id(line_id):
     return jsonify(res)
 
 
+#
+# USERS
+#
 @api.route("/api/users/", methods=["GET"])
+@login_required
 def api_users_all():
     users = User.query.all()
-    res = users_schema.dump(users)
+    res = users_with_trips_schema.dump(users)
     return jsonify(res)
 
 
 @api.route("/api/users/<int:user_id>", methods=["GET"])
 def api_users_id(user_id):
     user = User.query.get(user_id)
-    res = user_schema.dump(user)
+    res = user_with_trips_schema.dump(user)
     return jsonify(res)

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Fahrplan-IS - Durchführung anlegen{% endblock %}
+{% block content %}
+
+{% if current_user == None %}
+<!-- TODO if user not authenticated -->
+<p>404</p>
+{% elif current_user.admin == 1 %}
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <br />
+    <h3>Durchführung anlegen</h3>
+    <br />
+
+    <h5>Auf Fahrtstrecke: {{ line.id }}: {{ line.descr }}
+    </h5>
+
+    <div class="form-group">
+
+        <!-- step 1 - recurrence -->
+        {{ form.trip.note.label() }}
+        {{ form.trip.note(class="form-control")}}
+        {{ form.trip.departure.label() }}
+        {{ form.trip.departure(class="form-control")}}
+        {{ form.recurrence.label() }}
+        {{ form.recurrence() }}
+        <br>
+        {{ form.proceed1() }}
+        <br>
+
+        <!-- step 2 -->
+        {% if step > 1 %}
+        {{ form.trip.train_id.label() }}
+        {{ form.trip.train_id(class="form-control")}}
+        {{ form.trip.price.label() }}
+        {{ form.trip.price(class="form-control")}}
+        <br>
+        {{ form.proceed2() }}
+        <br><br>
+
+        <!-- step 3 -->
+        {% if step>2 %}
+
+        {{ form.trip.personell.label() }}
+        {{ form.trip.personell(class="form-control")}}
+        <br>
+        {{ form.proceed3() }}
+
+        {% endif %}
+        {% endif %}
+        <br><br>
+        <hr>
+        <button type="submit"
+                class="btn btn-primary">Weiter</button>
+
+        <br><br>
+        <h5>Vorschau:</h5>
+
+        {% if line is not undefined or None %}
+        {% if line.route is not undefined or None %}
+        {% include 'trips/trips_component.html' %}
+        <br>
+
+        <label for="confirm">Alles richtig? </label>
+        <input type="checkbox"
+               class="form-check-input"
+               id="confirm"
+               name="confirm"
+               placeholder="confirm" />
+        <br><br>
+        <button type="submit"
+                class="btn btn-primary">Speichern</button>
+        {% endif %}
+        {% endif %}
+
+
+    </div>
+</form>
+
+{% endif %}
+{% endblock %}

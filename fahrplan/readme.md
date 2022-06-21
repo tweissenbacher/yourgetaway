@@ -2,10 +2,10 @@
 
 fahrplan app
 
-## use
+## run
 
 ```
-pip install pipenv
+(sudo) pip install pipenv
 mkdir .venv
 pipenv shell
 pipenv install
@@ -16,11 +16,14 @@ flask run
 
 #### Admin
 Ferdinand.Gruenwies@yg.at -
-password
+pwpw
 
 Helene.Auer@yg.at -
-password
+pwpw
 
 #### Personal
 Heinz.Feiermeier@yg.at -
-password
+pwpw
+
+kaarl.meier@yg.at - 
+pwpw
