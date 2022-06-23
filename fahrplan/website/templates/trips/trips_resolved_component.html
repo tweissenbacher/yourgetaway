@@ -11,6 +11,7 @@
     <tbody>
         <tr>
             <th scope="col">Fahrtstrecke</th>
+            <th scope="col">Notiz</th>
             <th scope="col">Von</th>
             <th scope="col">Nach</th>
             <th scope="col" style="text-align: right; padding-right: 2em;">^Datum</th>
@@ -24,6 +25,9 @@
         <tr >
             <td>
                 <a href="{{ url_for('lines.line_detail', line_id=r.line.id) }}">{{r.line.descr}}</a>
+            </td>
+            <td>
+                {{r.note}}
             </td>
             <td>
                 {{(r.line.sections | first).section.from_station_name}}

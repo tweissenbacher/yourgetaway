@@ -25,149 +25,6 @@ def trips_view():
     return render_template("trips/trips.html", user=current_user, trips=trips)
 
 
-# @trips.route("/lines/<int:line_id>/create_trip/", methods=["GET", "POST"])
-# @login_required
-# def trip_create(line_id):
-#     line = Line.query.get(line_id)
-#     if not line:
-#         flash(f"Fahrtstrecke ID {line_id} nicht vorhanden!", category="error")
-#         return redirect(request.referrer)
-
-#     all_trains = [
-#         (0, "0 - Rex3364"),
-#         (1, "0 - WB200"),
-#         (2, "0 - R38722"),
-#         (3, "0 - RJ302"),
-#     ]
-
-#     step = 1
-
-#     new_trip = Trip()
-#     form = TripCreateForm(obj=new_trip)
-
-#     form.train.choices = all_trains
-#     form.personell.choices = [
-#         (user.id, f"{user.last_name} {user.first_name}")
-#         for user in User.query.filter(User.admin == 0).all()
-#     ]
-
-#     if request.method == "POST":
-#         form.populate_obj(new_trip)
-
-#         print(new_trip)
-
-#     return render_template(
-#         "trips/trip_c.html",
-#         current_user=current_user,
-#         line=line,
-#         form=form,
-#         new_trip=new_trip,
-#         step=step,
-#     )
-
-#     request.form.get("departure")
-#     request.form.get("price")
-#     request.form.get("note")
-#     request.form.get("train")
-#     request.form.get("departure")
-
-
-# @trips.route("/lines/<int:line_id>/create_trip/", methods=["GET", "POST"])
-# @login_required
-# def trip_create(line_id):
-#     line = Line.query.get(line_id)
-#     if not line:
-#         flash(f"Fahrtstrecke ID {line_id} nicht vorhanden!", category="error")
-#         return redirect(request.referrer)
-
-#     all_trains = [
-#         (0, "0 - Rex3364"),
-#         (1, "1 - WB200"),
-#         (2, "2 - R38722"),
-#         (3, "3 - RJ302"),
-#     ]
-
-#     # form.trip.object_data=new_trip
-#     # form.trip.personell.query = User.query.filter(User.admin==0).order_by(User.last_name)
-
-#     # form.personell.choices = [
-#     #     (user.id, f"{user.last_name} {user.first_name}")
-#     #     for user in User.query.filter(User.admin == 0).all()
-#     # ]
-
-#     form = CompleteTripCreateForm()
-#     if not form.proceed1.data:
-#         print(0000)
-#         step = 1
-#         new_recurrence = Recurrence()
-#         new_trip = Trip(line_id=line_id)
-
-#     # new_recurrence = Recurrence()
-#     # new_trip = Trip()
-#     if form.proceed1.data and form.recurrence.validate_on_submit():
-#         print(222222)
-
-#         # form.recurrence.populate_obj(new_recurrence, "data")
-#         form.recurrence.populate_obj(new_trip, "recurrence")
-#         form.trip.train_id.choices = all_trains
-#         print(new_trip.recurrence)
-#         print("..........")
-#         # form.recurrence.render_kw={"disabled":""}
-#         step = 2
-
-#     if form.proceed2.data and form.trip.train_id:
-#         print(33333)
-#         form.trip.populate_obj(new_trip, "trip")
-#         # new_trip.train_id = form.trip.train_id.data
-#         # new_trip.price = form.trip.price.data
-#         form.trip.personell.choices = [
-#             (f"{user.id} - {user.first_name} {user.last_name}")
-#             for user in User.query.all()
-#             # if not user.is_blocked(
-#             #     departure=new_trip.departure,
-#             #     dt_start=new_recurrence.date_start,
-#             #     dt_end=new_recurrence.date_end,
-#             # )
-
-#         ]
-
-#         print(new_trip)
-#         step = 3
-
-
-#     if form.proceed3.data:
-#         print(new_recurrence.date_end)
-#         # print(avail_users)
-
-#         # form.trip.personell.query = User.query.filter(
-#         #     User.is_blocked(
-#         #         departure=new_trip.departure,
-#         #         dt_start=new_recurrence.date_start,
-#         #         dt_end=new_recurrence.date_end,
-#         #     )
-#         #     == False
-#         # ).order_by(User.last_name)
-#         # form.trip.personell.query = User.query.filter(User.admin==0).order_by(User.last_name)
-
-#         # new_trip.personell=form.trip.personell.data
-
-#     if step == 4:
-#         new_trip.recurrence = new_recurrence
-#         # print(form.proceed)
-#         form.trip.populate_obj(new_trip, "data")
-#         # print(form.trip.data)
-#         # print(new_trip)
-
-#     return render_template(
-#         "trips/trip_c.html",
-#         current_user=current_user,
-#         line=line,
-#         form=form,
-#         new_trip=new_trip,
-#         step=step,
-#     )
-
-
 @trips.route("/lines/<int:line_id>/create_trip/", methods=["GET", "POST"])
 @login_required
 def trip_create(line_id):
@@ -178,6 +35,146 @@ def trip_create(line_id):
     users = None
     trip = Trip(line_parent=Line.query.get(line_id))
 
+    # trains DUMMY data
+    trains = [
+        {
+            "id": 0,
+            "bezeichnung": "REX 3920",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 0,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 1,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 2,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 103,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "bezeichnung": "RJ 301",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 6,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 8,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 15,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 102,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 32,
+            "bezeichnung": "IC 902",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 6,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 8,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 15,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 102,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 143,
+            "bezeichnung": "Museumsbahn",
+            "spurweite": "schmalspur",
+            "wagen": [
+                {
+                    "id": 102,
+                    "bez": "298.102 Steyrtalbahn Lok Nr. 2",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 103,
+                    "bez": "Kohlewagen",
+                    "gewicht": 19000,
+                    "sitze": 0
+                },
+                {
+                    "id": 233,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 24
+                },
+                {
+                    "id": 234,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 24
+                },
+                {
+                    "id": 235,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 12
+                }
+            ]
+        }
+    ]
+
+    # trains = filter(lambda t: t["spurweite"] == line.route.sections[0].track, trains)
+    secprices = [sec.section.fee for sec in line.sections]
+    price_min = sum(secprices) * 100
+    # print(price_min)
+    trip.price = price_min
+
     if request.method == "POST":
         note = request.form.get("note", default="", type=str)
         departure = request.form.get("departure", default="00:00", type=str)
@@ -186,7 +183,7 @@ def trip_create(line_id):
         date_single = request.form.get("date", default=None, type=str)
         date_start = request.form.get("date_start", default=None, type=str)
         date_end = request.form.get("date_end", default=None, type=str)
-        # print(date_start, date_end, date_single)
+
         mon = request.form.get("mon", default=0, type=int)
         tue = request.form.get("tue", default=0, type=int)
         wed = request.form.get("wed", default=0, type=int)
@@ -194,66 +191,56 @@ def trip_create(line_id):
         fri = request.form.get("fri", default=0, type=int)
         sat = request.form.get("sat", default=0, type=int)
         sun = request.form.get("sun", default=0, type=int)
+
         train_id = request.form.get("train_id", default=None, type=int)
         personell = request.form.getlist("personell")
         confirm = request.form.get("confirm", default=False, type=bool)
 
-        trains = None
         trip.note = note
+
+        if len(departure) < 2:
+            departure = f"0{departure}"
         trip.departure = time.fromisoformat(departure)
-        trip.price = price
-        recurrence = Recurrence()
-        resolved = []
+
+        trip.price = max(price_min, price * 100)
+
+        recurrence = Recurrence(
+            mon=1,
+            tue=1,
+            wed=1,
+            thu=1,
+            fri=1,
+            sat=1,
+            sun=1,
+        )
 
         if recurring == 0 and date_single is not None:
-            # flash("date", category="error")
-            # return redirect(request.referrer)
-
             date_single = date.fromisoformat(date_single)
-            recurrence = Recurrence(
-                date_start=date_single,
-                date_end=date_single,
-                mon=1,
-                tue=1,
-                wed=1,
-                thu=1,
-                fri=1,
-                sat=1,
-                sun=1,
-            )
-            trip.recurrence = recurrence
-
+            recurrence.date_start = date_single
+            recurrence.date_end = date_single
         elif date_start and date_end is not None:
-            # flash("date", category="error")
-            # return redirect(request.referrer)
-
             date_start = date.fromisoformat(date_start)
             date_end = date.fromisoformat(date_end)
-            recurrence = Recurrence(
-                date_start=date_start,
-                date_end=date_end,
-                mon=mon,
-                tue=tue,
-                wed=wed,
-                thu=thu,
-                fri=fri,
-                sat=sat,
-                sun=sun,
-            )
-            trip.recurrence = recurrence
-            # trains.
-        # recurrence.date_start = date_start
-        # recurrence.date_end = date_end
-        trains = [
-            (0, "0 - Rex3364"),
-            (1, "1 - WB200"),
-            (2, "2 - R38722"),
-            (3, "3 - RJ302"),
-        ]
+            recurrence.date_start = date_start
+            recurrence.date_end = date_end
+            recurrence.mon = mon
+            recurrence.tue = tue
+            recurrence.wed = wed
+            recurrence.thu = thu
+            recurrence.fri = fri
+            recurrence.sat = sat
+            recurrence.sun = sun
+        trip.recurrence = recurrence
+
+        # trains = filter(lambda t: not trip.is_train_in_use(t["id"]), trains)
+
+
         if train_id:
             trip.train_id = train_id
             with db.session.no_autoflush:
                 users = User.query.all()
+
+        resolved = []
         if personell:
             print(f"personell: {personell}")
             with db.session.no_autoflush:
@@ -263,7 +250,7 @@ def trip_create(line_id):
                     if user:
                         trip.personell.append(user)
             # db.session.flush()
-  
+
             resolved = trip.get_resolved_all_dict()
 
             resolved = sorted(resolved, key=lambda d: d["date"])
@@ -298,11 +285,22 @@ def trip_create(line_id):
 @login_required
 def trip_update(trip_id):
     trip = Trip.query.get(trip_id)
-    return render_template("trips/trip_u.html", current_user=current_user, trip=trip)
+    return render_template(
+        "trips/trip_c3.html",
+        current_user=current_user,
+        trip=trip,
+        line=trip.line_parent,
+    )
 
 
 @trips.route("/trip/<int:trip_id>/delete/", methods=["GET", "POST"])
 @login_required
 def trip_delete(trip_id):
     trip = Trip.query.get(trip_id)
-    return render_template("trips/trip_u.html", current_user=current_user, trip=trip)
+    if trip:
+        db.session.delete(trip)
+        db.session.commit()
+        flash(f"Durchführungen gelöscht!", category="success")
+        return redirect(request.referrer)
+    flash(f"Durchführungen gelöscht!", category="success")
+    return redirect(request.referrer)
