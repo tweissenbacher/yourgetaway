@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from pydoc import resolve
-from sqlalchemy import Column, ForeignKey, Integer, String, Date, Table, Time
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, Table, Time, or_
+import sqlalchemy
 from sqlalchemy.orm import relationship, backref, object_session
 from sqlalchemy.sql import func
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from .. import db, ma
 from .user import user_trip
@@ -113,6 +115,10 @@ class Trip(db.Model):
     # def recurrence_date_start(self):
     #     return object_session(self).query(Recurrence).with_parent(self).first()
 
+    date_start = association_proxy('recurrence', 'date_start')
+    date_end = association_proxy('recurrence', 'date_end')
+
+
     def __repr__(self) -> str:
         return (
             f" Trip {self.id}:"
@@ -125,6 +131,25 @@ class Trip(db.Model):
             f" personell:({self.personell}"
             f" recurrence:({self.recurrence}"
         )
+
+    def is_train_in_use(self, train_id):
+        trips_with_train = Trip.query.filter(
+            Trip.train_id == train_id,
+            # or_(
+            #     (
+            #         Trip.recurrence.date_start >= self.recurrence.date_end,
+            #         Trip.recurrence.date_end <= self.recurrence.date_start,
+            #     ),
+            #     (
+            # self.date_end >= Trip.date_start, 
+            # self.date_start <= Trip.date_end,
+            #     ),
+            # ),
+
+            self.departure == Trip.departure
+        )
+        print(trips_with_train)
+        return trips_with_train
 
     # @classmethod
     def is_trip_on_day(self, date):
@@ -144,6 +169,7 @@ class Trip(db.Model):
     def get_resolved_dict(self, date):
         return {
             "rec_id": self.recurrence.id,
+            "note": self.note,
             "date": date,
             "line": self.line_parent,
             "departure": self.departure,
@@ -160,7 +186,7 @@ class Trip(db.Model):
             "personell": self.personell,
             "train_id": self.train_id,
         }
-    
+
     def get_resolved_all_dict(self):
         start_date = self.recurrence.date_start
         end_date = self.recurrence.date_end
