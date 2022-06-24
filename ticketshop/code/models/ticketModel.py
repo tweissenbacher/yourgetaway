@@ -2,7 +2,6 @@ import datetime
 from flask import flash
 from db import db
 from models.userModel import UserModel
-from models.sectionModel import SectionModel
 from allEndpoints import TrainEndpoint, LineEndpoint
 from models.lineModel import LineModel
 
@@ -131,6 +130,8 @@ class TicketSectionModel(db.Model):
     start_date = db.Column(db.String(100))
     end_date = db.Column(db.String(100))
     line_id = db.Column(db.Integer)
+    tickets = db.relationship('TicketModel', secondary=TicketSectionDetail,
+                               backref='TicketSectionModel', viewonly=True)
 
     def __init__(self, from_, to, start_date, end_date, line_id, capacity):
         self.from_ = from_
