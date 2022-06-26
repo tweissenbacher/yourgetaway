@@ -26,6 +26,7 @@ Your Getaway - Ticketshop**
 
 **admin user access**
 email: admin@jku.at
-current password: pw
--> admin user must be registered again after database is cleared! 
+
+-> database is currently empty
+-> admin user must be registered
 

@@ -60,7 +60,7 @@ class DummyTrains:
         for train in trains:
             if train['name'] == name:
                 return train
-        return None
+        return trains[0]
 
     @classmethod
     def getDummyTrainsById(cls, id):
@@ -68,6 +68,6 @@ class DummyTrains:
         for train in trains:
             if train['id'] == id:
                 return train
-        return None
+        return trains[0]
 
 
