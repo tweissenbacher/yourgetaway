@@ -1,11 +1,9 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from os import path
+
+from flask import Flask
 from flask_login import LoginManager
-from sqlalchemy import event
-from flask_restful import Api
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -18,16 +16,17 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # event.listen(db.engine, 'connect', lambda c, _: c.execute('pragma foreign_keys=on'))
     db.init_app(app)
     ma.init_app(app)
 
     from .views import views
     from .auth import auth
 
+    # Prefix
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
+    # import Models to create DB Structure
     from .models import User, Note, TrainstationModel, SectionModel, RouteModel, sections
     from .api import api
     create_database(app)
@@ -37,7 +36,6 @@ def create_app():
     login_manager.init_app(app)
 
     app.register_blueprint(api, url_prefix="/")
-    #app.register_blueprint(api_test, url_prefix="/api-test")
 
     @login_manager.user_loader
     def load_user(id):

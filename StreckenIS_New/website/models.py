@@ -1,18 +1,23 @@
-from marshmallow_sqlalchemy.fields import Nested
-from marshmallow import fields
-
 from flask_login import UserMixin
+from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy.sql import func
 
 from . import db, ma
 
 
+##########
+# Models #
+##########
+
+
+# Additional Model to create Notes for Users (not implemented)
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(10000))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
+# User Model
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
@@ -23,6 +28,7 @@ class User(db.Model, UserMixin):
     admin = db.Column(db.Boolean, default=False)
 
 
+# Trainstation Model
 class TrainstationModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -32,6 +38,7 @@ class TrainstationModel(db.Model):
         return f"Trainstations(name {self.name}, address {self.address})"
 
 
+# Section Model
 class SectionModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start = db.relationship('TrainstationModel', foreign_keys='SectionModel.start_id')
@@ -50,12 +57,14 @@ class SectionModel(db.Model):
                f"fee {self.fee}, time {self.time}, section_warnings {self.section_warnings}"
 
 
+# Association between Section and Route (Many-to-Many Relationship)
 sections = db.Table('sections',
                     db.Column('section_model_id', db.Integer, db.ForeignKey('section_model.id'), primary_key=True),
                     db.Column('route_model_id', db.Integer, db.ForeignKey('route_model.id'), primary_key=True)
                     )
 
 
+# Route Model
 class RouteModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -79,6 +88,7 @@ class RouteModel(db.Model):
                 }
 
 
+# Warning Model
 class WarningModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     warnings = db.Column(db.String(1000), nullable=False)
@@ -93,6 +103,11 @@ class WarningModel(db.Model):
                 }
 
 
+#########################
+# Schemas (Marshmallow) #
+#########################
+
+# User Schema for API
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
@@ -109,6 +124,7 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
+# Trainstation Schema for API
 class TrainstationSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TrainstationModel
@@ -124,6 +140,7 @@ trainstation_schema = TrainstationSchema()
 trainstations_schema = TrainstationSchema(many=True)
 
 
+# Warning Schema for API
 class WarningSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = WarningModel
@@ -138,8 +155,8 @@ warning_schema = WarningSchema()
 warnings_schema = WarningSchema(many=True)
 
 
+# Section Schema for API
 class SectionSchema(ma.SQLAlchemyAutoSchema):
-    # (Nested(TrainstationSchema), many=True) -> Trainstation is not iterable (One-To-Many)
     start = Nested(TrainstationSchema)
     end = Nested(TrainstationSchema)
     section_warnings = Nested(WarningSchema, many=True)
@@ -164,6 +181,7 @@ section_schema = SectionSchema()
 sections_schema = SectionSchema(many=True)
 
 
+# Route Schema for API
 class RouteSchema(ma.SQLAlchemyAutoSchema):
     start = Nested(TrainstationSchema)
     end = Nested(TrainstationSchema)
@@ -188,6 +206,10 @@ route_schema = RouteSchema()
 routes_schema = RouteSchema(many=True)
 
 
+# Additional Warning Schema
+# This workaround is necessary because WarningSchema
+# is needed before in the SectionSchema and
+# WarningSchemaSection has a nested SectionSchema
 class WarningSchemaSection(ma.SQLAlchemyAutoSchema):
     section = Nested(SectionSchema)
 

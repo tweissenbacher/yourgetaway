@@ -4,10 +4,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 
-
+# Prefix
 auth = Blueprint('auth', __name__)
 
 
+# Login Page Endpoint
+# User Auth Process
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -28,6 +30,7 @@ def login():
     return render_template("login.html", user=current_user)
 
 
+# Logout Page Endpoint
 @auth.route('/logout')
 @login_required
 def logout():
@@ -35,6 +38,8 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+# SignUp Page Endpoint
+# User SignUp Process
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
