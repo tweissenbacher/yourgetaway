@@ -37,14 +37,6 @@
                   name="note"
                   placeholder="">{{ note if note }}</textarea>
 
-        <label for="price">Gesamtpreis</label>
-        <input type="number"
-               class="form-control"
-               id="price"
-               name="price"
-               required
-               value="{{ line.price if line.price }}"
-               placeholder="cent" />
 
         <!-- Startbahnhof -->
         {% if line.sections is not undefined or None %}
@@ -78,12 +70,10 @@
 
 
         <br />
-        <!-- <a href="?{{ route_id if route_id }}"
-   class="btn btn-outline-primary">Weiter</a> -->
-
         <button type="submit"
                 class="btn btn-primary">Vorschau aktualisieren</button>
     </section>
+
     <br><br>
     <h5>Vorschau:</h5>
 

@@ -1,13 +1,9 @@
 import datetime
-import json
-import os
-from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
+from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import select
 from werkzeug.security import generate_password_hash, check_password_hash
-import requests
 from .. import db
-from ..model import Section, Line, User
+from ..model import User
 
 # from random import randrange
 # from lorem_text import lorem
@@ -30,6 +26,9 @@ def users_view():
 @users.route("/users/<int:user_id>/trips", methods=["GET"])
 @login_required
 def user_trips(user_id):
+    """View function to show all trips of a given User, 
+    accepts URL parameter ?show=future to hide past trips"""
+    
     show = request.args.get("show", default="all")  # future
     # sortby = request.args.get("sortby", default="date")  # line
 
@@ -56,6 +55,7 @@ def user_trips(user_id):
 @users.route("/users/<int:user_id>/update", methods=["GET", "POST"])
 @login_required
 def user_update(user_id):
+    """View function to update a given User"""
     if request.method == "POST":
         email = request.form.get("email")
         first_name = request.form.get("firstName")
@@ -115,6 +115,7 @@ def user_update(user_id):
 @users.route("/users/create", methods=["GET", "POST"])
 @login_required
 def user_create():
+    """View function to create a new User"""
     if request.method == "POST":
         email = request.form.get("email")
         first_name = request.form.get("firstName")
@@ -124,7 +125,6 @@ def user_create():
         admin = request.form.get("admin")
 
         user = User.query.filter_by(email=email).first()
-        # print(user.email)
         if user:
             flash("Email in Benutzung", category="error")
             return redirect(request.referrer)
@@ -160,6 +160,7 @@ def user_create():
 @users.route("/users/<int:user_id>/delete", methods=["GET"])
 @login_required
 def user_delete(user_id):
+    """View function to delete a User"""
     user = User.query.get(user_id)
     if user:
         db.session.delete(user)

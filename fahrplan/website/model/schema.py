@@ -7,6 +7,8 @@ from .. import db, ma
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of User Objects"""
+
     class Meta:
         model = User
         ordered = True
@@ -18,6 +20,8 @@ users_schema = UserSchema(many=True)
 
 
 class SectionSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of Section Objects"""
+
     class Meta:
         model = Section
         ordered = True
@@ -36,6 +40,8 @@ sections_schema = SectionSchema(many=True)
 
 
 class RouteSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of Route Objects"""
+
     sections = Nested(SectionSchema, many=True)
 
     class Meta:
@@ -49,6 +55,7 @@ routes_schema = RouteSchema(many=True)
 
 
 class RecurrenceSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of Recurrence Objects"""
 
     daily = fields.Method("is_daily")
     workdays = fields.Method("is_workdays")
@@ -106,6 +113,8 @@ recurrence_schema = RecurrenceSchema(many=False)
 
 
 class TripSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of Trip Objects
+    """
     recurrence = Nested(RecurrenceSchema)  # many=False)
     personell = Nested(UserSchema, many=True)
 
@@ -129,6 +138,8 @@ trips_schema = TripSchema(many=True)
 
 
 class LineSectionSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of LineSection Objects
+    """
 
     section = Nested(SectionSchema)
 
@@ -149,6 +160,9 @@ line_sections_schema = LineSectionSchema(many=True)
 
 
 class LineSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of Line Objects
+    """
+
     sections = Nested(LineSectionSchema, many=True)
     trips = Nested(TripSchema, many=True)
 
@@ -163,6 +177,8 @@ lines_schema = LineSchema(many=True)
 
 
 class UserWithTripsSchema(ma.SQLAlchemyAutoSchema):
+    """Schema for serialisation of User Objects containing all assigned trips
+    """
     trips = Nested(TripSchema, many=True)
 
     class Meta:

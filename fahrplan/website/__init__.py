@@ -35,17 +35,12 @@ def create_app():
     setup_database(app)
     ma.init_app(app)
 
-    from .api import api, api_test
+    from .api import api
 
-    # from .views import auth, login_manager
     from .views import auth, login_manager, index, lines, users, trips
-
-    # from .views import views
-    # from views import Line
 
     login_manager.init_app(app)
 
-    app.register_blueprint(api_test, url_prefix="/api-test")
     app.register_blueprint(api, url_prefix="/")
 
     app.register_blueprint(auth, url_prefix="/")
@@ -56,7 +51,6 @@ def create_app():
 
     # from .data import dummy_data
     # dummy_data.insert_users()
-    # dummy_data.insert_routes()
 
     return app
 
@@ -66,7 +60,7 @@ def setup_database(app):
         db.create_all(app=app)
         print("Created databaseee!!")
     else:
-        # TODO https://docs.sqlalchemy.org/en/14/dialects/sqlite.html#foreign-key-support
+        # https://docs.sqlalchemy.org/en/14/dialects/sqlite.html#foreign-key-support
         # app.app_context().push()
         pass
     db.engine.execute("PRAGMA foreign_keys = ON")

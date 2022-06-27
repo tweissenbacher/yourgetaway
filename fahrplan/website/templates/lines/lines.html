@@ -2,8 +2,6 @@
 {% block title %}Fahrplan-IS - Fahrpläne{% endblock %}
 {% block content %}
 
-
-
 <div class="d-flex justify-content-between">
     <div class="d-flex align-items-center">
         <h1 class="py-4">Fahrtstrecken</h1>
@@ -16,11 +14,9 @@
     </div>
 </div>
 
-<!-- <p></p> -->
 <table class="table">
     <thead>
         <tr>
-            <!-- <th scope="col">&#x2666;</th> -->
             <th scope="col">#</th>
             <th scope="col">Fahrtstrecke</th>
             <th scope="col">^ Strecke</th>
@@ -32,8 +28,6 @@
     </thead>
     <tbody>
         {% for line in lines %}
-        <!-- if line.sections - workaround fur unvollstandige daten -->
-        {#% if line.sections %#}
         <tr>
             <th scope="row"
                 data-id="{{ line.id }}">{{ line.id }}</th>
@@ -66,12 +60,10 @@
                    class="btn btn-sm btn-outline-danger"
                    aria-label="Delete">
                     <span aria-hidden="true">&#x2A09;</span>
-                    <!-- <span aria-hidden="true">&#x1f5d1;</span> -->
                 </a>
             </td>
             {% endif %}
         </tr>
-        {#% endif %#}
         {% endfor %}
     </tbody>
 </table>
