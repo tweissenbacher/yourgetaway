@@ -39,15 +39,6 @@
                   name="note"
                   placeholder="">{{ note if note }}</textarea>
 
-        <label for="price">Gesamtpreis</label>
-        <input type="number"
-               class="form-control"
-               id="price"
-               name="price"
-               required
-               value="{{ price if price }}"
-               placeholder="cent" />
-
         {% if sel_route is not undefined or None %}
         <label for="first_section">Startbahnhof</label>
         <select name="first_section"
@@ -76,9 +67,6 @@
 
 
         <br />
-        <!-- <a href="?{{ route_id if route_id }}"
-           class="btn btn-outline-primary">Weiter</a> -->
-
         <button type="submit"
                 class="btn btn-primary">Weiter</button>
     </div>

@@ -10,9 +10,9 @@ from .. import db, ma
 from .user import user_trip
 
 
-# *
-# * Abschnitt
 class Section(db.Model):
+    """Section Model (Abschnitt)
+    """
     id = Column(Integer(), primary_key=True)
     from_station = Column(Integer())
     to_station = Column(Integer())
@@ -28,6 +28,8 @@ class Section(db.Model):
 
     @classmethod
     def dict_to_obj(self, sectiondata):
+        """deserialize from json/dict
+        """        
         return Section(
             id=int(sectiondata["id"]),
             from_station=int(sectiondata["start"]["id"]),
@@ -41,8 +43,10 @@ class Section(db.Model):
 
 
 # *
-# * Strecke (Westbahn,..)
+# * 
 class Route(db.Model):
+    """Route Model (Strecke (Weststrecke,..))
+    """    
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     # https://www.reddit.com/r/flask/comments/97p7gc/help_jinja_template_error_with_sqlalchemy/
@@ -55,6 +59,8 @@ class Route(db.Model):
 
     @classmethod
     def dict_to_obj(self, routedata):
+        """deserialize from json/dict into Route object and persist children (sections) to DB
+        """        
         id = routedata["id"]
         name = str(routedata["name"])
         # print(id)
@@ -71,11 +77,11 @@ class Route(db.Model):
         return Route(id=id, name=name, sections=sections)
 
 
-# *
-# * Durchführungintervall
-# ?? stundenintervall?? time_start, time_end, interval (h)
 class Recurrence(db.Model):
-    # ? PK: keine ID stattdessen kombi aus daten (redundanz reduzieren)
+    """Recurrence Model (Durchführungintervall)
+    """        
+    # TODO PK: keine ID stattdessen kombi aus daten (redundanz reduzieren)
+    # TODO stundenintervall?? time_start, time_end, interval (h)
     id = Column(Integer(), primary_key=True)
     date_start = Column(Date())
     date_end = Column(Date())
@@ -89,17 +95,18 @@ class Recurrence(db.Model):
 
 
 class Trip(db.Model):
+    """Trip Model (Fahrtdurchführung)
+    """        
     id = Column(Integer(), primary_key=True)
     line_id = Column(Integer(), ForeignKey("line.id"))
-    departure = Column(Time())  # ? auslagern in recurence? stundenintervall?
+    departure = Column(Time())  # TODO auslagern in recurrence? stundenintervall?
     price = Column(Integer())
     note = Column(String(100))
     train_id = Column(Integer())
-    # train_name =
     personell = relationship(
         "User",
         secondary=user_trip,
-        # cascade="all, delete-orphan",
+        # cascade="all, delete-orphan", # TODO 
         lazy="joined",
         back_populates="trips",
         # backref=backref("trips", lazy="joined"),
@@ -108,13 +115,10 @@ class Trip(db.Model):
 
     recurrence_id = Column(Integer(), ForeignKey("recurrence.id"))
     recurrence = relationship("Recurrence", uselist=False)
-    # recurrence_date_start = Column(Date(), ForeignKey("recurrence.date_start"))  #? for trips order_by date_start ?
-    # recurrence_date_start =
 
     # @property  # https://docs.sqlalchemy.org/en/14/orm/join_conditions.html#building-query-enabled-properties
     # def recurrence_date_start(self):
     #     return object_session(self).query(Recurrence).with_parent(self).first()
-
     date_start = association_proxy('recurrence', 'date_start')
     date_end = association_proxy('recurrence', 'date_end')
 
@@ -133,6 +137,9 @@ class Trip(db.Model):
         )
 
     def is_train_in_use(self, train_id):
+        # TODO
+        """WIP: intended to check availability of train in date range and time
+        """        
         trips_with_train = Trip.query.filter(
             Trip.train_id == train_id,
             # or_(
@@ -141,21 +148,21 @@ class Trip(db.Model):
             #         Trip.recurrence.date_end <= self.recurrence.date_start,
             #     ),
             #     (
-            # self.date_end >= Trip.date_start, 
-            # self.date_start <= Trip.date_end,
             #     ),
             # ),
-
+            # ? not comparable ?
+            # self.date_end >= Trip.date_start, 
+            # self.date_start <= Trip.date_end,
             self.departure == Trip.departure
         )
         print(trips_with_train)
         return trips_with_train
 
-    # @classmethod
     def is_trip_on_day(self, date):
+        """checks for a given date if the Trip is performed
+        """
         week = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
         day = week[date.weekday()]
-        print(day)
         return (
             (self.recurrence.mon == 1 and day == "mon")
             or (self.recurrence.tue == 1 and day == "tue")
@@ -167,6 +174,8 @@ class Trip(db.Model):
         )
 
     def get_resolved_dict(self, date):
+        """returns a single trip of the interval for the given date as dict
+        """        
         return {
             "rec_id": self.recurrence.id,
             "note": self.note,
@@ -188,6 +197,8 @@ class Trip(db.Model):
         }
 
     def get_resolved_all_dict(self):
+        """returns all single trips of the interval as dict
+        """
         start_date = self.recurrence.date_start
         end_date = self.recurrence.date_end
         current_date = start_date
@@ -199,20 +210,18 @@ class Trip(db.Model):
         return resolved
 
 
-# *
-# * association: line with selected sections and arrival time (=sum of prev durations)
 class LineSection(db.Model):
+    """association: line with selected sections and arrival time (=sum of prev durations)
+    """
     line_id = Column(Integer(), ForeignKey("line.id"), primary_key=True)
     section_id = Column(Integer(), ForeignKey("section.id"), primary_key=True)
     section = relationship("Section")
     arrival = Column(Integer())
-    # line = relationship("Line", back_populates="")
-    # order = Column(Integer()) # ordered by arrival
 
 
-# *
-# * Fahrtstrecke   # Linie Traunexpress, Linie S4, ...
 class Line(db.Model):
+    """Line Model (Fahrtstrecke)
+    """    
     id = Column(Integer, primary_key=True)
     descr = Column(String(100))
     price = Column(Integer())
@@ -230,7 +239,6 @@ class Line(db.Model):
         "Trip",
         backref=backref("line_parent", lazy="joined"),
         lazy="joined",
-        # order_by="Trip.recurrence_date_start",  # ? how?
     )
     # https://docs.sqlalchemy.org/en/14/orm/backref.html
     # https://www.reddit.com/r/flask/comments/97p7gc/help_jinja_template_error_with_sqlalchemy/

@@ -1,8 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
-from .. import db
 from ..model import User
 
 
@@ -15,14 +14,14 @@ login_manager.login_message_category = "error"
 def load_user(id):
     return User.query.get(int(id))
 
-# @login_manager. .....
-
 
 auth = Blueprint("auth", __name__)
 
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    """View function for login-page
+    """    
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -44,13 +43,13 @@ def login():
 
 
 @auth.route("/logout")
-@login_required  # cannot reach unless logged in
+@login_required
 def logout():
+    """View function for user logout
+    """    
     if current_user.id:
         logout_user()
         flash("Abgemeldet!", category="success")
     return redirect(url_for("auth.login"))
-# TODO: redirect to index page, message
-    # return render_template("home.html", isLogoutSuccessful=True, text="Erfolgreich abgemeldet")
 
 

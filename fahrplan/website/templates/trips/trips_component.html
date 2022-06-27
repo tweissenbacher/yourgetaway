@@ -18,6 +18,7 @@
             <th scope="col">B</th>
             <th scope="col">L</th>
             {% endif %}
+            <th scope="col">Preis</th>
             <th scope="col">Von</th>
             <th scope="col">Bis</th>
             <th scope="col">Mo</th>
@@ -31,11 +32,12 @@
 
         {% if line.trips %}
         {% for t in line.trips %}
-        <tr >
+        <tr>
             {% if current_user.admin ==1 %}
             <td>{{ ('+ ' if t.id == trip.id) if trip }}</td>
             <td>
-                <a href="{{ url_for('trips.trip_update', trip_id=t.id) }}"
+                <!-- deactivated -->
+                <a {# href="{{ url_for('trips.trip_update', trip_id=t.id) }}" #}
                    id="btn-edit"
                    class="btn btn-sm btn-outline-secondary"
                    aria-label="Edit">
@@ -52,7 +54,7 @@
                 </a>
             </td>
             {% endif %}
-
+            <td>{{ "{:,.2f}".format(t.price/100) | replace('.',',') }} €</td>
             <td>{{ t.recurrence.date_start }}</td>
             <td>{{ t.recurrence.date_end }}</td>
             <td>{{ t.departure if t.recurrence.mon }}</td>

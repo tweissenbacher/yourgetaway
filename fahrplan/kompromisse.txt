@@ -1,0 +1,6 @@
+Flottendaten sind Dummydaten
+UI-Design entspricht kaum den Mockups, die UX wurde jedoch weitgehend wie geplant umgesetzt
+Zug und Personalverfügbarkeit wird nicht abgeprüft (hier Probleme bei Vergleich des start- und enddatums)
+Durch die Umsetzung der Fahrtdurchführungen als Intervall wurde wegen hoher Komplexität keine Bearbeitung einzelner Durchführungen implementiert
+Deserialisierung nicht mit der marshmallow bibliothek (probleme mit nested) sondern manuell gelöst
+'Fahrtdurchführung bearbeiten' und 'mehrfach verwendbare Abschnitte' aufgrund Zeitmangel nicht implementiert

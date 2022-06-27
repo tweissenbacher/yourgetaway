@@ -1,33 +1,32 @@
-import datetime
 import json
 import os
-from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
+from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import and_, select
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import and_
 import requests
 
 from website.model.line import LineSection, Trip
 from .. import db
-from ..model import Section, Line, User, Route
+from ..model import Section, Line, Route
 
 
 lines = Blueprint("lines", __name__)
 
 
-# @admin_required  #?? custom decorator ??
+# @admin_required  #TODO custom decorator ??
 @lines.route("/lines/", methods=["GET", "POST"])
 @login_required
 def lines_view():
+    """View function: show all lines"""
     lines = Line.query.all()
     lines = sorted(lines, key=lambda l: l.route.id)
-
     return render_template("lines/lines.html", current_user=current_user, lines=lines)
 
 
 @lines.route("/lines/<int:line_id>/", methods=["GET", "POST"])
 @login_required
 def line_detail(line_id):
+    """View function: show line details page by id"""
     line = Line.query.get(line_id)
     return render_template(
         "lines/line_detail.html", current_user=current_user, line=line
@@ -38,12 +37,12 @@ def line_detail(line_id):
 # @lines.route("/lines/<int:line_id>/update", methods=["GET", "POST"])
 @login_required
 def line_create():
-    
+    """View function: page to create a new line"""
     if request.method == "POST":
         route_id = request.form.get("route_id", default=None, type=int)
         descr = request.form.get("descr", default=None, type=str)
         note = request.form.get("note", default=None, type=str)
-        price = request.form.get("price", default=None, type=int)
+        # price = request.form.get("price", default=None, type=int)
 
         first_section = request.form.get("first_section", default=None, type=int)
         last_section = request.form.get("last_section", default=None, type=int)
@@ -52,7 +51,10 @@ def line_create():
 
         sel_route = Route.query.get(route_id)
         line = None
-        # line = Line.query.get(line_id)
+
+
+
+        # step 2
         if first_section and last_section:
             linesections = []
             arrival = 0
@@ -61,15 +63,18 @@ def line_create():
                 arrival += section.duration
                 linesections.append(LineSection(arrival=arrival, section=section))
 
+                secprices = [sec.section.fee for sec in linesections]
+                price_min = sum(secprices) * 100
+
             line = Line(
                 descr=descr,
                 note=note,
-                price=price,
+                price=price_min,
                 route=Route.query.get(route_id),
                 sections=linesections,
             )
             print(line)
-
+        # step final
         if confirm:
             db.session.add(line)
             db.session.commit()
@@ -83,7 +88,7 @@ def line_create():
             routes=routes,
             sel_route=sel_route,
             descr=descr,
-            price=price,
+            # price=price,
             first_section=first_section,
             last_section=last_section,
             line=line,
@@ -104,7 +109,7 @@ def line_create():
     except requests.exceptions.RequestException as e:
         flash(f"Streckendaten laden fehlgeschlagen!", category="error")
         flash(f"- {e}", category="error")
-    
+
     routes = Route.query.all()
     return render_template(
         "lines/line_c.html",
@@ -116,12 +121,12 @@ def line_create():
 @lines.route("/lines/<int:line_id>/update/", methods=["GET", "POST"])
 @login_required
 def line_update(line_id):
-
+    """View function: update page for given line by ID"""
     if request.method == "POST":
         route_id = request.form.get("route_id", default=None, type=int)
         descr = request.form.get("descr", default=None, type=str)
         note = request.form.get("note", default=None, type=str)
-        price = request.form.get("price", default=None, type=int)
+        # price = request.form.get("price", default=None, type=int)
 
         first_section = request.form.get("first_section", default=None, type=int)
         last_section = request.form.get("last_section", default=None, type=int)
@@ -144,6 +149,8 @@ def line_update(line_id):
                 section = Section.query.get(s)
                 arrival += section.duration
                 linesections.append(LineSection(arrival=arrival, section=section))
+                secprices = [sec.section.fee for sec in linesections]
+                price_min = sum(secprices) * 100
 
             print(linesections)
             if not linesections:
@@ -151,7 +158,7 @@ def line_update(line_id):
             else:
                 line.update(
                     descr=descr,
-                    price=price,
+                    price=price_min,
                     note=note,
                     sections=linesections,
                 )
@@ -169,7 +176,7 @@ def line_update(line_id):
             routes=routes,
             sel_route=sel_route,
             descr=descr,
-            price=price,
+            # price=price,
             first_section=first_section,
             last_section=last_section,
             line=line,
@@ -184,6 +191,7 @@ def line_update(line_id):
 @lines.route("/lines/<int:line_id>/delete/", methods=["GET", "POST"])
 @login_required
 def line_delete(line_id):
+    """View function to delete a given line by ID"""
     # TODO
     line = Line.query.get(line_id)
     if line:
@@ -201,25 +209,18 @@ def line_delete(line_id):
 # TRIPS
 
 
-# @lines.route("/lines/<int:line_id>/trips/", methods=["GET", "POST"])
-# @login_required
-# def lines_trips(line_id):
-#     line = Line.query.get(line_id)
-#     return render_template("trips.html", current_user=current_user, line=line)
-
-
-# /lines/7/?trips=intervals
-# /lines/7/?trips=resolved&recurrence_id=2&items=20&page=1
 @lines.route("/lines/<int:line_id>/resolved/", methods=["GET", "POST"])
 @login_required
 def line_detail_trips_resolved(line_id):
+    """View function to show line details page with all individual trips"""
+    # TODO pages for individual trips
+    # /lines/7/?trips=intervals
+    # /lines/7/?trips=resolved&recurrence_id=2&items=20&page=1
 
-    # t_dep = request.args.get("t_dep", type=str, default='')
-    # t_dep = time.fromisoformat(t_dep)
-    sortby = request.args.get("sortby", default="date")
-    page = request.args.get("page", type=int, default=1)
-    items = request.args.get("items", type=int, default=10)
-    i = (page - 1) * items
+    # sortby = request.args.get("sortby", default="date")
+    # page = request.args.get("page", type=int, default=1)
+    # items = request.args.get("items", type=int, default=10)
+    # i = (page - 1) * items
 
     line = Line.query.get(line_id)
     trips = Trip.query.filter(

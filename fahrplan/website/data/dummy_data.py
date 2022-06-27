@@ -1,6 +1,6 @@
 from .. import db
-from ..model import User, Section, Line
-from werkzeug.security import check_password_hash, generate_password_hash
+from ..model import User
+from werkzeug.security import generate_password_hash
 
 
 def insert_users():
@@ -8,7 +8,7 @@ def insert_users():
         email="Helene.Auer@yg.at",
         first_name="Helene",
         last_name="Auer",
-        password=generate_password_hash("password", method="sha256"),
+        password=generate_password_hash("pwpw", method="sha256"),
         admin=1,
     )
     db.session.add(new_user)
@@ -16,7 +16,7 @@ def insert_users():
         email="Heinz.Feiermeier@yg.at",
         first_name="Heinz",
         last_name="Feiermeier",
-        password=generate_password_hash("password", method="sha256"),
+        password=generate_password_hash("pwpw", method="sha256"),
         admin=1,
     )
     db.session.add(new_user)
@@ -24,29 +24,142 @@ def insert_users():
         email="Ferdinand.Gruenwies@yg.at",
         first_name="Ferdinand",
         last_name="Grünwies",
-        password=generate_password_hash("password", method="sha256"),
+        password=generate_password_hash("pwpw", method="sha256"),
         admin=0,
     )
     db.session.add(new_user)
     db.session.commit()
 
 
-def dummy_sections():
-    new_section = Section()
-    db.session.add(new_section)
-
-    db.session.commit()
-
-
-def dummy_lines():
-    new_line = Line(
-        id=0,
-        description="Pyhrnbahn",
-        price=1240,
-        # note =
-        # date = db.Column(db.DateTime(timezone=True), default=func.now())
-        sections={},
-    )
-    db.session.add(new_line)
-
-    db.session.commit()
+trains = [
+        {
+            "id": 0,
+            "bezeichnung": "REX 3920",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 0,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 1,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 2,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 103,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "bezeichnung": "RJ 301",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 6,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 8,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 15,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 102,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 32,
+            "bezeichnung": "IC 902",
+            "spurweite": "normal",
+            "wagen": [
+                {
+                    "id": 6,
+                    "bez": "Triebwagen",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 8,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 15,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                },
+                {
+                    "id": 102,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 52
+                }
+            ]
+        },
+        {
+            "id": 143,
+            "bezeichnung": "Museumsbahn",
+            "spurweite": "schmalspur",
+            "wagen": [
+                {
+                    "id": 102,
+                    "bez": "298.102 Steyrtalbahn Lok Nr. 2",
+                    "gewicht": 30000,
+                    "sitze": 0
+                },
+                {
+                    "id": 103,
+                    "bez": "Kohlewagen",
+                    "gewicht": 19000,
+                    "sitze": 0
+                },
+                {
+                    "id": 233,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 24
+                },
+                {
+                    "id": 234,
+                    "bez": "Personenwagen",
+                    "gewicht": 19000,
+                    "sitze": 24
+                },
+                {
+                    "id": 235,
+                    "bez": "Speisewagen",
+                    "gewicht": 19000,
+                    "sitze": 12
+                }
+            ]
+        }
+    ]
