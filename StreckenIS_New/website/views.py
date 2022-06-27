@@ -1,24 +1,27 @@
-from sqlalchemy.dialects import mysql
+import json
 
 from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
-from .forms import EditUserForm, EditTrainstationForm, EditSectionForm, EditRouteForm, EditWarningsForm, EditEmpUserForm
-from .models import User, Note, TrainstationModel, SectionModel, RouteModel, WarningModel
 from . import db
-import json
+from .forms import EditUserForm, EditTrainstationForm, EditSectionForm, EditRouteForm, EditWarningsForm, EditEmpUserForm
+from .models import User, TrainstationModel, SectionModel, RouteModel, WarningModel
 
+# Prefix
 views = Blueprint('views', __name__)
 
 
+# Home Route - Homepage
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     return render_template("home.html", user=current_user)
 
 
+# Get all users ( only admins can add users )
 @views.route('/all_users', methods=['GET', 'POST'])
+@login_required
 def get_all_users():
     if request.method == 'POST':
         us_email = request.form.get('us_email')
@@ -53,6 +56,7 @@ def get_all_users():
     return render_template("users.html", user=current_user, all_users=all_users)
 
 
+# Edit user (employee view) by Id - Calls EditEmpUserForm()
 @views.route('/edit_emp_user/<int:user_id>', methods=['GET', 'POST'])
 def edit_emp_users(user_id):
     form = EditEmpUserForm()
@@ -76,6 +80,7 @@ def edit_emp_users(user_id):
     return render_template('edit_emp_user.html', title='Edit Your Profile', user=current_user, form=form)
 
 
+# Edit user (admin view) by Id - Calls EditUserForm()
 @views.route('/edit_users/<int:user_id>', methods=['GET', 'POST'])
 def edit_users(user_id):
     form = EditUserForm()
@@ -101,6 +106,7 @@ def edit_users(user_id):
     return render_template('edit_users.html', title='Edit Users', user=current_user, form=form)
 
 
+# Delete user by Id - JavaScript (index.js)
 @views.route('/delete-user', methods=['POST'])
 def delete_user():
     user = json.loads(request.data)
@@ -115,6 +121,7 @@ def delete_user():
     return jsonify({})
 
 
+# Get all trainstations ( only admins can add trainstations )
 @views.route('/all_trainstations', methods=['GET', 'POST'])
 def get_all_trainstations():
     if request.method == 'POST':
@@ -139,6 +146,7 @@ def get_all_trainstations():
     return render_template("trainstations.html", user=current_user, all_trainstations=all_trainstations)
 
 
+# Edit trainstation by Id - Calls EditTrainstationForm()
 @views.route('/edit_trainstations/<int:trainstations_id>', methods=['GET', 'POST'])
 def edit_trainstations(trainstations_id):
     form = EditTrainstationForm()
@@ -155,6 +163,7 @@ def edit_trainstations(trainstations_id):
     return render_template('edit_trainstations.html', title='Edit Trainstation', user=current_user, form=form)
 
 
+# Delete trainstation by Id - JavaScript (index.js)
 @views.route('/delete-trainstation', methods=['POST'])
 def delete_trainstation():
     trainstation = json.loads(request.data)
@@ -167,10 +176,10 @@ def delete_trainstation():
     return jsonify({})
 
 
+# Get all sections ( only admins can add sections )
 @views.route('/all_sections', methods=['GET', 'POST'])
 def get_all_sections():
     if request.method == 'POST':
-        #sec_id = request.form.get('sec_id')
         sec_start = request.form.get('sec_start')
         sec_end = request.form.get('sec_end')
         sec_track = request.form.get('sec_track')
@@ -189,10 +198,6 @@ def get_all_sections():
         elif len(sec_time) > 3:
             flash('section time cannot be over 3 digits', category='error')
         else:
-            # for w in sec_warning:
-            # warning = WarningModel.query.get(w)
-            # warnings.append(warning)
-
             new_section = SectionModel(start=sec_start, end=sec_end, track=sec_track, fee=sec_fee,
                                        time=sec_time, section_warnings=warnings)
             db.session.add(new_section)
@@ -206,6 +211,7 @@ def get_all_sections():
                            all_trainstations=all_trainstations, all_warnings=all_warnings)
 
 
+# Edit section by Id - Calls EditSectionForm()
 @views.route('/edit_sections/<int:sections_id>', methods=['GET', 'POST'])
 def edit_sections(sections_id):
     form = EditSectionForm()
@@ -224,6 +230,7 @@ def edit_sections(sections_id):
     return render_template('edit_sections.html', title='Edit Sections', user=current_user, form=form)
 
 
+# Delete section - JavaScript (index.js)
 @views.route('/delete-section', methods=['POST'])
 def delete_section():
     section = json.loads(request.data)
@@ -236,6 +243,7 @@ def delete_section():
     return jsonify({})
 
 
+# Get all routes (only admins can add routes )
 @views.route('/all_routes', methods=['GET', 'POST'])
 def get_all_routes():
     if request.method == 'POST':
@@ -275,6 +283,7 @@ def get_all_routes():
                            all_trainstations=all_trainstations)
 
 
+# Edit route by Id - Calls EditRouteForm
 @views.route('/edit_routes/<int:routes_id>', methods=['GET', 'POST'])
 def edit_routes(routes_id):
     form = EditRouteForm()
@@ -291,6 +300,7 @@ def edit_routes(routes_id):
     return render_template('edit_routes.html', title='Edit Routes', user=current_user, form=form)
 
 
+# Delete route JavaScript (index.js)
 @views.route('/delete-route', methods=['POST'])
 def delete_route():
     route = json.loads(request.data)
@@ -303,6 +313,7 @@ def delete_route():
     return jsonify({})
 
 
+# Get all warnings ( only admins can add warnings )
 @views.route('/all_warnings', methods=['GET', 'POST'])
 def get_all_warnings():
     if request.method == 'POST':
@@ -321,6 +332,7 @@ def get_all_warnings():
     return render_template("warnings.html", user=current_user, all_warnings=all_warnings, all_sections=all_sections)
 
 
+# Edit warning by Id - Calls EditWarningsForm()
 @views.route('/edit_warnings/<int:warnings_id>', methods=['GET', 'POST'])
 def edit_warnings(warnings_id):
     form = EditWarningsForm()
@@ -335,6 +347,7 @@ def edit_warnings(warnings_id):
     return render_template('edit_warnings.html', title='Edit Warnings', user=current_user, form=form)
 
 
+# Delete warning by Id - JavaScript (index.js)
 @views.route('/delete-warning', methods=['POST'])
 def delete_warning():
     warning = json.loads(request.data)
